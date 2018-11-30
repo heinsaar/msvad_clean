@@ -161,7 +161,7 @@ Arguments:
 BOOL
 CMSVADHW::GetMixerMute
 (
-    IN  ULONG                   node
+    IN  ULONG node
 )
 /*++
 

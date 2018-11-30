@@ -50,9 +50,7 @@ Return Value:
 
         if (IsEqualGUIDAligned(pDataFormat->Specifier, KSDATAFORMAT_SPECIFIER_DSOUND))
         {
-            PKSDSOUND_BUFFERDESC    pwfxds;
-
-            pwfxds = PKSDSOUND_BUFFERDESC(pDataFormat + 1);
+            PKSDSOUND_BUFFERDESC pwfxds = PKSDSOUND_BUFFERDESC(pDataFormat + 1);
             pWfx = &pwfxds->WaveFormatEx;
         }
     }

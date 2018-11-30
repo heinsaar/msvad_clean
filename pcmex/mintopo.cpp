@@ -245,12 +245,7 @@ Return Value:
 
     NTSTATUS                    ntStatus;
 
-    ntStatus = 
-        CMiniportTopologyMSVAD::Init
-        (
-            UnknownAdapter,
-            Port_
-        );
+    ntStatus = CMiniportTopologyMSVAD::Init(UnknownAdapter, Port_);
 
     if (NT_SUCCESS(ntStatus))
     {
@@ -345,11 +340,7 @@ Return Value:
 
     DPF_ENTER(("[PropertyHandler_Topology]"));
 
-    return ((PCMiniportTopology)
-        (PropertyRequest->MajorTarget))->PropertyHandlerGeneric
-        (
-            PropertyRequest
-        );
+    return ((PCMiniportTopology)(PropertyRequest->MajorTarget))->PropertyHandlerGeneric(PropertyRequest);
 }
 
 #pragma code_seg()

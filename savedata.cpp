@@ -468,7 +468,7 @@ CSaveData::Initialize()
 NTSTATUS
 CSaveData::InitializeWorkItems
 (
-    IN  PDEVICE_OBJECT          DeviceObject
+    IN  PDEVICE_OBJECT DeviceObject
 )
 {
     PAGED_CODE();
@@ -518,7 +518,6 @@ SaveFrameWorkerCallback
     ASSERT(Context);
 
     PSAVEWORKER_PARAM pParam = (PSAVEWORKER_PARAM) Context;
-    PCSaveData pSaveData;
 
     if (!pParam)
     {
@@ -535,7 +534,7 @@ SaveFrameWorkerCallback
 
     if (pParam->WorkItem)
     {
-        pSaveData = pParam->pSaveData;
+        PCSaveData pSaveData = pParam->pSaveData;
 
         if (STATUS_SUCCESS == KeWaitForSingleObject(&pSaveData->m_FileSync, Executive, KernelMode, FALSE, nullptr))
         {

@@ -394,7 +394,6 @@ Return Value:
     DPF_ENTER(("[%s]",__FUNCTION__));
 
     NTSTATUS ntStatus;
-    PBOOL pfMute;
 
     if (PropertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
     {
@@ -408,7 +407,7 @@ Return Value:
             // If the channel index is needed, it is supplied in the Instance parameter
             // LONG lChannel = * PLONG (PropertyRequest->Instance);
             //
-            pfMute = PBOOL (PropertyRequest->Value);
+            PBOOL pfMute = PBOOL (PropertyRequest->Value);
 
             if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
             {

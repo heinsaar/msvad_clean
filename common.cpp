@@ -1132,7 +1132,7 @@ CAdapterCommon::DisconnectTopologies()
         // 
         // Remove the render physical connection
         //
-        if ((TopologyPhysicalConnections.ulWaveOut != (ULONG)-1) &&
+        if ((TopologyPhysicalConnections.ulWaveOut    != (ULONG)-1) &&
             (TopologyPhysicalConnections.ulTopologyIn != (ULONG)-1))
         {
             ntStatus = pUnregisterPhysicalConnection->UnregisterPhysicalConnection(m_pDeviceObject,

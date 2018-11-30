@@ -53,19 +53,12 @@ public:
     IMP_IMiniportWaveCyclic;
 
     // Property Handlers
-    NTSTATUS                    PropertyHandlerGeneric
-    (
-        IN  PPCPROPERTY_REQUEST PropertyRequest
-    );
-
-    NTSTATUS                    PropertyHandlerChannelConfig
-    (
-        IN  PPCPROPERTY_REQUEST PropertyRequest
-    );
+    NTSTATUS PropertyHandlerGeneric(      IN  PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS PropertyHandlerChannelConfig(IN  PPCPROPERTY_REQUEST PropertyRequest);
 
     // Friends
-    friend class                CMiniportWaveCyclicStream;
-    friend class                CMiniportTopologySimple;
+    friend class CMiniportWaveCyclicStream;
+    friend class CMiniportTopologySimple;
 };
 typedef CMiniportWaveCyclic *PCMiniportWaveCyclic;
 
@@ -85,7 +78,7 @@ public:
     DEFINE_STD_CONSTRUCTOR(CMiniportWaveCyclicStream);
     ~CMiniportWaveCyclicStream();
 
-    NTSTATUS                    Init
+    NTSTATUS Init
     ( 
         IN  PCMiniportWaveCyclic Miniport,
         IN  ULONG               Channel,

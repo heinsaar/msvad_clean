@@ -62,7 +62,6 @@ Arguments:
 --*/
 {
     NTSTATUS ntStatus = STATUS_UNSUCCESSFUL;
-    PortClassDeviceContext *ext;
 
     PAGED_CODE(); 
 
@@ -79,7 +78,7 @@ Arguments:
         (IRP_MN_SURPRISE_REMOVAL == stack->MinorFunction) ||
         (IRP_MN_STOP_DEVICE      == stack->MinorFunction))
     {
-        ext = static_cast<PortClassDeviceContext*>(_DeviceObject->DeviceExtension);
+        PortClassDeviceContext* ext = static_cast<PortClassDeviceContext*>(_DeviceObject->DeviceExtension);
 
         if (ext->m_pCommon != nullptr)
         {

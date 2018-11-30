@@ -176,58 +176,46 @@ Arguments:
     // Modify the size of the data format structure to fit the WAVEFORMATPCMEX
     // structure.
     //
-    ((PKSDATAFORMAT)ResultantFormat)->FormatSize =
-        sizeof(KSDATAFORMAT) + sizeof(WAVEFORMATPCMEX);
+    ((PKSDATAFORMAT)ResultantFormat)->FormatSize = sizeof(KSDATAFORMAT) + sizeof(WAVEFORMATPCMEX);
 
     // Append the WAVEFORMATPCMEX structure
     //
-    PWAVEFORMATPCMEX pWfxExt = 
-        (PWAVEFORMATPCMEX)((PKSDATAFORMAT)ResultantFormat + 1);
+    PWAVEFORMATPCMEX pWfxExt = (PWAVEFORMATPCMEX)((PKSDATAFORMAT)ResultantFormat + 1);
 
     // Ensure that the returned channel count falls within our range of
     // supported channel counts.
-    pWfxExt->Format.nChannels = 
-        (WORD)min(((PKSDATARANGE_AUDIO) ClientDataRange)->MaximumChannels, 
-                    ((PKSDATARANGE_AUDIO) MyDataRange)->MaximumChannels);
-
+    pWfxExt->Format.nChannels = (WORD)min(((PKSDATARANGE_AUDIO) ClientDataRange)->MaximumChannels, 
+                                          ((PKSDATARANGE_AUDIO) MyDataRange)->MaximumChannels);
 
     // Ensure that the returned sample rate falls within the supported range
     // of sample rates from our data range.
-    if((((PKSDATARANGE_AUDIO) ClientDataRange)->MaximumSampleFrequency <
-        ((PKSDATARANGE_AUDIO) MyDataRange)->MinimumSampleFrequency) ||
-        (((PKSDATARANGE_AUDIO) ClientDataRange)->MinimumSampleFrequency >
-        ((PKSDATARANGE_AUDIO) MyDataRange)->MaximumSampleFrequency))
+    if ((((PKSDATARANGE_AUDIO) ClientDataRange)->MaximumSampleFrequency < ((PKSDATARANGE_AUDIO) MyDataRange)->MinimumSampleFrequency) ||
+        (((PKSDATARANGE_AUDIO) ClientDataRange)->MinimumSampleFrequency > ((PKSDATARANGE_AUDIO) MyDataRange)->MaximumSampleFrequency))
     {
         DPF(D_TERSE, ("[No intersection in sample rate ranges]"));
         return STATUS_NO_MATCH;
     }
-    pWfxExt->Format.nSamplesPerSec = 
-        min(((PKSDATARANGE_AUDIO) ClientDataRange)->MaximumSampleFrequency,
-            ((PKSDATARANGE_AUDIO) MyDataRange)->MaximumSampleFrequency);
+    pWfxExt->Format.nSamplesPerSec = min(((PKSDATARANGE_AUDIO) ClientDataRange)->MaximumSampleFrequency,
+                                         ((PKSDATARANGE_AUDIO) MyDataRange)->MaximumSampleFrequency);
 
     // Ensure that the returned bits per sample is in the supported
     // range of bit depths from our data range.
-    if((((PKSDATARANGE_AUDIO) ClientDataRange)->MaximumBitsPerSample <
-        ((PKSDATARANGE_AUDIO) MyDataRange)->MinimumBitsPerSample) ||
-        (((PKSDATARANGE_AUDIO) ClientDataRange)->MinimumBitsPerSample >
-        ((PKSDATARANGE_AUDIO) MyDataRange)->MaximumBitsPerSample))
+    if ((((PKSDATARANGE_AUDIO) ClientDataRange)->MaximumBitsPerSample < ((PKSDATARANGE_AUDIO) MyDataRange)->MinimumBitsPerSample) ||
+        (((PKSDATARANGE_AUDIO) ClientDataRange)->MinimumBitsPerSample > ((PKSDATARANGE_AUDIO) MyDataRange)->MaximumBitsPerSample))
     {
         DPF(D_TERSE, ("[No intersection in bits per sample ranges]"));
         return STATUS_NO_MATCH;
     }
-    pWfxExt->Format.wBitsPerSample = 
-        (WORD)min(((PKSDATARANGE_AUDIO) ClientDataRange)->MaximumBitsPerSample,
-                    ((PKSDATARANGE_AUDIO) MyDataRange)->MaximumBitsPerSample);
+    pWfxExt->Format.wBitsPerSample = (WORD)min(((PKSDATARANGE_AUDIO) ClientDataRange)->MaximumBitsPerSample,
+                                               ((PKSDATARANGE_AUDIO) MyDataRange)->MaximumBitsPerSample);
 
     // Fill in the rest of the format
-    pWfxExt->Format.nBlockAlign = 
-        (pWfxExt->Format.wBitsPerSample * pWfxExt->Format.nChannels) / 8;
-    pWfxExt->Format.nAvgBytesPerSec = 
-        pWfxExt->Format.nSamplesPerSec * pWfxExt->Format.nBlockAlign;
-    pWfxExt->Format.cbSize = 22;
+    pWfxExt->Format.nBlockAlign          = (pWfxExt->Format.wBitsPerSample * pWfxExt->Format.nChannels) / 8;
+    pWfxExt->Format.nAvgBytesPerSec      =  pWfxExt->Format.nSamplesPerSec * pWfxExt->Format.nBlockAlign;
+    pWfxExt->Format.cbSize               = 22;
     pWfxExt->Samples.wValidBitsPerSample = pWfxExt->Format.wBitsPerSample;
-    pWfxExt->SubFormat = KSDATAFORMAT_SUBTYPE_PCM;
-    pWfxExt->Format.wFormatTag = WAVE_FORMAT_EXTENSIBLE;
+    pWfxExt->SubFormat                   = KSDATAFORMAT_SUBTYPE_PCM;
+    pWfxExt->Format.wFormatTag           = WAVE_FORMAT_EXTENSIBLE;
 
     // Determine the appropriate channel config to use.
     switch(pWfxExt->Format.nChannels)
@@ -321,8 +309,7 @@ Return Value:
 
     ASSERT(OutFilterDescriptor);
 
-    return 
-        CMiniportWaveCyclicMSVAD::GetDescription(OutFilterDescriptor);
+    return CMiniportWaveCyclicMSVAD::GetDescription(OutFilterDescriptor);
 }
 
 //=============================================================================
@@ -366,27 +353,21 @@ Return Value:
 
     DPF_ENTER(("[CMiniportWaveCyclic::Init]"));
 
-    m_MaxOutputStreams                      = MAX_OUTPUT_STREAMS;
-    m_MaxInputStreams                       = MAX_INPUT_STREAMS;
-    m_MaxTotalStreams                       = MAX_TOTAL_STREAMS;
+    m_MaxOutputStreams    = MAX_OUTPUT_STREAMS;
+    m_MaxInputStreams     = MAX_INPUT_STREAMS;
+    m_MaxTotalStreams     = MAX_TOTAL_STREAMS;
 
-    m_MinChannels                           = MIN_CHANNELS;
-    m_MaxChannelsPcm                        = MAX_CHANNELS_PCM;
+    m_MinChannels         = MIN_CHANNELS;
+    m_MaxChannelsPcm      = MAX_CHANNELS_PCM;
 
-    m_MinBitsPerSamplePcm                   = MIN_BITS_PER_SAMPLE_PCM;
-    m_MaxBitsPerSamplePcm                   = MAX_BITS_PER_SAMPLE_PCM;
-    m_MinSampleRatePcm                      = MIN_SAMPLE_RATE;
-    m_MaxSampleRatePcm                      = MAX_SAMPLE_RATE;
+    m_MinBitsPerSamplePcm = MIN_BITS_PER_SAMPLE_PCM;
+    m_MaxBitsPerSamplePcm = MAX_BITS_PER_SAMPLE_PCM;
+    m_MinSampleRatePcm    = MIN_SAMPLE_RATE;
+    m_MaxSampleRatePcm    = MAX_SAMPLE_RATE;
 
     m_ChannelConfig.ActiveSpeakerPositions  = KSAUDIO_SPEAKER_STEREO;
     
-    ntStatus =
-        CMiniportWaveCyclicMSVAD::Init
-        (
-            UnknownAdapter_,
-            ResourceList_,
-            Port_
-        );
+    ntStatus = CMiniportWaveCyclicMSVAD::Init(UnknownAdapter_, ResourceList_, Port_);
     if (NT_SUCCESS(ntStatus))
     {
         // Set filter descriptor.
@@ -420,28 +401,6 @@ Routine Description:
   The NewStream function creates a new instance of a logical stream 
   associated with a specified physical channel. Callers of NewStream should 
   run at IRQL PASSIVE_LEVEL.
-
-Arguments:
-
-  OutStream -
-
-  OuterUnknown -
-
-  PoolType - 
-
-  Pin - 
-
-  Capture - 
-
-  DataFormat -
-
-  OutDmaChannel -
-
-  OutServiceGroup -
-
-Return Value:
-
-  NT status code.
 
 --*/
 {
@@ -489,21 +448,13 @@ Return Value:
     //
     if (NT_SUCCESS(ntStatus))
     {
-        stream = new (NonPagedPool, MSVAD_POOLTAG) 
-            CMiniportWaveCyclicStream(OuterUnknown);
+        stream = new (NonPagedPool, MSVAD_POOLTAG) CMiniportWaveCyclicStream(OuterUnknown);
 
         if (stream)
         {
             stream->AddRef();
 
-            ntStatus = 
-                stream->Init
-                ( 
-                    this,
-                    Pin,
-                    Capture,
-                    DataFormat
-                );
+            ntStatus = stream->Init(this, Pin, Capture, DataFormat);
         }
         else
         {
@@ -522,13 +473,13 @@ Return Value:
             m_fRenderAllocated = TRUE;
         }
 
-        *OutStream = PMINIPORTWAVECYCLICSTREAM(stream);
+         *OutStream = PMINIPORTWAVECYCLICSTREAM(stream);
         (*OutStream)->AddRef();
         
-        *OutDmaChannel = PDMACHANNEL(stream);
+         *OutDmaChannel = PDMACHANNEL(stream);
         (*OutDmaChannel)->AddRef();
 
-        *OutServiceGroup = m_ServiceGroup;
+         *OutServiceGroup = m_ServiceGroup;
         (*OutServiceGroup)->AddRef();
 
         // The stream, the DMA channel, and the service group have
@@ -555,21 +506,9 @@ CMiniportWaveCyclic::NonDelegatingQueryInterface
     _COM_Outptr_ PVOID * Object 
 )
 /*++
-
-Routine Description:
-
-  QueryInterface
-
 Arguments:
-
   Interface - GUID
-
   Object - interface pointer to be returned.
-
-Return Value:
-
-  NT status code.
-
 --*/
 {
     PAGED_CODE();
@@ -633,7 +572,7 @@ Return Value:
     ASSERT(PropertyRequest);
     ASSERT(PropertyRequest->PropertyItem);
 
-    NTSTATUS    ntStatus = STATUS_INVALID_DEVICE_REQUEST;
+    NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
 
     switch (PropertyRequest->PropertyItem->Id)
     {
@@ -645,11 +584,7 @@ Return Value:
         default:
             // All other property requests are handled by the base
             // miniport.
-            ntStatus = 
-                CMiniportWaveCyclicMSVAD::PropertyHandlerGeneric
-                (
-                    PropertyRequest
-                );
+            ntStatus = CMiniportWaveCyclicMSVAD::PropertyHandlerGeneric(PropertyRequest);
     }
 
     return ntStatus;
@@ -679,7 +614,7 @@ Return Value:
 {
     PAGED_CODE();
 
-    NTSTATUS                    ntStatus = STATUS_INVALID_DEVICE_REQUEST;
+    NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
 
     DPF_ENTER(("[CMiniportWaveCyclic::PropertyHandlerChannelConfig]"));
 
@@ -773,7 +708,7 @@ Return Value:
 NTSTATUS
 CMiniportWaveCyclic::ValidateFormat
 ( 
-    IN  PKSDATAFORMAT           pDataFormat 
+    IN  PKSDATAFORMAT pDataFormat 
 )
 /*++
 
@@ -798,12 +733,10 @@ Return Value:
 
     DPF_ENTER(("[CMiniportWaveCyclicMSVAD::ValidateFormat]"));
 
-    NTSTATUS                    ntStatus;
-    PWAVEFORMATEX               pwfx;
 
     // Let the default Validator handle the request.
     //
-    ntStatus = CMiniportWaveCyclicMSVAD::ValidateFormat(pDataFormat);
+    NTSTATUS ntStatus = CMiniportWaveCyclicMSVAD::ValidateFormat(pDataFormat);
     if (NT_SUCCESS(ntStatus))
     {
         return ntStatus;
@@ -811,7 +744,7 @@ Return Value:
 
     // If the format is not known check for WAVEFORMATEXTENSIBLE.
     //
-    pwfx = GetWaveFormatEx(pDataFormat);
+    PWAVEFORMATEX pwfx = GetWaveFormatEx(pDataFormat);
     if (pwfx)
     {
         if (IS_VALID_WAVEFORMATEX_GUID(&pDataFormat->SubFormat))
@@ -828,15 +761,13 @@ Return Value:
                     {
                         case WAVE_FORMAT_EXTENSIBLE:
                         {
-                            PWAVEFORMATEXTENSIBLE   pwfxExt = 
-                                (PWAVEFORMATEXTENSIBLE) pwfx;
+                            PWAVEFORMATEXTENSIBLE pwfxExt = (PWAVEFORMATEXTENSIBLE) pwfx;
                             ntStatus = ValidateWfxExt(pwfxExt);
                             break;
                         }
                     }
                     break;
                 }
-                
 
                 default:
                     DPF(D_TERSE, ("Invalid format EXTRACT_WAVEFORMATEX_ID!"));
@@ -888,14 +819,11 @@ Return Value:
     {
         if(IsEqualGUIDAligned(pWfxExt->SubFormat, KSDATAFORMAT_SUBTYPE_PCM))
         {
-            PWAVEFORMATEX           pWfx = (PWAVEFORMATEX) pWfxExt;
+            PWAVEFORMATEX pWfx = (PWAVEFORMATEX) pWfxExt;
 
             // Then verify that the format parameters are supported.
-            if
-            (
-                pWfx                                                &&
-                (pWfx->cbSize == sizeof(WAVEFORMATEXTENSIBLE) - 
-                    sizeof(WAVEFORMATEX))                           &&
+            if ( pWfx                                               &&
+                (pWfx->cbSize == sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX)) &&
                 (pWfx->nChannels >= m_MinChannels)                  &&
                 (pWfx->nChannels <= m_MaxChannelsPcm)               &&
                 (pWfx->nSamplesPerSec >= m_MinSampleRatePcm)        &&
@@ -919,23 +847,7 @@ Return Value:
 //=============================================================================
 
 //=============================================================================
-CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream
-( 
- 
-)
-/*++
-
-Routine Description:
-
-  Destructor for wavecyclicstream 
-
-Arguments:
-
-Return Value:
-
-  NT status code.
-
---*/
+CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream()
 {
     PAGED_CODE();
 
@@ -969,36 +881,13 @@ Routine Description:
 
   Initializes the stream object. Allocate a DMA buffer, timer and DPC
 
-Arguments:
-
-  Miniport_ -
-
-  Pin_ -
-
-  Capture_ -
-
-  DataFormat -
-
-  DmaChannel_ -
-
-Return Value:
-
-  NT status code.
-
 --*/
 {
     PAGED_CODE();
 
     m_pMiniportLocal = Miniport_;
 
-    return 
-        CMiniportWaveCyclicStreamMSVAD::Init
-        (
-            Miniport_,
-            Pin_,
-            Capture_,
-            DataFormat_
-        );
+    return CMiniportWaveCyclicStreamMSVAD::Init(Miniport_, Pin_, Capture_, DataFormat_);
 }
 
 //=============================================================================
@@ -1060,7 +949,7 @@ Return Value:
 NTSTATUS
 PropertyHandler_Wave
 ( 
-    IN PPCPROPERTY_REQUEST      PropertyRequest 
+    IN PPCPROPERTY_REQUEST PropertyRequest 
 )
 /*++
 
@@ -1084,11 +973,7 @@ Return Value:
 
     DPF_ENTER(("[PropertyHandler_Wave]"));
 
-    return ((PCMiniportWaveCyclic)
-        (PropertyRequest->MajorTarget))->PropertyHandlerGeneric
-        (
-            PropertyRequest
-        );
+    return ((PCMiniportWaveCyclic)(PropertyRequest->MajorTarget))->PropertyHandlerGeneric(PropertyRequest);
 }
 #pragma code_seg()
 

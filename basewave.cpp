@@ -25,17 +25,6 @@ Abstract:
 //=============================================================================
 #pragma code_seg("PAGE")
 CMiniportWaveCyclicMSVAD::CMiniportWaveCyclicMSVAD()
-/*++
-
-Routine Description:
-
-  Constructor for wavecyclic miniport.
-
-Arguments:
-
-Return Value:
-
---*/
 {
     PAGED_CODE();
 
@@ -119,7 +108,7 @@ Return Value:
 
     *OutFilterDescriptor = m_FilterDescriptor;
 
-    return (STATUS_SUCCESS);
+    return STATUS_SUCCESS;
 }
 
 //=============================================================================
@@ -666,7 +655,7 @@ Return Value:
 STDMETHODIMP
 CMiniportWaveCyclicStreamMSVAD::NormalizePhysicalPosition
 (
-    _Inout_ PLONGLONG            PhysicalPosition
+    _Inout_ PLONGLONG PhysicalPosition
 )
 /*++
 

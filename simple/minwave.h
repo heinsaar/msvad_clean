@@ -36,8 +36,8 @@ class CMiniportWaveCyclic :
     public CUnknown
 {
 private:
-    BOOL                        m_fCaptureAllocated;
-    BOOL                        m_fRenderAllocated;
+    BOOL m_fCaptureAllocated;
+    BOOL m_fRenderAllocated;
 
 public:
     DECLARE_STD_UNKNOWN();
@@ -46,19 +46,12 @@ public:
 
     IMP_IMiniportWaveCyclic;
 
-    NTSTATUS                    PropertyHandlerComponentId
-    (
-        IN PPCPROPERTY_REQUEST  PropertyRequest
-    );
-
-    NTSTATUS                    PropertyHandlerProposedFormat
-    (
-        IN PPCPROPERTY_REQUEST  PropertyRequest
-    );
+    NTSTATUS PropertyHandlerComponentId(IN PPCPROPERTY_REQUEST  PropertyRequest);
+    NTSTATUS PropertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST  PropertyRequest);
 
     // Friends
-    friend class                CMiniportWaveCyclicStream;
-    friend class                CMiniportTopologySimple;
+    friend class CMiniportWaveCyclicStream;
+    friend class CMiniportTopologySimple;
 };
 typedef CMiniportWaveCyclic *PCMiniportWaveCyclic;
 
@@ -71,7 +64,7 @@ class CMiniportWaveCyclicStream :
     public CUnknown
 {
 protected:
-    PCMiniportWaveCyclic        m_pMiniportLocal;  
+    PCMiniportWaveCyclic m_pMiniportLocal;  
 
 public:
     DECLARE_STD_UNKNOWN();
@@ -87,7 +80,7 @@ public:
     );
 
     // Friends
-    friend class                CMiniportWaveCyclic;
+    friend class CMiniportWaveCyclic;
 };
 typedef CMiniportWaveCyclicStream *PCMiniportWaveCyclicStream;
 

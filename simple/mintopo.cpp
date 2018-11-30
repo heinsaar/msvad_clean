@@ -150,25 +150,16 @@ Arguments:
   ResultantFormatLength - Actual length of the resultant format that is placed 
                           at ResultantFormat. This should be less than or equal 
                           to OutputBufferLength. 
-
-Return Value:
-
-  NT status code.
-
 --*/
 {
     PAGED_CODE();
 
-    return 
-        CMiniportTopologyMSVAD::DataRangeIntersection
-        (
-            PinId,
-            ClientDataRange,
-            MyDataRange,
-            OutputBufferLength,
-            ResultantFormat,
-            ResultantFormatLength
-        );
+    return CMiniportTopologyMSVAD::DataRangeIntersection(PinId,
+                                                         ClientDataRange,
+                                                         MyDataRange,
+                                                         OutputBufferLength,
+                                                         ResultantFormat,
+                                                         ResultantFormatLength);
 }
 
 //=============================================================================
@@ -198,8 +189,7 @@ Return Value:
 {
     PAGED_CODE();
 
-    return 
-        CMiniportTopologyMSVAD::GetDescription(OutFilterDescriptor);
+    return CMiniportTopologyMSVAD::GetDescription(OutFilterDescriptor);
 }
 
 //=============================================================================
@@ -243,14 +233,7 @@ Return Value:
 
     DPF_ENTER(("[CMiniportTopology::Init]"));
 
-    NTSTATUS                    ntStatus;
-
-    ntStatus = 
-        CMiniportTopologyMSVAD::Init
-        (
-            UnknownAdapter,
-            Port_
-        );
+    NTSTATUS ntStatus = CMiniportTopologyMSVAD::Init(UnknownAdapter, Port_);
 
     if (NT_SUCCESS(ntStatus))
     {
@@ -356,13 +339,7 @@ Return Value:
         {
             if (PropertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
             {
-                ntStatus = 
-                    PropertyHandler_BasicSupport
-                    (
-                        PropertyRequest,
-                        KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_GET,
-                        VT_ILLEGAL
-                    );
+                ntStatus = PropertyHandler_BasicSupport(PropertyRequest, KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_GET, VT_ILLEGAL);
             }
             else
             {
@@ -433,13 +410,9 @@ Return Value:
     PCMiniportTopology  pMiniport = (PCMiniportTopology)PropertyRequest->MajorTarget;
 
     if (IsEqualGUIDAligned(*PropertyRequest->PropertyItem->Set, KSPROPSETID_Jack) &&
-        (PropertyRequest->PropertyItem->Id == KSPROPERTY_JACK_DESCRIPTION))
+                           (PropertyRequest->PropertyItem->Id == KSPROPERTY_JACK_DESCRIPTION))
     {
-        ntStatus = 
-            pMiniport->PropertyHandlerJackDescription
-            (
-                PropertyRequest
-            );
+        ntStatus = pMiniport->PropertyHandlerJackDescription(PropertyRequest);
     }
 
     return ntStatus;
@@ -476,12 +449,7 @@ Return Value:
     // PropertryRequest structure is filled by portcls. 
     // MajorTarget is a pointer to miniport object for miniports.
     //
-    return 
-        ((PCMiniportTopology)
-        (PropertyRequest->MajorTarget))->PropertyHandlerGeneric
-                    (
-                        PropertyRequest
-                    );
+    return ((PCMiniportTopology)(PropertyRequest->MajorTarget))->PropertyHandlerGeneric(PropertyRequest);
 }
 
 #pragma code_seg()

@@ -184,8 +184,7 @@ Return Value:
 
     ASSERT(OutFilterDescriptor);
 
-    return 
-        CMiniportWaveCyclicMSVAD::GetDescription(OutFilterDescriptor);
+    return CMiniportWaveCyclicMSVAD::GetDescription(OutFilterDescriptor);
 }
 
 //=============================================================================
@@ -225,8 +224,6 @@ Return Value:
     ASSERT(UnknownAdapter_);
     ASSERT(Port_);
 
-    NTSTATUS                    ntStatus;
-
     DPF_ENTER(("[CMiniportWaveCyclic::Init]"));
 
     m_MaxOutputStreams      = MAX_OUTPUT_STREAMS;
@@ -241,13 +238,7 @@ Return Value:
     m_MinSampleRatePcm      = MIN_SAMPLE_RATE;
     m_MaxSampleRatePcm      = MAX_SAMPLE_RATE;
 
-    ntStatus =
-        CMiniportWaveCyclicMSVAD::Init
-        (
-            UnknownAdapter_,
-            ResourceList_,
-            Port_
-        );
+    NTSTATUS ntStatus = CMiniportWaveCyclicMSVAD::Init(UnknownAdapter_, ResourceList_, Port_);
     if (NT_SUCCESS(ntStatus))
     {
         // Set filter descriptor.
@@ -281,30 +272,7 @@ Routine Description:
   The NewStream function creates a new instance of a logical stream 
   associated with a specified physical channel. Callers of NewStream should 
   run at IRQL PASSIVE_LEVEL.
-
-Arguments:
-
-  OutStream -
-
-  OuterUnknown -
-
-  PoolType - 
-
-  Pin - 
-
-  Capture - 
-
-  DataFormat -
-
-  OutDmaChannel -
-
-  OutServiceGroup -
-
-Return Value:
-
-  NT status code.
-
---*/
+*/
 {
     UNREFERENCED_PARAMETER(PoolType);
 
@@ -357,14 +325,7 @@ Return Value:
         {
             stream->AddRef();
 
-            ntStatus = 
-                stream->Init
-                ( 
-                    this,
-                    Pin,
-                    Capture,
-                    DataFormat
-                );
+            ntStatus = stream->Init(this, Pin, Capture, DataFormat);
         }
         else
         {
@@ -383,13 +344,13 @@ Return Value:
             m_fRenderAllocated = TRUE;
         }
 
-        *OutStream = PMINIPORTWAVECYCLICSTREAM(stream);
+         *OutStream = PMINIPORTWAVECYCLICSTREAM(stream);
         (*OutStream)->AddRef();
         
-        *OutDmaChannel = PDMACHANNEL(stream);
+         *OutDmaChannel = PDMACHANNEL(stream);
         (*OutDmaChannel)->AddRef();
 
-        *OutServiceGroup = m_ServiceGroup;
+         *OutServiceGroup = m_ServiceGroup;
         (*OutServiceGroup)->AddRef();
 
         // The stream, the DMA channel, and the service group have
@@ -495,29 +456,16 @@ Return Value:
 
     if (PropertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
     {
-        ntStatus = 
-            PropertyHandler_BasicSupport
-            (
-                PropertyRequest,
-                KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_GET,
-                VT_ILLEGAL
-            );
+        ntStatus = PropertyHandler_BasicSupport(PropertyRequest, KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_GET, VT_ILLEGAL);
     }
     else
     {
-        ntStatus = 
-            ValidatePropertyParams
-            (
-                PropertyRequest, 
-                sizeof(KSCOMPONENTID), 
-                0
-            );
+        ntStatus = ValidatePropertyParams(PropertyRequest, sizeof(KSCOMPONENTID), 0);
         if (NT_SUCCESS(ntStatus))
         {
             if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
             {
-                PKSCOMPONENTID pComponentId = (PKSCOMPONENTID)
-                    PropertyRequest->Value;
+                PKSCOMPONENTID pComponentId = (PKSCOMPONENTID)PropertyRequest->Value;
 
                 INIT_MMREG_MID(&pComponentId->Manufacturer, MM_MICROSOFT);
                 pComponentId->Product   = PID_MSVAD;
@@ -572,13 +520,7 @@ Return Value:
 
     if (PropertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
     {
-        ntStatus = 
-            PropertyHandler_BasicSupport
-            (
-                PropertyRequest,
-                KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_SET,
-                VT_ILLEGAL
-            );
+        ntStatus = PropertyHandler_BasicSupport(PropertyRequest, KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_SET, VT_ILLEGAL);
     }
     else
     {
@@ -602,8 +544,8 @@ Return Value:
                 ntStatus = STATUS_NO_MATCH;
 
                 if ((pKsFormat->DataFormat.MajorFormat == KSDATAFORMAT_TYPE_AUDIO) &&
-                    (pKsFormat->DataFormat.SubFormat == KSDATAFORMAT_SUBTYPE_PCM) &&
-                    (pKsFormat->DataFormat.Specifier == KSDATAFORMAT_SPECIFIER_WAVEFORMATEX))
+                    (pKsFormat->DataFormat.SubFormat   == KSDATAFORMAT_SUBTYPE_PCM) &&
+                    (pKsFormat->DataFormat.Specifier   == KSDATAFORMAT_SPECIFIER_WAVEFORMATEX))
                 {
                     WAVEFORMATEX* pWfx = (WAVEFORMATEX*)&pKsFormat->WaveFormatEx;
 
@@ -670,25 +612,16 @@ Return Value:
     PAGED_CODE();
 
     NTSTATUS                    ntStatus = STATUS_INVALID_DEVICE_REQUEST;
-    PCMiniportWaveCyclic        pWave = 
-        (PCMiniportWaveCyclic) PropertyRequest->MajorTarget;
+    PCMiniportWaveCyclic        pWave = (PCMiniportWaveCyclic) PropertyRequest->MajorTarget;
 
     switch (PropertyRequest->PropertyItem->Id)
     {
         case KSPROPERTY_GENERAL_COMPONENTID:
-            ntStatus = 
-                pWave->PropertyHandlerComponentId
-                (
-                    PropertyRequest
-                );
+            ntStatus = pWave->PropertyHandlerComponentId(PropertyRequest);
             break;
 
         case KSPROPERTY_PIN_PROPOSEDATAFORMAT:
-            ntStatus = 
-                pWave->PropertyHandlerProposedFormat
-                (
-                    PropertyRequest
-                );
+            ntStatus = pWave->PropertyHandlerProposedFormat(PropertyRequest);
             break;
         
         default:
@@ -703,23 +636,7 @@ Return Value:
 //=============================================================================
 
 //=============================================================================
-CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream
-( 
- 
-)
-/*++
-
-Routine Description:
-
-  Destructor for wavecyclicstream 
-
-Arguments:
-
-Return Value:
-
-  NT status code.
-
---*/
+CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream()
 {
     PAGED_CODE();
 
@@ -748,41 +665,15 @@ CMiniportWaveCyclicStream::Init
     IN PKSDATAFORMAT                DataFormat_
 )
 /*++
-
 Routine Description:
-
   Initializes the stream object. Allocate a DMA buffer, timer and DPC
-
-Arguments:
-
-  Miniport_ -
-
-  Pin_ -
-
-  Capture_ -
-
-  DataFormat -
-
-  DmaChannel_ -
-
-Return Value:
-
-  NT status code.
-
---*/
+*/
 {
     PAGED_CODE();
 
     m_pMiniportLocal = Miniport_;
 
-    return 
-        CMiniportWaveCyclicStreamMSVAD::Init
-        (
-            Miniport_,
-            Pin_,
-            Capture_,
-            DataFormat_
-        );
+    return         CMiniportWaveCyclicStreamMSVAD::Init(Miniport_, Pin_, Capture_, DataFormat_);
 }
 
 //=============================================================================
