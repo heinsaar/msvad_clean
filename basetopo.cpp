@@ -44,8 +44,7 @@ CMiniportTopologyMSVAD::~CMiniportTopologyMSVAD()
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportTopologyMSVAD::DataRangeIntersection
+NTSTATUS CMiniportTopologyMSVAD::DataRangeIntersection
 ( 
     _In_        ULONG                   PinId,
     _In_        PKSDATARANGE            ClientDataRange,
@@ -98,8 +97,7 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportTopologyMSVAD::GetDescription
+NTSTATUS CMiniportTopologyMSVAD::GetDescription
 ( 
     _Out_ PPCFILTER_DESCRIPTOR *  OutFilterDescriptor 
 )
@@ -130,8 +128,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportTopologyMSVAD::Init
+NTSTATUS CMiniportTopologyMSVAD::Init
 ( 
     IN  PUNKNOWN                UnknownAdapter_,
     IN  PPORTTOPOLOGY           Port_ 
@@ -183,8 +180,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportTopologyMSVAD::PropertyHandlerBasicSupportVolume
+NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerBasicSupportVolume
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
@@ -268,8 +264,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportTopologyMSVAD::PropertyHandlerCpuResources
+NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerCpuResources
 ( 
     IN  PPCPROPERTY_REQUEST     PropertyRequest 
 )
@@ -493,8 +488,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportTopologyMSVAD::PropertyHandlerVolume
+NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerVolume
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )

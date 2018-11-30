@@ -27,8 +27,7 @@ Abstract:
 //=============================================================================
 
 //=============================================================================
-NTSTATUS
-CreateMiniportWaveCyclicMSVAD
+NTSTATUS CreateMiniportWaveCyclicMSVAD
 ( 
     OUT PUNKNOWN *              Unknown,
     IN  REFCLSID,
@@ -705,8 +704,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportWaveCyclic::ValidateFormat
+NTSTATUS CMiniportWaveCyclic::ValidateFormat
 ( 
     IN  PKSDATAFORMAT pDataFormat 
 )
@@ -784,8 +782,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportWaveCyclic::ValidateWfxExt
+NTSTATUS CMiniportWaveCyclic::ValidateWfxExt
 (
     IN  PWAVEFORMATEXTENSIBLE   pWfxExt
 )
@@ -867,8 +864,7 @@ CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream()
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportWaveCyclicStream::Init
+NTSTATUS CMiniportWaveCyclicStream::Init
 ( 
     IN PCMiniportWaveCyclic         Miniport_,
     IN ULONG                        Pin_,
@@ -946,8 +942,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-PropertyHandler_Wave
+NTSTATUS PropertyHandler_Wave
 ( 
     IN PPCPROPERTY_REQUEST PropertyRequest 
 )

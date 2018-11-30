@@ -96,8 +96,7 @@ Arguments:
 //=============================================================================
 #pragma code_seg("INIT")
 extern "C" DRIVER_INITIALIZE DriverEntry;
-extern "C" NTSTATUS
-DriverEntry
+extern "C" NTSTATUS DriverEntry
 ( 
     IN  PDRIVER_OBJECT  DriverObject,
     IN  PUNICODE_STRING RegistryPathName
@@ -184,8 +183,7 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS
-StartDevice
+NTSTATUS StartDevice
 ( 
     IN  PDEVICE_OBJECT          DeviceObject,     
     IN  PIRP                    Irp,              

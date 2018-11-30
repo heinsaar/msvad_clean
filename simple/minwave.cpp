@@ -27,8 +27,7 @@ Abstract:
 //=============================================================================
 
 //=============================================================================
-NTSTATUS
-CreateMiniportWaveCyclicMSVAD
+NTSTATUS CreateMiniportWaveCyclicMSVAD
 ( 
     OUT PUNKNOWN *              Unknown,
     IN  REFCLSID,
@@ -427,8 +426,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportWaveCyclic::PropertyHandlerComponentId
+NTSTATUS CMiniportWaveCyclic::PropertyHandlerComponentId
 (
     IN PPCPROPERTY_REQUEST      PropertyRequest
 )
@@ -491,8 +489,7 @@ Return Value:
 #define CB_EXTENSIBLE (sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX))
 
 //=============================================================================
-NTSTATUS
-CMiniportWaveCyclic::PropertyHandlerProposedFormat
+NTSTATUS CMiniportWaveCyclic::PropertyHandlerProposedFormat
 (
     IN PPCPROPERTY_REQUEST      PropertyRequest
 )
@@ -588,8 +585,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-PropertyHandler_WaveFilter
+NTSTATUS PropertyHandler_WaveFilter
 ( 
     IN PPCPROPERTY_REQUEST      PropertyRequest 
 )
@@ -656,8 +652,7 @@ CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream()
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportWaveCyclicStream::Init
+NTSTATUS CMiniportWaveCyclicStream::Init
 ( 
     IN PCMiniportWaveCyclic         Miniport_,
     IN ULONG                        Pin_,

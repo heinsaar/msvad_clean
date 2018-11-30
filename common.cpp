@@ -35,8 +35,7 @@ PSAVEWORKER_PARAM CSaveData::m_pWorkItems    = nullptr;
 PDEVICE_OBJECT    CSaveData::m_pDeviceObject = nullptr;
 
 typedef
-NTSTATUS
-(*PMSVADMINIPORTCREATE)
+NTSTATUS (*PMSVADMINIPORTCREATE)
 (
     _Out_       PUNKNOWN *,
     _In_        REFCLSID,
@@ -44,8 +43,7 @@ NTSTATUS
     _In_        POOL_TYPE
 );
 
-NTSTATUS
-CreateMiniportWaveCyclicMSVAD
+NTSTATUS CreateMiniportWaveCyclicMSVAD
 ( 
     OUT PUNKNOWN *,
     IN  REFCLSID,
@@ -56,8 +54,7 @@ CreateMiniportWaveCyclicMSVAD
     IN  POOL_TYPE PoolType
 );
 
-NTSTATUS
-CreateMiniportTopologyMSVAD
+NTSTATUS CreateMiniportTopologyMSVAD
 ( 
     OUT PUNKNOWN *,
     IN  REFCLSID,
@@ -73,8 +70,7 @@ CreateMiniportTopologyMSVAD
 //=============================================================================
 //=============================================================================
 #pragma code_seg("PAGE")
-NTSTATUS
-InstallSubdevice
+NTSTATUS InstallSubdevice
 ( 
     _In_        PDEVICE_OBJECT          DeviceObject,
     _In_opt_    PIRP                    Irp,
@@ -423,8 +419,7 @@ class CAdapterCommon :
 
 //=============================================================================
 #pragma code_seg("PAGE")
-NTSTATUS
-NewAdapterCommon
+NTSTATUS NewAdapterCommon
 ( 
     OUT PUNKNOWN* Unknown,
     IN  REFCLSID,
@@ -530,11 +525,7 @@ Return Value:
 
 //=============================================================================
 #pragma code_seg("PAGE")
-NTSTATUS
-CAdapterCommon::Init
-( 
-    IN  PDEVICE_OBJECT DeviceObject 
-)
+NTSTATUS CAdapterCommon::Init(IN  PDEVICE_OBJECT DeviceObject)
 /*++
 
 Routine Description:

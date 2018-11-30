@@ -164,8 +164,7 @@ void CSaveData::Disable(BOOL fDisable)
 }
 
 //=============================================================================
-NTSTATUS
-CSaveData::FileClose()
+NTSTATUS CSaveData::FileClose()
 {
     PAGED_CODE();
 
@@ -181,8 +180,7 @@ CSaveData::FileClose()
 }
 
 //=============================================================================
-NTSTATUS
-CSaveData::FileOpen(IN  BOOL fOverWrite)
+NTSTATUS CSaveData::FileOpen(IN  BOOL fOverWrite)
 {
     PAGED_CODE();
 
@@ -217,8 +215,7 @@ CSaveData::FileOpen(IN  BOOL fOverWrite)
 }
 
 //=============================================================================
-NTSTATUS
-CSaveData::FileWrite
+NTSTATUS CSaveData::FileWrite
 (
     _In_reads_bytes_(ulDataSize)    PBYTE   pData,
     _In_                            ULONG   ulDataSize
@@ -258,8 +255,7 @@ CSaveData::FileWrite
 }
 
 //=============================================================================
-NTSTATUS
-CSaveData::FileWriteHeader()
+NTSTATUS CSaveData::FileWriteHeader()
 {
     PAGED_CODE();
 
@@ -322,8 +318,7 @@ CSaveData::FileWriteHeader()
 
     return ntStatus;
 }
-NTSTATUS
-CSaveData::SetDeviceObject(IN  PDEVICE_OBJECT DeviceObject)
+NTSTATUS CSaveData::SetDeviceObject(IN  PDEVICE_OBJECT DeviceObject)
 {
     PAGED_CODE();
 
@@ -367,8 +362,7 @@ CSaveData::GetNewWorkItem()
 #pragma code_seg("PAGE")
 
 //=============================================================================
-NTSTATUS
-CSaveData::Initialize()
+NTSTATUS CSaveData::Initialize()
 {
     PAGED_CODE();
 
@@ -465,8 +459,7 @@ CSaveData::Initialize()
 }
 
 //=============================================================================
-NTSTATUS
-CSaveData::InitializeWorkItems
+NTSTATUS CSaveData::InitializeWorkItems
 (
     IN  PDEVICE_OBJECT DeviceObject
 )
@@ -553,8 +546,7 @@ SaveFrameWorkerCallback
 }
 
 //=============================================================================
-NTSTATUS
-CSaveData::SetDataFormat(IN PKSDATAFORMAT pDataFormat)
+NTSTATUS CSaveData::SetDataFormat(IN PKSDATAFORMAT pDataFormat)
 {
     PAGED_CODE();
     NTSTATUS ntStatus = STATUS_SUCCESS; 

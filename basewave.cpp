@@ -197,8 +197,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportWaveCyclicMSVAD::PropertyHandlerCpuResources
+NTSTATUS CMiniportWaveCyclicMSVAD::PropertyHandlerCpuResources
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
@@ -245,8 +244,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportWaveCyclicMSVAD::PropertyHandlerGeneric
+NTSTATUS CMiniportWaveCyclicMSVAD::PropertyHandlerGeneric
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
@@ -288,8 +286,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportWaveCyclicMSVAD::ValidateFormat
+NTSTATUS CMiniportWaveCyclicMSVAD::ValidateFormat
 (
     IN  PKSDATAFORMAT pDataFormat
 )
@@ -354,8 +351,7 @@ Return Value:
 }
 
 //-----------------------------------------------------------------------------
-NTSTATUS
-CMiniportWaveCyclicMSVAD::ValidatePcm(IN  PWAVEFORMATEX  pWfx)
+NTSTATUS CMiniportWaveCyclicMSVAD::ValidatePcm(IN  PWAVEFORMATEX  pWfx)
 /*++
 
 Routine Description:
@@ -447,8 +443,7 @@ CMiniportWaveCyclicStreamMSVAD::~CMiniportWaveCyclicStreamMSVAD()
 //=============================================================================
 #pragma warning (push)
 #pragma warning (disable : 26165)
-NTSTATUS
-CMiniportWaveCyclicStreamMSVAD::Init
+NTSTATUS CMiniportWaveCyclicStreamMSVAD::Init
 (
     IN  PCMiniportWaveCyclicMSVAD Miniport_,
     IN  ULONG                     Pin_,

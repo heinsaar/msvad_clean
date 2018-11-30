@@ -44,8 +44,7 @@ PHYSICALCONNECTIONTABLE TopologyPhysicalConnections =
 #pragma code_seg("PAGE")
 
 //=============================================================================
-NTSTATUS
-CreateMiniportTopologyMSVAD
+NTSTATUS CreateMiniportTopologyMSVAD
 ( 
     OUT PUNKNOWN *              Unknown,
     IN  REFCLSID,
@@ -109,8 +108,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportTopology::DataRangeIntersection
+NTSTATUS CMiniportTopology::DataRangeIntersection
 ( 
     _In_        ULONG                   PinId,
     _In_        PKSDATARANGE            ClientDataRange,
@@ -291,8 +289,7 @@ Return Value:
 }
 
 //=============================================================================
-NTSTATUS
-CMiniportTopology::PropertyHandlerJackDescription
+NTSTATUS CMiniportTopology::PropertyHandlerJackDescription
 ( 
     IN PPCPROPERTY_REQUEST      PropertyRequest 
 )
@@ -355,8 +352,7 @@ CMiniportTopology::PropertyHandlerJackDescription
 }
 
 //=============================================================================
-NTSTATUS
-PropertyHandler_TopoFilter
+NTSTATUS PropertyHandler_TopoFilter
 ( 
     IN PPCPROPERTY_REQUEST PropertyRequest 
 )
