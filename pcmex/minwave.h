@@ -41,15 +41,8 @@ private:
     KSAUDIO_CHANNEL_CONFIG      m_ChannelConfig;
     
 protected:
-    NTSTATUS                    ValidateFormat
-    ( 
-        IN	PKSDATAFORMAT       pDataFormat 
-    );
-
-    NTSTATUS                    ValidateWfxExt
-    (
-        IN  PWAVEFORMATEXTENSIBLE   pWfxExt
-    );
+    NTSTATUS ValidateFormat(IN	PKSDATAFORMAT pDataFormat);
+    NTSTATUS ValidateWfxExt(IN  PWAVEFORMATEXTENSIBLE   pWfxExt);
 
 
 public:
