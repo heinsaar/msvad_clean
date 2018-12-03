@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Node and Pin numbers for simple sample.
 
---*/
+*/
 
 #ifndef _MSVAD_SIMPLE_H_
 #define _MSVAD_SIMPLE_H_

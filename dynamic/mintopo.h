@@ -1,5 +1,5 @@
 
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -11,7 +11,7 @@ Abstract:
 
     Declaration of topology miniport.
 
---*/
+*/
 
 #ifndef _MSVAD_MINTOPO_H_
 #define _MSVAD_MINTOPO_H_

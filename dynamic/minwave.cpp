@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Implementation of wavecyclic miniport.
 
---*/
+*/
 
 #pragma warning (disable : 4127)
 
@@ -38,9 +38,9 @@ CreateMiniportWaveCyclicMSVAD
 			 "Allocation failures cause a system crash"))
     IN  POOL_TYPE               PoolType 
 )
-/*++
+/*
   Create the wavecyclic miniport.
---*/
+*/
 {
     PAGED_CODE();
 
@@ -51,9 +51,9 @@ CreateMiniportWaveCyclicMSVAD
 
 //=============================================================================
 CMiniportWaveCyclic::~CMiniportWaveCyclic()
-/*++
+/*
   Destructor for wavecyclic miniport
---*/
+*/
 {
     PAGED_CODE();
 
@@ -73,7 +73,7 @@ CMiniportWaveCyclic::DataRangeIntersection
                 PVOID                       ResultantFormat,
     _Out_       PULONG                      ResultantFormatLength 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -106,7 +106,7 @@ Arguments:
 
     NT status code.
 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(PinId);
     UNREFERENCED_PARAMETER(ClientDataRange);
@@ -130,7 +130,7 @@ CMiniportWaveCyclic::GetDescription
 ( 
     _Out_ PPCFILTER_DESCRIPTOR * OutFilterDescriptor 
 )
-/*++
+/*
 
 Routine Description:
   The GetDescription function gets a pointer to a filter description. 
@@ -155,7 +155,7 @@ CMiniportWaveCyclic::Init
     _In_  PRESOURCELIST           ResourceList_,
     _In_  PPORTWAVECYCLIC         Port_ 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -177,7 +177,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -330,7 +330,7 @@ CMiniportWaveCyclic::NonDelegatingQueryInterface
     _In_         REFIID  Interface,
     _COM_Outptr_ PVOID * Object 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -346,7 +346,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -388,7 +388,7 @@ CMiniportWaveCyclic::PropertyHandlerProposedFormat
 (
     IN PPCPROPERTY_REQUEST      PropertyRequest
 )
-/*++
+/*
 
 Routine Description:
 
@@ -402,7 +402,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -559,7 +559,7 @@ CMiniportWaveCyclicStream::NonDelegatingQueryInterface
     _In_         REFIID  Interface,
     _COM_Outptr_ PVOID * Object 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -575,7 +575,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 

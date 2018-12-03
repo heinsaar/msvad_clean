@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Implementation of topology miniport.
 
---*/
+*/
 
 #pragma warning (disable : 4127)
 
@@ -54,7 +54,7 @@ CreateMiniportTopologyMSVAD
 			 "Allocation failures cause a system crash"))
     IN  POOL_TYPE               PoolType 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -74,7 +74,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
     ASSERT(Unknown);
@@ -99,7 +99,7 @@ NTSTATUS CMiniportTopology::DataRangeIntersection
                 PVOID                   ResultantFormat     OPTIONAL,
     _Out_       PULONG                  ResultantFormatLength 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -125,7 +125,7 @@ Arguments:
   ResultantFormatLength - Actual length of the resultant format that is placed 
                           at ResultantFormat. This should be less than or equal 
                           to OutputBufferLength.
---*/
+*/
 {
     PAGED_CODE();
 
@@ -167,7 +167,7 @@ CMiniportTopology::Init
     _In_ PRESOURCELIST ResourceList,
     _In_ PPORTTOPOLOGY Port_ 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -184,7 +184,7 @@ Arguments:
                  modify the ResourceList contents. 
 
   Port - Pointer to the topology port object that is linked with this miniport. 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(ResourceList);
     
@@ -212,7 +212,7 @@ CMiniportTopology::NonDelegatingQueryInterface
     _In_         REFIID Interface,
     _COM_Outptr_ PVOID* Object 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -224,7 +224,7 @@ Arguments:
 
   Object - interface object to be returned.
 
---*/
+*/
 {
     PAGED_CODE();
     ASSERT(Object);
@@ -262,7 +262,7 @@ CMiniportTopology::PropertyHandlerMicArrayGeometry
 ( 
     IN PPCPROPERTY_REQUEST PropertyRequest 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -276,7 +276,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
     ASSERT(PropertyRequest);
@@ -420,9 +420,9 @@ Routine Description:
 
 //=============================================================================
 NTSTATUS PropertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
-/*++
+/*
   Redirects property request to miniport object
---*/
+*/
 {
     PAGED_CODE();
 
@@ -453,9 +453,9 @@ NTSTATUS PropertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
 
 //=============================================================================
 NTSTATUS PropertyHandler_Topology(IN PPCPROPERTY_REQUEST PropertyRequest)
-/*++
+/*
   Redirects property request to miniport object
---*/
+*/
 {
     PAGED_CODE();
     ASSERT(PropertyRequest);

@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -11,7 +11,7 @@ Abstract:
     Implementation of topology miniport. This the base class for 
     all MSVAD samples
 
---*/
+*/
 
 #pragma warning (disable : 4127)
 
@@ -54,7 +54,7 @@ NTSTATUS CMiniportTopologyMSVAD::DataRangeIntersection
                 PVOID                   ResultantFormat,
     _Out_       PULONG                  ResultantFormatLength 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -80,7 +80,7 @@ Arguments:
   ResultantFormatLength - Actual length of the resultant format that is placed 
                           at ResultantFormat. This should be less than or equal 
                           to OutputBufferLength
---*/
+*/
 {
     UNREFERENCED_PARAMETER(PinId);
     UNREFERENCED_PARAMETER(ClientDataRange);
@@ -101,7 +101,7 @@ NTSTATUS CMiniportTopologyMSVAD::GetDescription
 ( 
     _Out_ PPCFILTER_DESCRIPTOR *  OutFilterDescriptor 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -118,7 +118,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
     ASSERT(OutFilterDescriptor);
@@ -133,7 +133,7 @@ NTSTATUS CMiniportTopologyMSVAD::Init
     IN  PUNKNOWN                UnknownAdapter_,
     IN  PPORTTOPOLOGY           Port_ 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -149,7 +149,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(Port_);
 
@@ -184,7 +184,7 @@ NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerBasicSupportVolume
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
-/*++
+/*
 
 Routine Description:
 
@@ -198,7 +198,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -268,7 +268,7 @@ NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerCpuResources
 ( 
     IN  PPCPROPERTY_REQUEST     PropertyRequest 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -282,7 +282,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -313,7 +313,7 @@ CMiniportTopologyMSVAD::PropertyHandlerGeneric
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
-/*++
+/*
 
 Routine Description:
 
@@ -327,7 +327,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -368,7 +368,7 @@ CMiniportTopologyMSVAD::PropertyHandlerMute
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
-/*++
+/*
 
 Routine Description:
 
@@ -382,7 +382,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -429,7 +429,7 @@ CMiniportTopologyMSVAD::PropertyHandlerMuxSource
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
-/*++
+/*
 
 Routine Description:
 
@@ -443,7 +443,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -492,7 +492,7 @@ NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerVolume
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
-/*++
+/*
 
 Routine Description:
 
@@ -506,7 +506,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -552,7 +552,7 @@ CMiniportTopologyMSVAD::PropertyHandlerDevSpecific
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
-/*++
+/*
 
 Routine Description:
 
@@ -566,7 +566,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 

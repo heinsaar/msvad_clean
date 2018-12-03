@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Implementation of wavecyclic miniport.
 
---*/
+*/
 
 #pragma warning (disable : 4127)
 
@@ -38,7 +38,7 @@ CreateMiniportWaveCyclicMSVAD
 			 "Allocation failures cause a system crash"))
     IN  POOL_TYPE               PoolType 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -58,7 +58,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -72,7 +72,7 @@ CMiniportWaveCyclic::~CMiniportWaveCyclic
 ( 
  
 )
-/*++
+/*
 
 Routine Description:
 
@@ -84,7 +84,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -104,7 +104,7 @@ CMiniportWaveCyclic::DataRangeIntersection
                 PVOID                       ResultantFormat,
     _Out_       PULONG                      ResultantFormatLength 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -132,7 +132,7 @@ Arguments:
   ResultantFormatLength -   Actual length of the resultant format placed in 
                             ResultantFormat. This should be less than or equal 
                             to OutputBufferLength. 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(PinId);
     UNREFERENCED_PARAMETER(ClientDataRange);
@@ -156,7 +156,7 @@ CMiniportWaveCyclic::GetDescription
 ( 
     _Out_ PPCFILTER_DESCRIPTOR * OutFilterDescriptor 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -173,7 +173,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -191,7 +191,7 @@ CMiniportWaveCyclic::Init
     _In_  PRESOURCELIST           ResourceList_,
     _In_  PPORTWAVECYCLIC         Port_ 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -208,7 +208,7 @@ Arguments:
                  modify the ResourceList contents. 
 
   Port - Pointer to the topology port object that is linked with this miniport. 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -258,14 +258,14 @@ CMiniportWaveCyclic::NewStream
     PDMACHANNEL *           OutDmaChannel,
     PSERVICEGROUP *         OutServiceGroup 
 )
-/*++
+/*
 
 Routine Description:
 
   The NewStream function creates a new instance of a logical stream 
   associated with a specified physical channel. Callers of NewStream should 
   run at IRQL PASSIVE_LEVEL.
---*/
+*/
 {
     UNREFERENCED_PARAMETER(PoolType);
 
@@ -378,7 +378,7 @@ CMiniportWaveCyclic::NonDelegatingQueryInterface
     _In_         REFIID  Interface,
     _COM_Outptr_ PVOID * Object 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -394,7 +394,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -434,7 +434,7 @@ CMiniportWaveCyclic::PropertyHandlerGeneric
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
-/*++
+/*
 
 Routine Description:
 
@@ -448,7 +448,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -534,7 +534,7 @@ CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream
 ( 
  
 )
-/*++
+/*
 
 Routine Description:
 
@@ -546,7 +546,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -583,13 +583,13 @@ CMiniportWaveCyclicStream::Init
     IN BOOLEAN                      Capture_,
     IN PKSDATAFORMAT                DataFormat_
 )
-/*++
+/*
 
 Routine Description:
 
   Initializes the stream object. Allocate a DMA buffer, timer and DPC
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -605,7 +605,7 @@ CMiniportWaveCyclicStream::NonDelegatingQueryInterface
     _In_         REFIID  Interface,
     _COM_Outptr_ PVOID * Object 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -621,7 +621,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
     ASSERT(Object);
@@ -660,7 +660,7 @@ PropertyHandler_Wave
 ( 
     IN  PPCPROPERTY_REQUEST     PropertyRequest 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -674,7 +674,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 

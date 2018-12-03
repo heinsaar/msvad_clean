@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -14,7 +14,7 @@ Revision History:
 
     Alper Selcuk        06/21/2000      Revised.
 
---*/
+*/
 
 #ifndef _MSVAD_MULTI_H_
 #define _MSVAD_MULTI_H_

@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Implementation of wavecyclic miniport.
 
---*/
+*/
 
 #pragma warning (disable : 4127)
 
@@ -83,7 +83,7 @@ CMiniportWaveCyclicMSVAD::GetDescription
 (
     _Out_ PPCFILTER_DESCRIPTOR * OutFilterDescriptor
 )
-/*++
+/*
 
 Routine Description:
 
@@ -98,7 +98,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -119,7 +119,7 @@ CMiniportWaveCyclicMSVAD::Init
     _In_    PRESOURCELIST           ResourceList_,
     _In_    PPORTWAVECYCLIC         Port_
 )
-/*++
+/*
 
 Routine Description:
 
@@ -135,7 +135,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(ResourceList_);
 
@@ -201,7 +201,7 @@ NTSTATUS CMiniportWaveCyclicMSVAD::PropertyHandlerCpuResources
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
-/*++
+/*
 
 Routine Description:
 
@@ -215,7 +215,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -248,7 +248,7 @@ NTSTATUS CMiniportWaveCyclicMSVAD::PropertyHandlerGeneric
 (
     IN  PPCPROPERTY_REQUEST     PropertyRequest
 )
-/*++
+/*
 
 Routine Description:
 
@@ -262,7 +262,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -290,7 +290,7 @@ NTSTATUS CMiniportWaveCyclicMSVAD::ValidateFormat
 (
     IN  PKSDATAFORMAT pDataFormat
 )
-/*++
+/*
 
 Routine Description:
 
@@ -305,7 +305,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -352,7 +352,7 @@ Return Value:
 
 //-----------------------------------------------------------------------------
 NTSTATUS CMiniportWaveCyclicMSVAD::ValidatePcm(IN  PWAVEFORMATEX  pWfx)
-/*++
+/*
 
 Routine Description:
 
@@ -366,7 +366,7 @@ Return Value:
 
     NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -450,7 +450,7 @@ NTSTATUS CMiniportWaveCyclicStreamMSVAD::Init
     IN  BOOLEAN                   Capture_,
     IN  PKSDATAFORMAT             DataFormat_
 )
-/*++
+/*
 
 Routine Description:
 
@@ -463,7 +463,7 @@ Arguments:
   Capture_ - TRUE if this is a capture stream
   DataFormat_ - new dataformat
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -578,7 +578,7 @@ CMiniportWaveCyclicStreamMSVAD::GetPosition
 (
     _Out_ PULONG Position
 )
-/*++
+/*
 
 Routine Description:
 
@@ -594,7 +594,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     if (m_fDmaActive)
     {
@@ -652,7 +652,7 @@ CMiniportWaveCyclicStreamMSVAD::NormalizePhysicalPosition
 (
     _Inout_ PLONGLONG PhysicalPosition
 )
-/*++
+/*
 
 Routine Description:
 
@@ -669,7 +669,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     ASSERT(PhysicalPosition);
 
@@ -685,7 +685,7 @@ CMiniportWaveCyclicStreamMSVAD::SetFormat
 (
     _In_  PKSDATAFORMAT           Format
 )
-/*++
+/*
 
 Routine Description:
 
@@ -696,7 +696,7 @@ Arguments:
 
   Format - Pointer to a KSDATAFORMAT structure which indicates the new format
            of the stream.
---*/
+*/
 {
     PAGED_CODE();
     ASSERT(Format);
@@ -741,7 +741,7 @@ CMiniportWaveCyclicStreamMSVAD::SetNotificationFreq
     _In_  ULONG  Interval,
     _Out_ PULONG FramingSize
 )
-/*++
+/*
 
 Routine Description:
 
@@ -756,7 +756,7 @@ Arguments:
 
   FramingSize - Pointer to a ULONG value where the number of bytes equivalent
                 to Interval milliseconds is returned
---*/
+*/
 {
     PAGED_CODE();
     ASSERT(FramingSize);
@@ -771,7 +771,7 @@ Arguments:
 //=============================================================================
 STDMETHODIMP
 CMiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
-/*++
+/*
 
 Routine Description:
 
@@ -786,7 +786,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -868,7 +868,7 @@ CMiniportWaveCyclicStreamMSVAD::Silence
     PVOID Buffer,
     ULONG ByteCount
 )
-/*++
+/*
 
 Routine Description:
 
@@ -886,7 +886,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     RtlFillMemory(Buffer, ByteCount, m_fFormat16Bit ? 0 : 0x80);
 }
@@ -900,7 +900,7 @@ TimerNotify
     IN  PVOID SA1,
     IN  PVOID SA2
 )
-/*++
+/*
 
 Routine Description:
 
@@ -922,7 +922,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(Dpc);
     UNREFERENCED_PARAMETER(SA1);

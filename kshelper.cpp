@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Helper functions for msvad
 
---*/
+*/
 
 #include "kshelper.h"
 
@@ -18,7 +18,7 @@ Abstract:
 
 //-----------------------------------------------------------------------------
 PWAVEFORMATEX GetWaveFormatEx(IN  PKSDATAFORMAT pDataFormat)
-/*++
+/*
 
 Routine Description:
 
@@ -33,7 +33,7 @@ Return Value:
     waveformatex in DataFormat.
     nullptr for unknown data formats.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -66,7 +66,7 @@ PropertyHandler_BasicSupport
     IN ULONG               Flags,
     IN DWORD               PropTypeSetId
 )
-/*++
+/*
 
 Routine Description:
 
@@ -86,7 +86,7 @@ Return Value:
     
     NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -145,7 +145,7 @@ ValidatePropertyParams
     IN ULONG               cbSize,
     IN ULONG               cbInstanceSize // = 0
 )
-/*++
+/*
 Routine Description:
   Validates property parameters.
 */

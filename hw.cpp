@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -13,7 +13,7 @@ Abstract:
     for the topology.
 
 
---*/
+*/
 #include <msvad.h>
 #include "hw.h"
 
@@ -38,7 +38,7 @@ CMSVADHW::CMSVADHW()
 //=============================================================================
 BOOL
 CMSVADHW::bGetDevSpecific()
-/*++
+/*
 
 Routine Description:
 
@@ -48,7 +48,7 @@ Return Value:
 
   True or False (in this example).
 
---*/
+*/
 {
     return m_bDevSpecific;
 }
@@ -59,7 +59,7 @@ CMSVADHW::bSetDevSpecific
 (
     IN  BOOL devSpecific
 )
-/*++
+/*
 
 Routine Description:
 
@@ -68,7 +68,7 @@ Routine Description:
 Arguments:
 
   fDevSpecific - true or false for this example.
---*/
+*/
 {
     m_bDevSpecific = devSpecific;
 }
@@ -76,7 +76,7 @@ Arguments:
 //=============================================================================
 INT
 CMSVADHW::iGetDevSpecific()
-/*++
+/*
 
 Routine Description:
 
@@ -90,7 +90,7 @@ Return Value:
 
   int (in this example).
 
---*/
+*/
 {
     return m_iDevSpecific;
 }
@@ -101,7 +101,7 @@ CMSVADHW::iSetDevSpecific
 (
     IN  INT                 devSpecific
 )
-/*++
+/*
 Routine Description:
 
   Sets the HW (!) Device Specific info
@@ -109,7 +109,7 @@ Routine Description:
 Arguments:
 
   fDevSpecific - true or false for this example.
---*/
+*/
 {
     m_iDevSpecific = devSpecific;
 }
@@ -117,7 +117,7 @@ Arguments:
 //=============================================================================
 UINT
 CMSVADHW::uiGetDevSpecific()
-/*++
+/*
 
 Routine Description:
 
@@ -131,7 +131,7 @@ Return Value:
 
   UINT (in this example).
 
---*/
+*/
 {
     return m_uiDevSpecific;
 }
@@ -142,7 +142,7 @@ CMSVADHW::uiSetDevSpecific
 (
     IN  UINT                devSpecific
 )
-/*++
+/*
 
 Routine Description:
 
@@ -151,7 +151,7 @@ Routine Description:
 Arguments:
 
   uiDevSpecific - int for this example.
---*/
+*/
 {
     m_uiDevSpecific = devSpecific;
 }
@@ -163,7 +163,7 @@ CMSVADHW::GetMixerMute
 (
     IN  ULONG node
 )
-/*++
+/*
 
 Routine Description:
 
@@ -177,7 +177,7 @@ Return Value:
 
   mute setting
 
---*/
+*/
 {
     if (node < MAX_TOPOLOGY_NODES)
     {
@@ -190,13 +190,13 @@ Return Value:
 //=============================================================================
 ULONG                       
 CMSVADHW::GetMixerMux()
-/*++
+/*
 
 Routine Description:
 
   Return the current mux selection
 
---*/
+*/
 {
     return m_ulMux;
 }
@@ -208,7 +208,7 @@ CMSVADHW::GetMixerVolume
     IN  ULONG node,
     IN  LONG  channel
 )
-/*++
+/*
 
 Routine Description:
 
@@ -224,7 +224,7 @@ Return Value:
 
   LONG - volume level
 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(channel);
 
@@ -255,7 +255,7 @@ void CMSVADHW::MixerReset()
 
 //=============================================================================
 void CMSVADHW::SetMixerMute(IN  ULONG node, IN  BOOL fMute)
-/*++
+/*
 
 Routine Description:
 
@@ -266,7 +266,7 @@ Arguments:
   node - topology node id
 
   fMute - mute flag
---*/
+*/
 {
     if (node < MAX_TOPOLOGY_NODES)
     {
@@ -276,7 +276,7 @@ Arguments:
 
 //=============================================================================
 void CMSVADHW::SetMixerMux(IN  ULONG node)
-/*++
+/*
 
 Routine Description:
 
@@ -290,14 +290,14 @@ Return Value:
 
 
 
---*/
+*/
 {
     m_ulMux = node;
 }
 
 //=============================================================================
 void CMSVADHW::SetMixerVolume(IN  ULONG node, IN  LONG channel, IN  LONG volume)
-/*++
+/*
 
 Routine Description:
 
@@ -309,7 +309,7 @@ Arguments:
   channel - which channel are we setting?
   volume - volume level
 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(channel);
 

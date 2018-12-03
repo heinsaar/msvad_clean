@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Implementation of topology miniport.
 
---*/
+*/
 
 #pragma warning (disable : 4127)
 
@@ -58,7 +58,7 @@ NTSTATUS CreateMiniportTopologyMSVAD
 			 "Allocation failures cause a system crash"))
     IN  POOL_TYPE               PoolType 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -78,7 +78,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -92,7 +92,7 @@ CMiniportTopology::~CMiniportTopology
 (
 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -104,7 +104,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -122,7 +122,7 @@ NTSTATUS CMiniportTopology::DataRangeIntersection
                 PVOID                   ResultantFormat,
     _Out_       PULONG                  ResultantFormatLength 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -153,7 +153,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -171,7 +171,7 @@ CMiniportTopology::GetDescription
 ( 
     _Out_ PPCFILTER_DESCRIPTOR* OutFilterDescriptor 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -188,7 +188,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -204,7 +204,7 @@ CMiniportTopology::Init
     _In_ PRESOURCELIST            ResourceList,
     _In_ PPORTTOPOLOGY            Port_ 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -226,7 +226,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(ResourceList);
 
@@ -254,7 +254,7 @@ CMiniportTopology::NonDelegatingQueryInterface
     _In_         REFIID                  Interface,
     _COM_Outptr_ PVOID                   * Object 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -270,7 +270,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -308,7 +308,7 @@ NTSTATUS PropertyHandler_Topology
 ( 
     IN PPCPROPERTY_REQUEST      PropertyRequest 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -322,7 +322,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
     ASSERT(PropertyRequest);

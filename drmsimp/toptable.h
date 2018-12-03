@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Declaration of topology tables.
 
---*/
+*/
 
 #ifndef _MSVAD_TOPTABLE_H_
 #define _MSVAD_TOPTABLE_H_

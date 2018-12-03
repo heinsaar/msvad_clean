@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Node and Pin numbers for simple drm sample.
 
---*/
+*/
 
 #ifndef _MSVAD_DRMSIMP_H_
 #define _MSVAD_DRMSIMP_H_

@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Implementation of wavecyclic miniport.
 
---*/
+*/
 
 #pragma warning (disable : 4127)
 
@@ -79,7 +79,7 @@ CMiniportWaveCyclic::DataRangeIntersection
                 PVOID                       ResultantFormat,
     _Out_       PULONG                      ResultantFormatLength 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -107,7 +107,7 @@ Arguments:
   ResultantFormatLength -   Actual length of the resultant format placed in 
                             ResultantFormat. This should be less than or equal 
                             to OutputBufferLength. 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(PinId);
     UNREFERENCED_PARAMETER(ClientDataRange);
@@ -131,7 +131,7 @@ CMiniportWaveCyclic::GetDescription
 ( 
     _Out_ PPCFILTER_DESCRIPTOR * OutFilterDescriptor 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -148,7 +148,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -166,7 +166,7 @@ CMiniportWaveCyclic::Init
     _In_  PRESOURCELIST           ResourceList_,
     _In_  PPORTWAVECYCLIC         Port_ 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -188,7 +188,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -244,7 +244,7 @@ CMiniportWaveCyclic::NewStream
     PDMACHANNEL *              OutDmaChannel,
     PSERVICEGROUP *            OutServiceGroup 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -252,7 +252,7 @@ Routine Description:
   associated with a specified physical channel. Callers of NewStream should 
   run at IRQL PASSIVE_LEVEL.
 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(PoolType);
 
@@ -365,11 +365,11 @@ CMiniportWaveCyclic::NonDelegatingQueryInterface
     _In_         REFIID  Interface,
     _COM_Outptr_ PVOID * Object 
 )
-/*++
+/*
 Arguments:
   Interface - GUID
   Object - interface pointer to be returned.
---*/
+*/
 {
     PAGED_CODE();
 
@@ -406,7 +406,7 @@ Arguments:
 //=============================================================================
 NTSTATUS
 CMiniportWaveCyclic::UpdateDrmRights()
-/*++
+/*
 
 Routine Description:
 
@@ -421,7 +421,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 

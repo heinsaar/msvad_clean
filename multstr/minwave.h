@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Definition of wavecyclic miniport class.
 
---*/
+*/
 
 #ifndef _MSVAD_MINWAVE_H_
 #define _MSVAD_MINWAVE_H_

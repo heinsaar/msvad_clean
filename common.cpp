@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Implementation of the AdapterCommon class. 
 
---*/
+*/
 
 #pragma warning (disable : 4127)
 
@@ -84,7 +84,7 @@ NTSTATUS InstallSubdevice
     _Out_opt_   PUNKNOWN *              OutMiniportUnknown
 )
 {
-/*++
+/*
 
 Routine Description:
 
@@ -120,7 +120,7 @@ Arguments:
     OutPortInterface - pointer to store the port interface
 
     OutPortUnknown - pointer to store the unknown port interface.
---*/
+*/
     PAGED_CODE();
 
     ASSERT(DeviceObject);
@@ -252,7 +252,7 @@ void InstantiateTimerNotify
     IN  PVOID SA1,
     IN  PVOID SA2
 )
-/*++
+/*
 
 Routine Description:
 
@@ -274,7 +274,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(Dpc);
     UNREFERENCED_PARAMETER(SA1);
@@ -429,11 +429,11 @@ NTSTATUS NewAdapterCommon
 			 "Allocation failures cause a system crash"))
     IN  POOL_TYPE               PoolType 
 )
-/*++
+/*
 
 Routine Description:
   Creates a new CAdapterCommon
---*/
+*/
 {
     PAGED_CODE();
 
@@ -506,7 +506,7 @@ CAdapterCommon::~CAdapterCommon()
 #pragma code_seg()
 STDMETHODIMP_(PDEVICE_OBJECT)   
 CAdapterCommon::GetDeviceObject()
-/*++
+/*
 
 Routine Description:
 
@@ -518,7 +518,7 @@ Return Value:
 
   PDEVICE_OBJECT
 
---*/
+*/
 {
     return m_pDeviceObject;
 }
@@ -526,7 +526,7 @@ Return Value:
 //=============================================================================
 #pragma code_seg("PAGE")
 NTSTATUS CAdapterCommon::Init(IN  PDEVICE_OBJECT DeviceObject)
-/*++
+/*
 
 Routine Description:
 
@@ -540,7 +540,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -623,10 +623,10 @@ Return Value:
 //=============================================================================
 STDMETHODIMP_(void)
 CAdapterCommon::MixerReset()
-/*++
+/*
 Routine Description:
   Reset mixer registers from registry.
---*/
+*/
 {
     PAGED_CODE();
     
@@ -643,13 +643,13 @@ CAdapterCommon::NonDelegatingQueryInterface
     _In_         REFIID Interface,
     _COM_Outptr_ PVOID* Object 
 )
-/*++
+/*
 
 Routine Description:
 
   QueryInterface routine for AdapterCommon
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -708,7 +708,7 @@ CAdapterCommon::SetWaveServiceGroup
 //=============================================================================
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::InstantiateDevices()
-/*++
+/*
 
 Routine Description:
 
@@ -720,7 +720,7 @@ Return Value:
 
   NTSTATUS
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -759,7 +759,7 @@ Return Value:
 //=============================================================================
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::UninstantiateDevices()
-/*++
+/*
 
 Routine Description:
 
@@ -771,7 +771,7 @@ Return Value:
 
   NTSTATUS
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -812,7 +812,7 @@ Return Value:
 //=============================================================================
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::Plugin()
-/*++
+/*
 
 Routine Description:
 
@@ -824,7 +824,7 @@ Return Value:
 
   NTSTATUS
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -865,13 +865,13 @@ Return Value:
 //=============================================================================
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::Unplug()
-/*++
+/*
 
 Routine Description:
 
   Called in response to jacks being unplugged.
   
---*/
+*/
 {
     PAGED_CODE();
 
@@ -911,11 +911,11 @@ Routine Description:
 
 STDMETHODIMP_(NTSTATUS) 
 CAdapterCommon::ExposeMixerTopology()
-/*++
+/*
 
   Creates and registers the mixer topology.
 
---*/
+*/
 {
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
@@ -941,9 +941,9 @@ CAdapterCommon::ExposeMixerTopology()
 
 STDMETHODIMP_(NTSTATUS) 
 CAdapterCommon::ExposeWaveTopology()
-/*++
+/*
   Creates and registers wave topology.
---*/
+*/
 {
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
@@ -1013,7 +1013,7 @@ CAdapterCommon::UnexposeMixerTopology()
 
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::UnexposeWaveTopology()
-/*++
+/*
 
 Routine Description:
 
@@ -1025,7 +1025,7 @@ Return Value:
 
   NTSTATUS
 
---*/
+*/
 {
     NTSTATUS ntStatus = STATUS_SUCCESS;
     PUNREGISTERSUBDEVICE pUnregisterSubdevice = nullptr;
@@ -1068,9 +1068,9 @@ Return Value:
 
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::ConnectTopologies()
-/*++
+/*
   Connects the bridge pins between the wave and mixer topologies.
---*/
+*/
 {
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
@@ -1104,9 +1104,9 @@ CAdapterCommon::ConnectTopologies()
 
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::DisconnectTopologies()
-/*++
+/*
   Disconnects the bridge pins between the wave and mixer topologies.
---*/
+*/
 {
     NTSTATUS                        ntStatus    = STATUS_SUCCESS;
     NTSTATUS                        ntStatus2   = STATUS_SUCCESS;
@@ -1167,7 +1167,7 @@ CAdapterCommon::SetInstantiateWorkItem
 (
     _In_ __drv_aliasesMem PIO_WORKITEM WorkItem
 )
-/*++
+/*
 
 Routine Description:
 
@@ -1178,7 +1178,7 @@ Arguments:
 
   PIO_WORKITEM - [in] work item that was previously allocated.
 
---*/
+*/
 {
     // Make sure there isn't already a work item allocated.
     //
@@ -1198,14 +1198,14 @@ Arguments:
 //=============================================================================
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::FreeInstantiateWorkItem()
-/*++
+/*
 
 Routine Description:
 
   Frees a work item that was called to instantiate or 
   uninstantiate topologies.
   
---*/
+*/
 {
     PAGED_CODE();
 
@@ -1227,7 +1227,7 @@ Routine Description:
 //=============================================================================
 STDMETHODIMP_(PUNKNOWN *)
 CAdapterCommon::WavePortDriverDest()
-/*++
+/*
 
 Routine Description:
 
@@ -1239,7 +1239,7 @@ Return Value:
 
   PUNKNOWN : pointer to waveport
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -1251,7 +1251,7 @@ Return Value:
 //=============================================================================
 STDMETHODIMP_(BOOL)
 CAdapterCommon::bDevSpecificRead()
-/*++
+/*
 
 Routine Description:
 
@@ -1261,7 +1261,7 @@ Return Value:
 
     BOOL - Device Specific info
 
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1277,7 +1277,7 @@ CAdapterCommon::bDevSpecificWrite
 (
     IN  BOOL devSpecific
 )
-/*++
+/*
 
 Routine Description:
 
@@ -1291,7 +1291,7 @@ Return Value:
 
   N/A.
 
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1302,7 +1302,7 @@ Return Value:
 //=============================================================================
 STDMETHODIMP_(INT)
 CAdapterCommon::iDevSpecificRead()
-/*++
+/*
 
 Routine Description:
 
@@ -1316,7 +1316,7 @@ Return Value:
 
     INT - Device Specific info
 
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1332,10 +1332,10 @@ CAdapterCommon::iDevSpecificWrite
 (
     IN  INT devSpecific
 )
-/*++
+/*
 Routine Description:
   Store the new value in the Device Specific location.
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1346,10 +1346,10 @@ Routine Description:
 //=============================================================================
 STDMETHODIMP_(UINT)
 CAdapterCommon::uiDevSpecificRead()
-/*++
+/*
 Routine Description:
   Fetch Device Specific information.
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1365,10 +1365,10 @@ CAdapterCommon::uiDevSpecificWrite
 (
     IN  UINT devSpecific
 )
-/*++
+/*
 Routine Description:
   Store the new value in the Device Specific location.
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1382,7 +1382,7 @@ CAdapterCommon::MixerMuteRead
 (
     IN  ULONG index
 )
-/*++
+/*
 
 Routine Description:
 
@@ -1396,7 +1396,7 @@ Return Value:
 
     BOOL - mixer mute setting for this node
 
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1413,7 +1413,7 @@ CAdapterCommon::MixerMuteWrite
     IN  ULONG Index,
     IN  BOOL Value
 )
-/*++
+/*
 
 Routine Description:
 
@@ -1429,7 +1429,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1440,7 +1440,7 @@ Return Value:
 //=============================================================================
 STDMETHODIMP_(ULONG)
 CAdapterCommon::MixerMuxRead() 
-/*++
+/*
 
 Routine Description:
 
@@ -1456,7 +1456,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1472,7 +1472,7 @@ CAdapterCommon::MixerMuxWrite
 (
     IN  ULONG Index
 )
-/*++
+/*
 
 Routine Description:
 
@@ -1488,7 +1488,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1503,7 +1503,7 @@ CAdapterCommon::MixerVolumeRead
     IN  ULONG Index,
     IN  LONG Channel
 )
-/*++
+/*
 
 Routine Description:
 
@@ -1519,7 +1519,7 @@ Return Value:
 
     Byte - mixer volume settings for this line
 
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1537,7 +1537,7 @@ CAdapterCommon::MixerVolumeWrite
     IN  LONG Channel,
     IN  LONG Value
 )
-/*++
+/*
 
 Routine Description:
 
@@ -1550,7 +1550,7 @@ Arguments:
   Channel - which channel
 
   Value - new volume level
---*/
+*/
 {
     if (m_pHW)
     {
@@ -1564,10 +1564,10 @@ CAdapterCommon::PowerChangeState
 ( 
     _In_  POWER_STATE NewState 
 )
-/*++
+/*
 Arguments:
   NewState - The requested, new power state for the device. 
---*/
+*/
 {
     DPF_ENTER(("[CAdapterCommon::PowerChangeState]"));
 
@@ -1597,7 +1597,7 @@ Arguments:
 _Use_decl_annotations_
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::QueryDeviceCapabilities(PDEVICE_CAPABILITIES PowerDeviceCaps)
-/*++
+/*
 Routine Description:
 
     Called at startup to get the caps for the device.  This structure provides 
@@ -1618,7 +1618,7 @@ Arguments:
 //=============================================================================
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::QueryPowerChangeState(_In_  POWER_STATE NewStateQuery)
-/*++
+/*
 
 Routine Description:
 

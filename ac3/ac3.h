@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Node and Pin numbers for ac3 sample.
 
---*/
+*/
 
 #ifndef _MSVAD_AC3_H_
 #define _MSVAD_AC3_H_

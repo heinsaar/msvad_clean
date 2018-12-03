@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Setup and miniport installation.  No resources are used by msvad.
 
---*/
+*/
 
 #pragma warning (disable : 4127)
 
@@ -48,7 +48,7 @@ NTSTATUS PnpHandler
     _In_ DEVICE_OBJECT *_DeviceObject, 
     _In_ IRP *_Irp
 )
-/*++
+/*
 
 Routine Description:
 
@@ -59,7 +59,7 @@ Arguments:
   _Fdo - Functional Device object pointer.
   _Irp - The Irp being passed
 
---*/
+*/
 {
     NTSTATUS ntStatus = STATUS_UNSUCCESSFUL;
 
@@ -102,7 +102,7 @@ extern "C" NTSTATUS DriverEntry
     IN  PUNICODE_STRING RegistryPathName
 )
 {
-/*++
+/*
 
 Routine Description:
 
@@ -123,7 +123,7 @@ Return Value:
   STATUS_SUCCESS if successful,
   STATUS_UNSUCCESSFUL otherwise.
 
---*/
+*/
     DPF(D_TERSE, ("[DriverEntry]"));
 
     // Tell the class driver to initialize the driver.
@@ -153,7 +153,7 @@ NTSTATUS AddDevice
     IN  PDRIVER_OBJECT          DriverObject,
     IN  PDEVICE_OBJECT          PhysicalDeviceObject 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -172,7 +172,7 @@ Routine Description:
 Arguments:
   DriverObject - pointer to a driver object
   PhysicalDeviceObject -  pointer to a device object created by the underlying bus driver.
---*/
+*/
 {
     PAGED_CODE();
     DPF(D_TERSE, ("[AddDevice]"));
@@ -190,7 +190,7 @@ NTSTATUS StartDevice
     IN  PRESOURCELIST           ResourceList      
 )  
 {
-/*++
+/*
 
 Routine Description:
 
@@ -212,7 +212,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
     UNREFERENCED_PARAMETER(ResourceList);
     UNREFERENCED_PARAMETER(Irp);
 

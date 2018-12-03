@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -10,7 +10,7 @@ Abstract:
 
     Implementation of topology miniport.
 
---*/
+*/
 
 #pragma warning (disable : 4127)
 
@@ -60,7 +60,7 @@ CreateMiniportTopologyMSVAD
 			 "Allocation failures cause a system crash"))
     IN  POOL_TYPE               PoolType 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -80,7 +80,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -109,7 +109,7 @@ CMiniportTopology::DataRangeIntersection
                 PVOID                   ResultantFormat,
     _Out_       PULONG                  ResultantFormatLength 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -135,7 +135,7 @@ Arguments:
   ResultantFormatLength - Actual length of the resultant format that is placed 
                           at ResultantFormat. This should be less than or equal 
                           to OutputBufferLength. 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -157,7 +157,7 @@ CMiniportTopology::GetDescription
 ( 
     _Out_ PPCFILTER_DESCRIPTOR *  OutFilterDescriptor 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -174,7 +174,7 @@ Return Value:
 
   NT status code.
 
---*/
+*/
 {
     PAGED_CODE();
 
@@ -190,7 +190,7 @@ CMiniportTopology::Init
     _In_ PRESOURCELIST            ResourceList,
     _In_ PPORTTOPOLOGY            Port_ 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -207,7 +207,7 @@ Arguments:
                  modify the ResourceList contents. 
 
   Port - Pointer to the topology port object that is linked with this miniport. 
---*/
+*/
 {
     UNREFERENCED_PARAMETER(ResourceList);
 
@@ -235,14 +235,14 @@ CMiniportTopology::NonDelegatingQueryInterface
     _In_         REFIID                  Interface,
     _COM_Outptr_ PVOID                   * Object 
 )
-/*++
+/*
 Routine Description:
   QueryInterface for MiniportTopology
 
 Arguments:
   Interface - GUID of the interface
   Object - interface object to be returned.
---*/
+*/
 {
     PAGED_CODE();
 
@@ -281,7 +281,7 @@ PropertyHandler_Topology
 ( 
     IN PPCPROPERTY_REQUEST      PropertyRequest 
 )
-/*++
+/*
 
 Routine Description:
 
@@ -290,7 +290,7 @@ Routine Description:
 Arguments:
 
   PropertyRequest - 
---*/
+*/
 {
     PAGED_CODE();
 

@@ -1,4 +1,4 @@
-/*++
+/*
 
 Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
 
@@ -15,7 +15,7 @@ Abstract:
     disk.
     Each frame structure represents a portion of buffer. When that portion
     of frame is full, a workitem is scheduled to save it to disk.
---*/
+*/
 #pragma warning (disable : 4127)
 #pragma warning (disable : 26165)
 
