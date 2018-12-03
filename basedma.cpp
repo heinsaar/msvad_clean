@@ -20,25 +20,14 @@ Abstract:
 
 #pragma code_seg("PAGE")
 //=============================================================================
-_Use_decl_annotations_
-STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclicStreamMSVAD::AllocateBuffer
-(
-    ULONG                    BufferSize,
-    PPHYSICAL_ADDRESS        PhysicalAddressConstraint OPTIONAL
-)
 /*
-
 Routine Description:
-
   The AllocateBuffer function allocates a buffer associated with the DMA object.
   The buffer is nonPaged.
   Callers of AllocateBuffer should run at a passive IRQL.
 
 Arguments:
-
   BufferSize - Size in bytes of the buffer to be allocated.
-
   PhysicalAddressConstraint - Optional constraint to place on the physical
                               address of the buffer. If supplied, only the bits
                               that are set in the constraint address may vary
@@ -47,6 +36,9 @@ Arguments:
                               cross a 64k boundary, the physical address
                               constraint 0x000000000000ffff should be specified
 */
+_Use_decl_annotations_
+STDMETHODIMP_(NTSTATUS)
+CMiniportWaveCyclicStreamMSVAD::AllocateBuffer(ULONG BufferSize, PPHYSICAL_ADDRESS PhysicalAddressConstraint OPTIONAL)
 {
     UNREFERENCED_PARAMETER(PhysicalAddressConstraint);
     PAGED_CODE();
@@ -106,12 +98,7 @@ Routine Description:
 //=============================================================================
 _Use_decl_annotations_
 STDMETHODIMP_(void)
-CMiniportWaveCyclicStreamMSVAD::CopyFrom
-(
-    PVOID Destination,
-    PVOID Source,
-    ULONG ByteCount
-)
+CMiniportWaveCyclicStreamMSVAD::CopyFrom(PVOID Destination, PVOID Source, ULONG ByteCount)
 /*
 
 Routine Description:
@@ -131,15 +118,7 @@ Arguments:
 }
 
 //=============================================================================
-_Use_decl_annotations_
-STDMETHODIMP_(void)
-CMiniportWaveCyclicStreamMSVAD::CopyTo
-(
-    PVOID Destination,
-    PVOID Source,
-    ULONG ByteCount
 /*
-
 Routine Description:
 
   The CopyTo function copies sample data to the DMA buffer.
@@ -151,7 +130,9 @@ Arguments:
   Source - Points to the source buffer
   ByteCount - Number of bytes to be copied
 */
-)
+_Use_decl_annotations_
+STDMETHODIMP_(void)
+CMiniportWaveCyclicStreamMSVAD::CopyTo(PVOID Destination, PVOID Source, ULONG ByteCount)
 {
     UNREFERENCED_PARAMETER(Destination);
 
@@ -197,7 +178,7 @@ Routine Description:
 
 Arguments:
 
-Return Value:
+
 
   PADAPTER_OBJECT - The return value is the object's internal adapter object.
 
@@ -231,7 +212,7 @@ Routine Description:
   object is configured to support. Callers of MaximumBufferSize can run
   at any IRQL
 
-Return Value:
+
 
   PHYSICAL_ADDRESS - The return value is the size in bytes of the largest
                      buffer this DMA object is configured to support.
@@ -286,7 +267,7 @@ Routine Description:
   The SystemAddress function returns the virtual system address of the
   allocated buffer. Callers of SystemAddress can run at any IRQL.
 
-  Return Value:
+  
 
   PVOID - The return value is the virtual system address of the
           allocated buffer.
@@ -306,7 +287,7 @@ Routine Description:
   being transferred by a DMA object. Callers of TransferCount can run
   at any IRQL.
 
-Return Value:
+
 
   ULONG - The return value is the size in bytes of the buffer currently being transferred.
 */

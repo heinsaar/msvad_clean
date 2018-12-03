@@ -74,9 +74,9 @@ Arguments:
 
   PoolType - 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -100,9 +100,9 @@ Routine Description:
 
 Arguments:
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -149,9 +149,9 @@ Arguments:
                           at ResultantFormat. This should be less than or equal 
                           to OutputBufferLength. 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -188,9 +188,9 @@ Arguments:
 
   OutFilterDescriptor - Pointer to the filter description. 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -226,9 +226,9 @@ Arguments:
 
   Port - Pointer to the topology port object that is linked with this miniport. 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -273,9 +273,9 @@ Arguments:
 
   Object - interface object to be returned.
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -325,9 +325,9 @@ Arguments:
 
   PropertyRequest - 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {

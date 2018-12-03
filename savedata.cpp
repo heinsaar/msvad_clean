@@ -366,7 +366,6 @@ NTSTATUS CSaveData::Initialize()
 {
     PAGED_CODE();
 
-    NTSTATUS    ntStatus = STATUS_SUCCESS;
     WCHAR       szTemp[MAX_PATH];
     size_t      cLen;
 
@@ -376,7 +375,7 @@ NTSTATUS CSaveData::Initialize()
     //
     RtlStringCchPrintfW(szTemp, MAX_PATH, L"%s_%d.wav", DEFAULT_FILE_NAME, streamId_);
     fileName_.Length = 0;
-    ntStatus = RtlStringCchLengthW(szTemp, sizeof(szTemp)/sizeof(szTemp[0]), &cLen);
+    NTSTATUS ntStatus = RtlStringCchLengthW(szTemp, sizeof(szTemp)/sizeof(szTemp[0]), &cLen);
     if (NT_SUCCESS(ntStatus))
     {
         fileName_.MaximumLength = (USHORT)((cLen * sizeof(WCHAR)) + sizeof(WCHAR));//convert to wchar and add room for nullptr

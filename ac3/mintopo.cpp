@@ -76,9 +76,9 @@ Arguments:
 
   PoolType - 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -170,9 +170,9 @@ Arguments:
 
   OutFilterDescriptor - Pointer to the filter description. 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {

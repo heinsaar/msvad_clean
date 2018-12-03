@@ -94,9 +94,9 @@ Arguments:
 
   OutFilterDescriptor - Pointer to the filter description
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -131,9 +131,9 @@ Arguments:
 
   Port_ - pointer to the port
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -211,9 +211,9 @@ Arguments:
 
   PropertyRequest - property request structure
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -258,9 +258,9 @@ Arguments:
 
   PropertyRequest - property request structure
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -301,9 +301,9 @@ Arguments:
 
   pDataFormat - The dataformat for validation.
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -362,9 +362,9 @@ Arguments:
 
   pWfx - wave format structure.
 
-Return Value:
 
-    NT status code.
+
+    .
 
 */
 {
@@ -573,28 +573,18 @@ Arguments:
 //=============================================================================
 
 //=============================================================================
-STDMETHODIMP
-CMiniportWaveCyclicStreamMSVAD::GetPosition
-(
-    _Out_ PULONG Position
-)
 /*
-
 Routine Description:
-
   The GetPosition function gets the current position of the DMA read or write
   pointer for the stream. Callers of GetPosition should run at
   IRQL <= DISPATCH_LEVEL.
 
 Arguments:
-
   Position - Position of the DMA pointer
-
-Return Value:
-
-  NT status code.
-
 */
+
+STDMETHODIMP
+CMiniportWaveCyclicStreamMSVAD::GetPosition(_Out_ PULONG Position)
 {
     if (m_fDmaActive)
     {
@@ -665,9 +655,9 @@ Arguments:
   PhysicalPosition - On entry this variable contains the value to convert.
                      On return it contains the converted value
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -782,9 +772,9 @@ Arguments:
 
   NewState - KSSTATE indicating the new state for the stream.
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -882,9 +872,9 @@ Arguments:
 
   ByteCount - Size of buffer indicating number of bytes to be deposited.
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -918,9 +908,9 @@ Arguments:
 
   SA2 - System argument 2
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {

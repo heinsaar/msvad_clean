@@ -114,9 +114,9 @@ Arguments:
 
   OutFilterDescriptor - Pointer to the filter description. 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -145,9 +145,9 @@ Arguments:
 
   Port_ - Pointer to topology port
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -194,9 +194,9 @@ Arguments:
     
   PropertyRequest - property request structure
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -278,9 +278,9 @@ Arguments:
     
   PropertyRequest - property request structure
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -323,9 +323,9 @@ Arguments:
 
   PropertyRequest - property request structure
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -378,9 +378,9 @@ Arguments:
 
   PropertyRequest - property request structure
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -439,9 +439,9 @@ Arguments:
 
   PropertyRequest - property request structure
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -502,9 +502,9 @@ Arguments:
 
   PropertyRequest - property request structure
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -562,9 +562,9 @@ Arguments:
 
   PropertyRequest - property request structure
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {

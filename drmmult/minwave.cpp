@@ -144,9 +144,9 @@ Arguments:
 
   OutFilterDescriptor - Pointer to the filter description. 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -184,9 +184,9 @@ Arguments:
 
   Port - Pointer to the topology port object that is linked with this miniport. 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -417,9 +417,9 @@ Routine Description:
 
 Arguments:
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {

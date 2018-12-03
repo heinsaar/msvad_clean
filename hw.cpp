@@ -44,7 +44,7 @@ Routine Description:
 
   Gets the HW (!) Device Specific info
 
-Return Value:
+
 
   True or False (in this example).
 
@@ -86,7 +86,7 @@ Arguments:
 
   N/A
 
-Return Value:
+
 
   int (in this example).
 
@@ -127,7 +127,7 @@ Arguments:
 
   N/A
 
-Return Value:
+
 
   UINT (in this example).
 
@@ -173,7 +173,7 @@ Arguments:
 
   ulNode - topology node id
 
-Return Value:
+
 
   mute setting
 
@@ -220,7 +220,7 @@ Arguments:
 
   lChannel - which channel are we setting?
 
-Return Value:
+
 
   LONG - volume level
 
@@ -286,7 +286,7 @@ Arguments:
 
   ulNode - topology node id
 
-Return Value:
+
 
 
 

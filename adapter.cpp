@@ -118,7 +118,7 @@ Arguments:
   RegistryPath - pointer to a Unicode string representing the path,
                    to driver-specific key in the registry.
 
-Return Value:
+
 
   STATUS_SUCCESS if successful,
   STATUS_UNSUCCESSFUL otherwise.
@@ -208,9 +208,9 @@ Arguments:
 
   ResourceList - pointer to the resource list assigned by PnP manager
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
     UNREFERENCED_PARAMETER(ResourceList);

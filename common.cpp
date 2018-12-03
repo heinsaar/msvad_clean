@@ -270,9 +270,9 @@ Arguments:
 
   SA2 - System argument 2
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -514,7 +514,7 @@ Routine Description:
 
 Arguments:
 
-Return Value:
+
 
   PDEVICE_OBJECT
 
@@ -536,9 +536,9 @@ Arguments:
 
     DeviceObject - pointer to the device object
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -716,7 +716,7 @@ Routine Description:
 
 Arguments:
 
-Return Value:
+
 
   NTSTATUS
 
@@ -767,7 +767,7 @@ Routine Description:
 
 Arguments:
 
-Return Value:
+
 
   NTSTATUS
 
@@ -820,7 +820,7 @@ Routine Description:
 
 Arguments:
 
-Return Value:
+
 
   NTSTATUS
 
@@ -1021,7 +1021,7 @@ Routine Description:
 
 Arguments:
 
-Return Value:
+
 
   NTSTATUS
 
@@ -1235,7 +1235,7 @@ Routine Description:
 
 Arguments:
 
-Return Value:
+
 
   PUNKNOWN : pointer to waveport
 
@@ -1257,7 +1257,7 @@ Routine Description:
 
   Fetch Device Specific information.
 
-Return Value:
+
 
     BOOL - Device Specific info
 
@@ -1287,7 +1287,7 @@ Arguments:
 
   bDevSpecific - Value to store
 
-Return Value:
+
 
   N/A.
 
@@ -1312,7 +1312,7 @@ Arguments:
 
   N/A
 
-Return Value:
+
 
     INT - Device Specific info
 
@@ -1392,7 +1392,7 @@ Arguments:
 
   Index - node id
 
-Return Value:
+
 
     BOOL - mixer mute setting for this node
 
@@ -1425,9 +1425,9 @@ Arguments:
 
   Value - new mute settings
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -1452,9 +1452,9 @@ Arguments:
 
   Value - new mute settings
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -1484,9 +1484,9 @@ Arguments:
 
   Value - new mute settings
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -1515,7 +1515,7 @@ Arguments:
 
   Channel = which channel
 
-Return Value:
+
 
     Byte - mixer volume settings for this line
 

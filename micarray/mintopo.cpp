@@ -70,9 +70,9 @@ Arguments:
 
   PoolType - 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -272,9 +272,9 @@ Arguments:
 
   PropertyRequest - 
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {

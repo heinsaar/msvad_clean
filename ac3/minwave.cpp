@@ -416,9 +416,9 @@ Arguments:
 
   Object - interface pointer to be returned.
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -472,9 +472,9 @@ Arguments:
 
   pDataFormat - The dataformat for validation.
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {
@@ -589,9 +589,9 @@ Arguments:
 
   Object - interface pointer to be returned
 
-Return Value:
 
-  NT status code.
+
+  .
 
 */
 {

@@ -28,7 +28,7 @@ Arguments:
 
   pDataFormat - data format.
 
-Return Value:
+
     
     waveformatex in DataFormat.
     nullptr for unknown data formats.
@@ -82,9 +82,9 @@ Arguments:
 
   PropTypeSetId - PropTypeSetId
 
-Return Value:
+
     
-    NT status code.
+    .
 
 */
 {
