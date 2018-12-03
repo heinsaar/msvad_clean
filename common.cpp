@@ -31,8 +31,8 @@ Abstract:
 // Externals
 //-----------------------------------------------------------------------------
 
-PSAVEWORKER_PARAM CSaveData::m_pWorkItems    = nullptr;
-PDEVICE_OBJECT    CSaveData::m_pDeviceObject = nullptr;
+PSAVEWORKER_PARAM CSaveData::workItems_    = nullptr;
+PDEVICE_OBJECT    CSaveData::deviceObject_ = nullptr;
 
 typedef
 NTSTATUS (*PMSVADMINIPORTCREATE)

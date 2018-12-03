@@ -75,117 +75,65 @@ IO_WORKITEM_ROUTINE SaveFrameWorkerCallback;
 class CSaveData
 {
 protected:
-    UNICODE_STRING              m_FileName;         // DataFile name.
-    HANDLE                      m_FileHandle;       // DataFile handle.
-    PBYTE                       m_pDataBuffer;      // Data buffer.
-    ULONG                       m_ulBufferSize;     // Total buffer size.
+    UNICODE_STRING              fileName_;              // DataFile name.
+    HANDLE                      fileHandle_;            // DataFile handle.
+    PBYTE                       dataBuffer_;            // Data buffer.
+    ULONG                       bufferSize_;            // Total buffer size.
 
-    ULONG                       m_ulFramePtr;       // Current Frame.
-    ULONG                       m_ulFrameCount;     // Frame count.
-    ULONG                       m_ulFrameSize;
-    ULONG                       m_ulBufferPtr;      // Pointer in buffer.
-    PBOOL                       m_fFrameUsed;       // Frame usage table.
-    KSPIN_LOCK                  m_FrameInUseSpinLock; // Spinlock for synch.
-    KMUTEX                      m_FileSync;         // Synchronizes file access
+    ULONG                       framePtr_;              // Current Frame.
+    ULONG                       frameCount_;            // Frame count.
+    ULONG                       frameSize_;
+    ULONG                       bufferPtr_;             // Pointer in buffer.
+    PBOOL                       frameUsed_;             // Frame usage table.
+    KSPIN_LOCK                  frameInUseSpinLock_;    // Spinlock for sync
+    KMUTEX                      fileSync_;              // Synchronizes file access
 
-    OBJECT_ATTRIBUTES           m_objectAttributes; // Used for opening file.
+    OBJECT_ATTRIBUTES           objectAttributes_; // Used for opening file.
 
-    OUTPUT_FILE_HEADER          m_FileHeader;
-    PWAVEFORMATEX               m_waveFormat;
-    OUTPUT_DATA_HEADER          m_DataHeader;
-    PLARGE_INTEGER              m_pFilePtr;
+    OUTPUT_FILE_HEADER          fileHeader_;
+    PWAVEFORMATEX               waveFormat_;
+    OUTPUT_DATA_HEADER          dataHeader_;
+    PLARGE_INTEGER              filePtr_;
 
-    static PDEVICE_OBJECT       m_pDeviceObject;
-    static ULONG                m_ulStreamId;
-    static PSAVEWORKER_PARAM    m_pWorkItems;
+    static PDEVICE_OBJECT       deviceObject_;
+    static ULONG                streamId_;
+    static PSAVEWORKER_PARAM    workItems_;
 
-    BOOL                        m_fWriteDisabled;
+    BOOL                        writeDisabled_;
 
-    BOOL                        m_bInitialized;
+    BOOL                        initialized_;
 
 public:
     CSaveData();
     ~CSaveData();
 
-    static void                 DestroyWorkItems
-    (
-        void
-    );
-    void                        Disable
-    (
-        BOOL                    fDisable
-    );
-    static PSAVEWORKER_PARAM    GetNewWorkItem
-    (
-        void
-    );
-    NTSTATUS                    Initialize
-    (
-        void
-    );
-	static NTSTATUS SetDeviceObject
-	(
-	    IN  PDEVICE_OBJECT          DeviceObject
-	);
-	static PDEVICE_OBJECT GetDeviceObject
-	(
-	    void
-	);
-    void                        ReadData
-    (
-        _Inout_updates_bytes_all_(ulByteCount)  PBYTE   pBuffer,
-        _In_                                    ULONG   ulByteCount
-    );
-    NTSTATUS                    SetDataFormat
-    (
-        IN  PKSDATAFORMAT       pDataFormat
-    );
-    void                        WaitAllWorkItems
-    (
-        void
-    );
-    void                        WriteData
-    (
-        _In_reads_bytes_(ulByteCount)   PBYTE   pBuffer,
-        _In_                            ULONG   ulByteCount
-    );
+    static void                 DestroyWorkItems();
+    void                        Disable(BOOL fDisable);
+    static PSAVEWORKER_PARAM    GetNewWorkItem();
+    NTSTATUS                    Initialize();
+    static NTSTATUS             SetDeviceObject(IN  PDEVICE_OBJECT DeviceObject);
+    static PDEVICE_OBJECT       GetDeviceObject();
 
+    void                        ReadData(_Inout_updates_bytes_all_(ulByteCount)  PBYTE pBuffer,
+                                         _In_                                    ULONG ulByteCount);
+
+    NTSTATUS                    SetDataFormat(IN  PKSDATAFORMAT       pDataFormat);
+    void                        WaitAllWorkItems();
+    void                        WriteData(_In_reads_bytes_(ulByteCount)   PBYTE   pBuffer,
+                                          _In_                            ULONG   ulByteCount);
 private:
-    static NTSTATUS             InitializeWorkItems
-    (
-        IN  PDEVICE_OBJECT      DeviceObject
-    );
+    static NTSTATUS             InitializeWorkItems(IN  PDEVICE_OBJECT DeviceObject);
 
-    NTSTATUS                    FileClose
-    (
-        void
-    );
-    NTSTATUS                    FileOpen
-    (
-        IN  BOOL                fOverWrite
-    );
-    NTSTATUS                    FileWrite
-    (
-        _In_reads_bytes_(ulDataSize)    PBYTE   pData,
-        _In_                            ULONG   ulDataSize
-    );
-    NTSTATUS                    FileWriteHeader
-    (
-        void
-    );
+    NTSTATUS                    FileClose(void);
+    NTSTATUS                    FileOpen(IN  BOOL fOverWrite);
+    NTSTATUS                    FileWrite(_In_reads_bytes_(ulDataSize) PBYTE   pData,
+                                          _In_                         ULONG   ulDataSize);
 
-    void                        SaveFrame
-    (
-        IN  ULONG               ulFrameNo,
-        IN  ULONG               ulDataSize
-    );
-
-    friend VOID                 SaveFrameWorkerCallback
-    (
-     PDEVICE_OBJECT pDeviceObject,
-     IN  PVOID  Context
-    );
+    NTSTATUS                    FileWriteHeader();
+    void                        SaveFrame(IN  ULONG ulFrameNo, IN  ULONG ulDataSize);
+    friend VOID                 SaveFrameWorkerCallback(PDEVICE_OBJECT pDeviceObject, IN  PVOID  Context);
 };
+
 typedef CSaveData *PCSaveData;
 
 #endif
