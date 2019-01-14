@@ -620,7 +620,7 @@ ServiceBinary=%10%\system32\drivers\vadDyn.sys
 ; COMMON
 ;======================================================
 [Strings]
-MSFT="Microsoft"
+MSFT="Krisp"
 MfgName="Microsoft Audio DDK"
 MSVAD_Simple.DeviceDesc="Microsoft Virtual Audio Device (Simple) (WDM)"
 MSVAD_MicArray.DeviceDesc="Microsoft Virtual Audio Device (Mic Array) (WDM)"

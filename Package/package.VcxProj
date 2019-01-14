@@ -62,6 +62,7 @@
     <ProjectGuid>{EB12BA2E-D107-45F0-B41B-B7D119914BEF}</ProjectGuid>
     <SampleGuid>{0341D291-A8CB-4C4D-A488-8AD3B3446878}</SampleGuid>
     <RootNamespace>$(MSBuildProjectName)</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1 Debug|Win32'" Label="Configuration">
     <TargetVersion>WindowsV6.3</TargetVersion>
@@ -170,6 +171,9 @@
     <ProjectReference Include="..\simple\vadsimpl.vcxproj">
       <Project>{0FECE682-8A78-40B5-B989-CEC08D938728}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Inf Include="..\msvad.inf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

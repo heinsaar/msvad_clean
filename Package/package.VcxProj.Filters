@@ -18,4 +18,9 @@
       <UniqueIdentifier>{DCF2CB8C-F498-49F8-A05B-9AA9EA37CBDB}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <Inf Include="..\msvad.inf">
+      <Filter>Driver Files</Filter>
+    </Inf>
+  </ItemGroup>
 </Project>
