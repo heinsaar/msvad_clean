@@ -144,27 +144,6 @@
     <FilesToPackage Include="@(Inf->'%(CopyOutput)')" Condition="'@(Inf)'!=''" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ac3\vadac3.vcxproj">
-      <Project>{0365B8CF-2088-4669-90EB-447B445ACFF9}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\drmmult\vaddrmm.vcxproj">
-      <Project>{DFAC8DF0-EBCC-4388-A941-025E80D20F3D}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\drmsimp\vaddrms.vcxproj">
-      <Project>{43A05FA7-78FA-4037-BD43-9EF533394710}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\ds2dhw\vad2dhw.vcxproj">
-      <Project>{1336F9BB-8E87-4B52-A790-4DDB4D23FE93}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\dynamic\vaddyn.vcxproj">
-      <Project>{B40A94C9-459E-4B50-A0BE-8AB427137A6F}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\micarray\vadarray.vcxproj">
-      <Project>{71BF158B-6B49-4D13-8289-B9429BD76BE6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\multstr\vadmulti.vcxproj">
-      <Project>{C901DED7-FAC8-4711-B97D-9E9136D88DBC}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\pcmex\vadpcmex.vcxproj">
       <Project>{1C51F481-428A-4640-BD8B-25225C42C72E}</Project>
     </ProjectReference>
