@@ -144,9 +144,6 @@
     <FilesToPackage Include="@(Inf->'%(CopyOutput)')" Condition="'@(Inf)'!=''" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\pcmex\vadpcmex.vcxproj">
-      <Project>{1C51F481-428A-4640-BD8B-25225C42C72E}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\simple\vadsimpl.vcxproj">
       <Project>{0FECE682-8A78-40B5-B989-CEC08D938728}</Project>
     </ProjectReference>

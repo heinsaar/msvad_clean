@@ -7,13 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Package", "Package", "{95B4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Simple", "Simple", "{7EB760D3-9B5B-4D67-BCCE-D46CE94FE1D2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pcmex", "Pcmex", "{CDFA30B5-30F0-4B3C-91E0-DC9A748CE911}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "package", "Package\package.VcxProj", "{EB12BA2E-D107-45F0-B41B-B7D119914BEF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vadsimpl", "simple\vadsimpl.vcxproj", "{0FECE682-8A78-40B5-B989-CEC08D938728}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vadpcmex", "pcmex\vadpcmex.vcxproj", "{1C51F481-428A-4640-BD8B-25225C42C72E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -79,30 +75,6 @@ Global
 		{0FECE682-8A78-40B5-B989-CEC08D938728}.Win8.1 Release|Win32.Build.0 = Win8.1 Release|Win32
 		{0FECE682-8A78-40B5-B989-CEC08D938728}.Win8.1 Release|x64.ActiveCfg = Win8.1 Release|x64
 		{0FECE682-8A78-40B5-B989-CEC08D938728}.Win8.1 Release|x64.Build.0 = Win8.1 Release|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win7 Debug|Win32.ActiveCfg = Win7 Debug|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win7 Debug|Win32.Build.0 = Win7 Debug|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win7 Debug|x64.ActiveCfg = Win7 Debug|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win7 Debug|x64.Build.0 = Win7 Debug|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win7 Release|Win32.ActiveCfg = Win7 Release|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win7 Release|Win32.Build.0 = Win7 Release|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win7 Release|x64.ActiveCfg = Win7 Release|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win7 Release|x64.Build.0 = Win7 Release|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8 Debug|Win32.ActiveCfg = Win8 Debug|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8 Debug|Win32.Build.0 = Win8 Debug|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8 Debug|x64.ActiveCfg = Win8 Debug|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8 Debug|x64.Build.0 = Win8 Debug|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8 Release|Win32.ActiveCfg = Win8 Release|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8 Release|Win32.Build.0 = Win8 Release|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8 Release|x64.ActiveCfg = Win8 Release|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8 Release|x64.Build.0 = Win8 Release|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8.1 Debug|Win32.ActiveCfg = Win8.1 Debug|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8.1 Debug|Win32.Build.0 = Win8.1 Debug|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8.1 Debug|x64.ActiveCfg = Win8.1 Debug|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8.1 Debug|x64.Build.0 = Win8.1 Debug|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8.1 Release|Win32.ActiveCfg = Win8.1 Release|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8.1 Release|Win32.Build.0 = Win8.1 Release|Win32
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8.1 Release|x64.ActiveCfg = Win8.1 Release|x64
-		{1C51F481-428A-4640-BD8B-25225C42C72E}.Win8.1 Release|x64.Build.0 = Win8.1 Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,7 +82,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{EB12BA2E-D107-45F0-B41B-B7D119914BEF} = {95B4DFD7-D5B2-4825-A706-CD994217285A}
 		{0FECE682-8A78-40B5-B989-CEC08D938728} = {7EB760D3-9B5B-4D67-BCCE-D46CE94FE1D2}
-		{1C51F481-428A-4640-BD8B-25225C42C72E} = {CDFA30B5-30F0-4B3C-91E0-DC9A748CE911}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {04209C48-0C42-4D5B-A9C8-8585D0FC366B}
