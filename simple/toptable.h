@@ -392,9 +392,9 @@ PCCONNECTION_DESCRIPTOR MiniportConnections[] =
   {   KSNODE_TOPO_DEV_SPECIFIC_BOOL,0,                              KSNODE_TOPO_DEV_SPECIFIC_INT,  1 },
   {   KSNODE_TOPO_DEV_SPECIFIC_INT, 0,                              KSNODE_TOPO_DEV_SPECIFIC_UINT, 1 },
   {   KSNODE_TOPO_DEV_SPECIFIC_UINT,0,                              KSNODE_TOPO_LINEOUT_VOLUME,    1 },
-  {   KSNODE_TOPO_LINEOUT_VOLUME,   0,                              PCFILTER_NODE,                 KSPIN_TOPO_LINEOUT_DEST },
+  {   KSNODE_TOPO_LINEOUT_VOLUME,   0,                              PCFILTER_NODE, KSPIN_TOPO_LINEOUT_DEST },
 
-  {   KSNODE_TOPO_WAVEIN_MUX,       0,                              PCFILTER_NODE,               KSPIN_TOPO_WAVEIN_DEST }
+  {   KSNODE_TOPO_WAVEIN_MUX,       0,                              PCFILTER_NODE, KSPIN_TOPO_WAVEIN_DEST }
 };
 
 
@@ -431,4 +431,3 @@ PCFILTER_DESCRIPTOR MiniportFilterDescriptor =
 };
 
 #endif
-

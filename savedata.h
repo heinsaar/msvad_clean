@@ -88,7 +88,7 @@ protected:
     KSPIN_LOCK                  frameInUseSpinLock_;    // Spinlock for sync
     KMUTEX                      fileSync_;              // Synchronizes file access
 
-    OBJECT_ATTRIBUTES           objectAttributes_; // Used for opening file.
+    OBJECT_ATTRIBUTES           objectAttributes_;      // Used for opening file.
 
     OUTPUT_FILE_HEADER          fileHeader_;
     PWAVEFORMATEX               waveFormat_;

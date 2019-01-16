@@ -32,14 +32,12 @@ public:
     friend class CMiniportTopologySimple;
 
 private:
-    BOOL m_fCaptureAllocated;
-    BOOL m_fRenderAllocated;
+    BOOL isCaptureAllocated_;
+    BOOL isRenderAllocated_;
 };
 typedef CMiniportWaveCyclic* PCMiniportWaveCyclic;
 
 ///////////////////////////////////////////////////////////////////////////////
-// CMiniportWaveCyclicStream 
-//   
 
 class CMiniportWaveCyclicStream : public CMiniportWaveCyclicStreamMSVAD,
                                   public CUnknown
@@ -52,18 +50,16 @@ public:
     NTSTATUS Init
     ( 
         IN  PCMiniportWaveCyclic Miniport,
-        IN  ULONG               Channel,
-        IN  BOOLEAN             Capture,
-        IN  PKSDATAFORMAT       DataFormat
+        IN  ULONG                Channel,
+        IN  BOOLEAN              Capture,
+        IN  PKSDATAFORMAT        DataFormat
     );
 
-    // Friends
     friend class CMiniportWaveCyclic;
 
 protected:
-    PCMiniportWaveCyclic m_pMiniportLocal;  
+    PCMiniportWaveCyclic miniportLocal_;  
 };
 typedef CMiniportWaveCyclicStream *PCMiniportWaveCyclicStream;
 
 #endif
-

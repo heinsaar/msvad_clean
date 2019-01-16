@@ -168,8 +168,8 @@ CMiniportWaveCyclic::Init
         // Set filter descriptor.
         m_FilterDescriptor = &MiniportFilterDescriptor;
 
-        m_fCaptureAllocated = FALSE;
-        m_fRenderAllocated = FALSE;
+        isCaptureAllocated_ = FALSE;
+        isRenderAllocated_ = FALSE;
     }
 
     return ntStatus;
@@ -215,7 +215,7 @@ CMiniportWaveCyclic::NewStream
     // Check if we have enough streams.
     if (Capture)
     {
-        if (m_fCaptureAllocated)
+        if (isCaptureAllocated_)
         {
             DPF(D_TERSE, ("[Only one capture stream supported]"));
             ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -223,7 +223,7 @@ CMiniportWaveCyclic::NewStream
     }
     else
     {
-        if (m_fRenderAllocated)
+        if (isRenderAllocated_)
         {
             DPF(D_TERSE, ("[Only one render stream supported]"));
             ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -261,11 +261,11 @@ CMiniportWaveCyclic::NewStream
     {
         if (Capture)
         {
-            m_fCaptureAllocated = TRUE;
+            isCaptureAllocated_ = TRUE;
         }
         else
         {
-            m_fRenderAllocated = TRUE;
+            isRenderAllocated_ = TRUE;
         }
 
          *OutStream = PMINIPORTWAVECYCLICSTREAM(stream);
@@ -512,15 +512,15 @@ CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream()
 
     DPF_ENTER(("[CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream]"));
 
-    if (m_pMiniportLocal)
+    if (miniportLocal_)
     {
         if (m_fCapture)
         {
-            m_pMiniportLocal->m_fCaptureAllocated = FALSE;
+            miniportLocal_->isCaptureAllocated_ = FALSE;
         }
         else // render
         {
-            m_pMiniportLocal->m_fRenderAllocated = FALSE;
+            miniportLocal_->isRenderAllocated_ = FALSE;
         }
     }
 }
@@ -540,7 +540,7 @@ NTSTATUS CMiniportWaveCyclicStream::Init
 {
     PAGED_CODE();
 
-    m_pMiniportLocal = Miniport_;
+    miniportLocal_ = Miniport_;
 
     return CMiniportWaveCyclicStreamMSVAD::Init(Miniport_, Pin_, Capture_, DataFormat_);
 }

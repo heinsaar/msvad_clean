@@ -13,10 +13,10 @@ Abstract:
 //=============================================================================
 #pragma code_seg("PAGE")
 CMSVADHW::CMSVADHW()
-  : m_ulMux(0),
-    m_bDevSpecific(FALSE),
-    m_iDevSpecific(0),
-    m_uiDevSpecific(0)
+  : mux_(0),
+    bDevSpecific_(FALSE),
+    iDevSpecific_(0),
+    uiDevSpecific_(0)
 {
     PAGED_CODE();    
     MixerReset();
@@ -30,7 +30,7 @@ Routine Description:
 */
 BOOL CMSVADHW::bGetDevSpecific()
 {
-    return m_bDevSpecific;
+    return bDevSpecific_;
 }
 
 //=============================================================================
@@ -44,7 +44,7 @@ Arguments:
 */
 void CMSVADHW::bSetDevSpecific(IN  BOOL devSpecific)
 {
-    m_bDevSpecific = devSpecific;
+    bDevSpecific_ = devSpecific;
 }
 
 //=============================================================================
@@ -54,7 +54,7 @@ Routine Description:
 */
 INT CMSVADHW::iGetDevSpecific()
 {
-    return m_iDevSpecific;
+    return iDevSpecific_;
 }
 
 //=============================================================================
@@ -67,7 +67,7 @@ Arguments:
 */
 void CMSVADHW::iSetDevSpecific(IN  INT devSpecific)
 {
-    m_iDevSpecific = devSpecific;
+    iDevSpecific_ = devSpecific;
 }
 
 //=============================================================================
@@ -77,7 +77,7 @@ Routine Description:
 */
 UINT CMSVADHW::uiGetDevSpecific()
 {
-    return m_uiDevSpecific;
+    return uiDevSpecific_;
 }
 
 //=============================================================================
@@ -93,7 +93,7 @@ Arguments:
 */
 void CMSVADHW::uiSetDevSpecific(IN  UINT devSpecific)
 {
-    m_uiDevSpecific = devSpecific;
+    uiDevSpecific_ = devSpecific;
 }
 
 //=============================================================================
@@ -110,7 +110,7 @@ BOOL CMSVADHW::GetMixerMute(IN  ULONG node)
 {
     if (node < MAX_TOPOLOGY_NODES)
     {
-        return m_MuteControls[node];
+        return muteControls_[node];
     }
 
     return 0;
@@ -123,7 +123,7 @@ Routine Description:
 */
 ULONG CMSVADHW::GetMixerMux()
 {
-    return m_ulMux;
+    return mux_;
 }
 
 //=============================================================================
@@ -142,7 +142,7 @@ LONG CMSVADHW::GetMixerVolume(IN  ULONG node, IN  LONG  channel)
 
     if (node < MAX_TOPOLOGY_NODES)
     {
-        return m_VolumeControls[node];
+        return volumeControls_[node];
     }
 
     return 0;
@@ -157,11 +157,11 @@ void CMSVADHW::MixerReset()
 {
     PAGED_CODE();
     
-    RtlFillMemory(m_VolumeControls, sizeof(LONG) * MAX_TOPOLOGY_NODES, 0xFF);
-    RtlFillMemory(m_MuteControls,   sizeof(BOOL) * MAX_TOPOLOGY_NODES, TRUE);
+    RtlFillMemory(volumeControls_, sizeof(LONG) * MAX_TOPOLOGY_NODES, 0xFF);
+    RtlFillMemory(muteControls_,   sizeof(BOOL) * MAX_TOPOLOGY_NODES, TRUE);
     
     // BUGBUG change this depending on the topology
-    m_ulMux = 2;
+    mux_ = 2;
 }
 #pragma code_seg()
 
@@ -178,7 +178,7 @@ void CMSVADHW::SetMixerMute(IN  ULONG node, IN  BOOL fMute)
 {
     if (node < MAX_TOPOLOGY_NODES)
     {
-        m_MuteControls[node] = fMute;
+        muteControls_[node] = fMute;
     }
 }
 
@@ -192,7 +192,7 @@ Arguments:
 */
 void CMSVADHW::SetMixerMux(IN  ULONG node)
 {
-    m_ulMux = node;
+    mux_ = node;
 }
 
 //=============================================================================
@@ -212,6 +212,6 @@ void CMSVADHW::SetMixerVolume(IN  ULONG node, IN  LONG channel, IN  LONG volume)
 
     if (node < MAX_TOPOLOGY_NODES)
     {
-        m_VolumeControls[node] = volume;
+        volumeControls_[node] = volume;
     }
 }

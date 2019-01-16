@@ -979,24 +979,24 @@ CAdapterCommon::ConnectTopologies()
 
     // Connect the capture path.
     //
-    if ((TopologyPhysicalConnections.ulTopologyOut != (ULONG)-1) &&
-        (TopologyPhysicalConnections.ulWaveIn      != (ULONG)-1))
+    if ((TopologyPhysicalConnections.topologyOut != (ULONG)-1) &&
+        (TopologyPhysicalConnections.waveIn      != (ULONG)-1))
     {
         ntStatus = PcRegisterPhysicalConnection(m_pDeviceObject,
-                                                m_pPortTopology, TopologyPhysicalConnections.ulTopologyOut,
-                                                m_pPortWave,     TopologyPhysicalConnections.ulWaveIn);
+                                                m_pPortTopology, TopologyPhysicalConnections.topologyOut,
+                                                m_pPortWave,     TopologyPhysicalConnections.waveIn);
     }
 
     // Connect the render path.
     //
     if (NT_SUCCESS(ntStatus))
     {
-        if ((TopologyPhysicalConnections.ulWaveOut    != (ULONG)-1) &&
-            (TopologyPhysicalConnections.ulTopologyIn != (ULONG)-1))
+        if ((TopologyPhysicalConnections.waveOut    != (ULONG)-1) &&
+            (TopologyPhysicalConnections.topologyIn != (ULONG)-1))
         {
             ntStatus = PcRegisterPhysicalConnection(m_pDeviceObject,
-                                                    m_pPortWave,     TopologyPhysicalConnections.ulWaveOut,
-                                                    m_pPortTopology, TopologyPhysicalConnections.ulTopologyIn);
+                                                    m_pPortWave,     TopologyPhysicalConnections.waveOut,
+                                                    m_pPortTopology, TopologyPhysicalConnections.topologyIn);
         }
     }
 
@@ -1024,12 +1024,12 @@ CAdapterCommon::DisconnectTopologies()
         // 
         // Remove the render physical connection
         //
-        if ((TopologyPhysicalConnections.ulWaveOut    != (ULONG)-1) &&
-            (TopologyPhysicalConnections.ulTopologyIn != (ULONG)-1))
+        if ((TopologyPhysicalConnections.waveOut    != (ULONG)-1) &&
+            (TopologyPhysicalConnections.topologyIn != (ULONG)-1))
         {
             ntStatus = pUnregisterPhysicalConnection->UnregisterPhysicalConnection(m_pDeviceObject,
-                                                                                   m_pPortWave,     TopologyPhysicalConnections.ulWaveOut,
-                                                                                   m_pPortTopology, TopologyPhysicalConnections.ulTopologyIn);
+                                                                                   m_pPortWave,     TopologyPhysicalConnections.waveOut,
+                                                                                   m_pPortTopology, TopologyPhysicalConnections.topologyIn);
             if(!NT_SUCCESS(ntStatus))
             {
                 DPF(D_TERSE, ("DisconnectTopologies: UnregisterPhysicalConnection(render) failed, 0x%x", ntStatus));
@@ -1039,12 +1039,12 @@ CAdapterCommon::DisconnectTopologies()
         //
         // Remove the capture physical connection
         //
-        if ((TopologyPhysicalConnections.ulTopologyOut != (ULONG)-1) &&
-            (TopologyPhysicalConnections.ulWaveIn != (ULONG)-1))
+        if ((TopologyPhysicalConnections.topologyOut != (ULONG)-1) &&
+            (TopologyPhysicalConnections.waveIn != (ULONG)-1))
         {
             ntStatus2 = pUnregisterPhysicalConnection->UnregisterPhysicalConnection(m_pDeviceObject,
-                                                                                    m_pPortTopology, TopologyPhysicalConnections.ulTopologyOut,
-                                                                                    m_pPortWave,     TopologyPhysicalConnections.ulWaveIn);            
+                                                                                    m_pPortTopology, TopologyPhysicalConnections.topologyOut,
+                                                                                    m_pPortWave,     TopologyPhysicalConnections.waveIn);            
             if(!NT_SUCCESS(ntStatus2))
             {
                 DPF(D_TERSE, ("DisconnectTopologies: UnregisterPhysicalConnection(capture) failed, 0x%x", ntStatus2));

@@ -1,16 +1,7 @@
-/*++
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    Msvad.h
-
+/*
 Abstract:
-
     Header file for common stuff.
-
---*/
+*/
 
 #ifndef _MSVAD_H_
 #define _MSVAD_H_
@@ -79,24 +70,24 @@ DEFINE_GUIDSTRUCT("5B722BF8-F0AB-47ee-B9C8-8D61D31375A1", PID_MSVAD);
 // Connection table for registering topology/wave bridge connection
 typedef struct _PHYSICALCONNECTIONTABLE
 {
-    ULONG       ulTopologyIn;
-    ULONG       ulTopologyOut;
-    ULONG       ulWaveIn;
-    ULONG       ulWaveOut;
+    ULONG       topologyIn;
+    ULONG       topologyOut;
+    ULONG       waveIn;
+    ULONG       waveOut;
 } PHYSICALCONNECTIONTABLE, *PPHYSICALCONNECTIONTABLE;
 
 // This is the structure of the portclass FDO device extension Nt has created
 // for us.  We keep the adapter common object here.
 struct IAdapterCommon;
-typedef struct _PortClassDeviceContext              // 32       64      Byte offsets for 32 and 64 bit architectures
+typedef struct _PortClassDeviceContext               // 32       64      Byte offsets for 32 and 64 bit architectures
 {
-    ULONG_PTR m_pulReserved1[2];                    // 0-7      0-15    First two pointers are reserved.
-    PDEVICE_OBJECT m_DoNotUsePhysicalDeviceObject;  // 8-11     16-23   Reserved pointer to our Physical Device Object (PDO).
-    PVOID m_pvReserved2;                            // 12-15    24-31   Reserved pointer to our Start Device function.
-    PVOID m_pvReserved3;                            // 16-19    32-39   "Out Memory" according to DDK.  
-    IAdapterCommon* m_pCommon;                      // 20-23    40-47   Pointer to our adapter common object.
-    PVOID m_pvUnused1;                              // 24-27    48-55   Unused space.
-    PVOID m_pvUnused2;                              // 28-31    56-63   Unused space.
+    ULONG_PTR       reserved1_[2];                   //  0- 7     0-15   First two pointers are reserved.
+    PDEVICE_OBJECT  doNotUsePhysicalDeviceObject_;   //  8-11    16-23   Reserved pointer to our Physical Device Object (PDO).
+    PVOID           reserved2_;                      // 12-15    24-31   Reserved pointer to our Start Device function.
+    PVOID           reserved3_;                      // 16-19    32-39   "Out Memory" according to DDK.  
+    IAdapterCommon* common_;                         // 20-23    40-47   Pointer to our adapter common object.
+    PVOID           unused1_;                        // 24-27    48-55   Unused space.
+    PVOID           unused2_;                        // 28-31    56-63   Unused space.
 
     // Anything after above line should not be used.
     // This actually goes on for (64*sizeof(ULONG_PTR)) but it is all opaque.
@@ -109,24 +100,11 @@ typedef struct _PortClassDeviceContext              // 32       64      Byte off
 // Physical connection table. Defined in mintopo.cpp for each sample
 extern PHYSICALCONNECTIONTABLE TopologyPhysicalConnections;
 
-// Generic topology handler
-extern NTSTATUS PropertyHandler_Topology
-( 
-    IN  PPCPROPERTY_REQUEST     PropertyRequest 
-);
-
-// Generic wave port handler
-extern NTSTATUS PropertyHandler_Wave
-(
-    IN  PPCPROPERTY_REQUEST     PropertyRequest
-);
+extern NTSTATUS PropertyHandler_Topology(IN PPCPROPERTY_REQUEST PropertyRequest ); // Generic topology  handler
+extern NTSTATUS PropertyHandler_Wave(    IN PPCPROPERTY_REQUEST PropertyRequest);  // Generic wave port handler
 
 // Default WaveFilter automation table.
 // Handles the GeneralComponentId request.
-extern NTSTATUS PropertyHandler_WaveFilter
-(
-    IN PPCPROPERTY_REQUEST PropertyRequest
-);
+extern NTSTATUS PropertyHandler_WaveFilter(IN PPCPROPERTY_REQUEST PropertyRequest);
 
 #endif
-

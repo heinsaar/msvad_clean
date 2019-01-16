@@ -63,11 +63,11 @@ NTSTATUS PnpHandler(_In_ DEVICE_OBJECT *_DeviceObject, _In_ IRP *_Irp)
     {
         PortClassDeviceContext* ext = static_cast<PortClassDeviceContext*>(_DeviceObject->DeviceExtension);
 
-        if (ext->m_pCommon != nullptr)
+        if (ext->common_ != nullptr)
         {
-            ext->m_pCommon->UninstantiateDevices();
-            ext->m_pCommon->Release();
-            ext->m_pCommon = nullptr;
+            ext->common_->UninstantiateDevices();
+            ext->common_->Release();
+            ext->common_ = nullptr;
         }
     }
     
@@ -213,7 +213,7 @@ NTSTATUS StartDevice
     //
     if (pAdapterCommon)
     {
-        pExtension->m_pCommon = pAdapterCommon;
+        pExtension->common_ = pAdapterCommon;
     }
 
     if (pUnknownCommon)

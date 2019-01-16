@@ -7,17 +7,10 @@
 
 #include "basetopo.h"
 
-//=============================================================================
-// Classes
-//=============================================================================
-
-///////////////////////////////////////////////////////////////////////////////
-// CMiniportTopology 
-//   
-
 class CMiniportTopology : public CMiniportTopologyMSVAD,
                           public IMiniportTopology,
-                          public CUnknown {
+                          public CUnknown
+{
 public:
     DECLARE_STD_UNKNOWN();
     DEFINE_STD_CONSTRUCTOR(CMiniportTopology);
@@ -32,4 +25,3 @@ typedef CMiniportTopology *PCMiniportTopology;
 extern NTSTATUS PropertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest);
 
 #endif
-

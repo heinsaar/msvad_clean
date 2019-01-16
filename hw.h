@@ -44,12 +44,12 @@ public:
     void  SetMixerVolume(IN  ULONG ulNode, IN  LONG lChannel, IN  LONG lVolume);
 
 protected:
-    BOOL  m_MuteControls[MAX_TOPOLOGY_NODES];
-    LONG  m_VolumeControls[MAX_TOPOLOGY_NODES];
-    ULONG m_ulMux;            // Mux selection
-    BOOL  m_bDevSpecific;
-    INT   m_iDevSpecific;
-    UINT  m_uiDevSpecific;
+    BOOL  muteControls_[MAX_TOPOLOGY_NODES];
+    LONG  volumeControls_[MAX_TOPOLOGY_NODES];
+    ULONG mux_;            // Mux selection
+    BOOL  bDevSpecific_;
+    INT   iDevSpecific_;
+    UINT  uiDevSpecific_;
 };
 typedef CMSVADHW                *PCMSVADHW;
 
