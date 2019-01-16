@@ -11,7 +11,7 @@ Abstract:
 // Defines
 //=============================================================================
 // BUGBUG we should dynamically allocate this...
-#define MAX_TOPOLOGY_NODES      20
+#define MAX_TOPOLOGY_NODES  20
 
 //=============================================================================
 // Classes
@@ -21,17 +21,17 @@ Abstract:
 // This class represents virtual MSVAD HW.
 // An array representing volume registers and mute registers.
 
-class CMSVADHW
+class MSVADHW
 {
 public:
-    CMSVADHW();
+    MSVADHW();
     
     void MixerReset();
     BOOL bGetDevSpecific();
     void bSetDevSpecific(IN  BOOL  bDevSpecific);
 
     INT  iGetDevSpecific();
-    void iSetDevSpecific(  IN  INT iDevSpecific    );
+    void iSetDevSpecific(  IN  INT iDevSpecific);
 
     UINT  uiGetDevSpecific();
     void  uiSetDevSpecific(IN  UINT  uiDevSpecific);
@@ -51,6 +51,6 @@ protected:
     INT   iDevSpecific_;
     UINT  uiDevSpecific_;
 };
-typedef CMSVADHW                *PCMSVADHW;
+typedef MSVADHW *PCMSVADHW;
 
 #endif

@@ -54,11 +54,11 @@ NTSTATUS CreateMiniportTopologyMSVAD
 
     ASSERT(Unknown);
 
-    STD_CREATE_BODY(CMiniportTopology, Unknown, UnknownOuter, PoolType);
+    STD_CREATE_BODY(MiniportTopology, Unknown, UnknownOuter, PoolType);
 }
 
 //=============================================================================
-CMiniportTopology::~CMiniportTopology()
+MiniportTopology::~MiniportTopology()
 {
     PAGED_CODE();
 
@@ -88,7 +88,7 @@ Arguments:
                           at ResultantFormat. This should be less than or equal 
                           to OutputBufferLength. 
 */
-NTSTATUS CMiniportTopology::DataRangeIntersection
+NTSTATUS MiniportTopology::DataRangeIntersection
 (
     _In_        ULONG        PinId,
     _In_        PKSDATARANGE ClientDataRange,
@@ -101,7 +101,7 @@ NTSTATUS CMiniportTopology::DataRangeIntersection
 {
     PAGED_CODE();
 
-    return CMiniportTopologyMSVAD::DataRangeIntersection(PinId,
+    return MiniportTopologyMSVAD::DataRangeIntersection(PinId,
                                                          ClientDataRange,
                                                          MyDataRange,
                                                          OutputBufferLength,
@@ -121,11 +121,11 @@ Routine Description:
 Arguments:
   OutFilterDescriptor - Pointer to the filter description. 
 */
-STDMETHODIMP CMiniportTopology::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* outFilterDescriptor)
+STDMETHODIMP MiniportTopology::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* outFilterDescriptor)
 {
     PAGED_CODE();
 
-    return CMiniportTopologyMSVAD::GetDescription(outFilterDescriptor);
+    return MiniportTopologyMSVAD::GetDescription(outFilterDescriptor);
 }
 
 //=============================================================================
@@ -147,7 +147,7 @@ Arguments:
   Port - Pointer to the topology port object that is linked with this miniport. 
 */
 STDMETHODIMP
-CMiniportTopology::Init
+MiniportTopology::Init
 (
     _In_ PUNKNOWN                 UnknownAdapter,
     _In_ PRESOURCELIST            ResourceList,
@@ -163,12 +163,12 @@ CMiniportTopology::Init
 
     DPF_ENTER(("[CMiniportTopology::Init]"));
 
-    NTSTATUS ntStatus = CMiniportTopologyMSVAD::Init(UnknownAdapter, Port_);
+    NTSTATUS ntStatus = MiniportTopologyMSVAD::Init(UnknownAdapter, Port_);
 
     if (NT_SUCCESS(ntStatus))
     {
-        m_FilterDescriptor = &MiniportFilterDescriptor;
-        m_AdapterCommon->MixerMuxWrite(KSPIN_TOPO_MIC_SOURCE);
+        filterDescriptor_ = &MiniportFilterDescriptor;
+        adapterCommon_->MixerMuxWrite(KSPIN_TOPO_MIC_SOURCE);
     }
 
     return ntStatus;
@@ -186,7 +186,7 @@ Arguments:
   Object - interface object to be returned.
 */
 STDMETHODIMP
-CMiniportTopology::NonDelegatingQueryInterface
+MiniportTopology::NonDelegatingQueryInterface
 (
     _In_         REFIID Interface,
     _COM_Outptr_ PVOID* Object
@@ -227,7 +227,7 @@ CMiniportTopology::NonDelegatingQueryInterface
 Routine Description:
   Handles ( KSPROPSETID_Jack, KSPROPERTY_JACK_DESCRIPTION )
 */
-NTSTATUS CMiniportTopology::PropertyHandlerJackDescription(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportTopology::PropertyHandlerJackDescription(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
     ASSERT(PropertyRequest);

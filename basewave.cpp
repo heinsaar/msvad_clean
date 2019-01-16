@@ -11,7 +11,7 @@ Abstract:
 
 //=============================================================================
 #pragma code_seg("PAGE")
-CMiniportWaveCyclicMSVAD::CMiniportWaveCyclicMSVAD()
+MiniportWaveCyclicMSVAD::MiniportWaveCyclicMSVAD()
 {
     PAGED_CODE();
 
@@ -42,7 +42,7 @@ CMiniportWaveCyclicMSVAD::CMiniportWaveCyclicMSVAD()
 }
 
 //=============================================================================
-CMiniportWaveCyclicMSVAD::~CMiniportWaveCyclicMSVAD()
+MiniportWaveCyclicMSVAD::~MiniportWaveCyclicMSVAD()
 {
     PAGED_CODE();
 
@@ -74,7 +74,7 @@ Arguments:
   OutFilterDescriptor - Pointer to the filter description
 */
 STDMETHODIMP
-CMiniportWaveCyclicMSVAD::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* OutFilterDescriptor)
+MiniportWaveCyclicMSVAD::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* OutFilterDescriptor)
 {
     PAGED_CODE();
     ASSERT(OutFilterDescriptor);
@@ -87,7 +87,7 @@ CMiniportWaveCyclicMSVAD::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* OutFilterDe
 
 //=============================================================================
 STDMETHODIMP
-CMiniportWaveCyclicMSVAD::Init
+MiniportWaveCyclicMSVAD::Init
 (
     _In_    PUNKNOWN                UnknownAdapter_,
     _In_    PRESOURCELIST           ResourceList_,
@@ -170,7 +170,7 @@ Routine Description:
 Arguments:
   PropertyRequest - property request structure
 */
-NTSTATUS CMiniportWaveCyclicMSVAD::PropertyHandlerCpuResources(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportWaveCyclicMSVAD::PropertyHandlerCpuResources(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
     ASSERT(PropertyRequest);
@@ -208,7 +208,7 @@ Arguments:
   PropertyRequest - property request structure
 
 */
-NTSTATUS CMiniportWaveCyclicMSVAD::PropertyHandlerGeneric(IN  PPCPROPERTY_REQUEST     PropertyRequest)
+NTSTATUS MiniportWaveCyclicMSVAD::PropertyHandlerGeneric(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
 
@@ -244,7 +244,7 @@ Arguments:
   pDataFormat - The dataformat for validation.
 
 */
-NTSTATUS CMiniportWaveCyclicMSVAD::ValidateFormat(IN  PKSDATAFORMAT pDataFormat)
+NTSTATUS MiniportWaveCyclicMSVAD::ValidateFormat(IN  PKSDATAFORMAT pDataFormat)
 {
     PAGED_CODE();
 
@@ -299,7 +299,7 @@ Arguments:
 
   pWfx - wave format structure.
 */
-NTSTATUS CMiniportWaveCyclicMSVAD::ValidatePcm(IN  PWAVEFORMATEX  pWfx)
+NTSTATUS MiniportWaveCyclicMSVAD::ValidatePcm(IN  PWAVEFORMATEX  pWfx)
 {
     PAGED_CODE();
 
@@ -326,7 +326,7 @@ NTSTATUS CMiniportWaveCyclicMSVAD::ValidatePcm(IN  PWAVEFORMATEX  pWfx)
 // CMiniportWaveCyclicStreamMSVAD
 //=============================================================================
 
-CMiniportWaveCyclicStreamMSVAD::CMiniportWaveCyclicStreamMSVAD()
+MiniportWaveCyclicStreamMSVAD::MiniportWaveCyclicStreamMSVAD()
 {
     PAGED_CODE();
 
@@ -351,7 +351,7 @@ CMiniportWaveCyclicStreamMSVAD::CMiniportWaveCyclicStreamMSVAD()
 }
 
 //=============================================================================
-CMiniportWaveCyclicStreamMSVAD::~CMiniportWaveCyclicStreamMSVAD()
+MiniportWaveCyclicStreamMSVAD::~MiniportWaveCyclicStreamMSVAD()
 {
     PAGED_CODE();
     DPF_ENTER(("[CMiniportWaveCyclicStreamMS::~CMiniportWaveCyclicStreamMS]"));
@@ -390,7 +390,7 @@ Arguments:
 */
 #pragma warning (push)
 #pragma warning (disable : 26165)
-NTSTATUS CMiniportWaveCyclicStreamMSVAD::Init
+NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
 (
     IN  PCMiniportWaveCyclicMSVAD Miniport_,
     IN  ULONG                     Pin_,
@@ -517,7 +517,7 @@ Arguments:
 */
 
 STDMETHODIMP
-CMiniportWaveCyclicStreamMSVAD::GetPosition(_Out_ PULONG Position)
+MiniportWaveCyclicStreamMSVAD::GetPosition(_Out_ PULONG Position)
 {
     if (m_fDmaActive)
     {
@@ -583,7 +583,7 @@ Arguments:
                      On return it contains the converted value
 */
 STDMETHODIMP
-CMiniportWaveCyclicStreamMSVAD::NormalizePhysicalPosition(_Inout_ PLONGLONG PhysicalPosition)
+MiniportWaveCyclicStreamMSVAD::NormalizePhysicalPosition(_Inout_ PLONGLONG PhysicalPosition)
 {
     ASSERT(PhysicalPosition);
 
@@ -607,7 +607,7 @@ Arguments:
            of the stream.
 */
 STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclicStreamMSVAD::SetFormat(_In_  PKSDATAFORMAT Format)
+MiniportWaveCyclicStreamMSVAD::SetFormat(_In_  PKSDATAFORMAT Format)
 {
     PAGED_CODE();
     ASSERT(Format);
@@ -662,7 +662,7 @@ Arguments:
                 to Interval milliseconds is returned
 */
 STDMETHODIMP_(ULONG)
-CMiniportWaveCyclicStreamMSVAD::SetNotificationFreq(_In_  ULONG  Interval, _Out_ PULONG FramingSize)
+MiniportWaveCyclicStreamMSVAD::SetNotificationFreq(_In_  ULONG  Interval, _Out_ PULONG FramingSize)
 {
     PAGED_CODE();
     ASSERT(FramingSize);
@@ -686,7 +686,7 @@ Arguments:
   NewState - KSSTATE indicating the new state for the stream.
 */
 STDMETHODIMP
-CMiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
+MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
 {
     PAGED_CODE();
 
@@ -776,7 +776,7 @@ Arguments:
 */
 _Use_decl_annotations_
 STDMETHODIMP_(void)
-CMiniportWaveCyclicStreamMSVAD::Silence(PVOID Buffer, ULONG ByteCount)
+MiniportWaveCyclicStreamMSVAD::Silence(PVOID Buffer, ULONG ByteCount)
 {
     RtlFillMemory(Buffer, ByteCount, m_fFormat16Bit ? 0 : 0x80);
 }

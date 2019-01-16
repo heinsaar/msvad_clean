@@ -7,20 +7,20 @@
 
 #include "basetopo.h"
 
-class CMiniportTopology : public CMiniportTopologyMSVAD,
-                          public IMiniportTopology,
-                          public CUnknown
+class MiniportTopology : public MiniportTopologyMSVAD,
+                         public IMiniportTopology,
+                         public CUnknown
 {
 public:
     DECLARE_STD_UNKNOWN();
-    DEFINE_STD_CONSTRUCTOR(CMiniportTopology);
-    ~CMiniportTopology();
+    DEFINE_STD_CONSTRUCTOR(MiniportTopology);
+    ~MiniportTopology();
 
     IMP_IMiniportTopology;
 
     NTSTATUS PropertyHandlerJackDescription(IN PPCPROPERTY_REQUEST  PropertyRequest);
 };
-typedef CMiniportTopology *PCMiniportTopology;
+typedef MiniportTopology *PCMiniportTopology;
 
 extern NTSTATUS PropertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest);
 

@@ -11,25 +11,25 @@ Abstract:
 
 //=============================================================================
 #pragma code_seg("PAGE")
-CMiniportTopologyMSVAD::CMiniportTopologyMSVAD()
+MiniportTopologyMSVAD::MiniportTopologyMSVAD()
 {
     PAGED_CODE();
 
     DPF_ENTER(("[%s]", __FUNCTION__));
 
-    m_AdapterCommon = nullptr;
-    m_FilterDescriptor = nullptr;
+    adapterCommon_ = nullptr;
+    filterDescriptor_ = nullptr;
 }
 
-CMiniportTopologyMSVAD::~CMiniportTopologyMSVAD()
+MiniportTopologyMSVAD::~MiniportTopologyMSVAD()
 {
     PAGED_CODE();
 
     DPF_ENTER(("[%s]",__FUNCTION__));
 
-    if (m_AdapterCommon)
+    if (adapterCommon_)
     {
-        m_AdapterCommon->Release();
+        adapterCommon_->Release();
     }
 }
 
@@ -57,7 +57,7 @@ Arguments:
                           at ResultantFormat. This should be less than or equal 
                           to OutputBufferLength
 */
-NTSTATUS CMiniportTopologyMSVAD::DataRangeIntersection
+NTSTATUS MiniportTopologyMSVAD::DataRangeIntersection
 (
     _In_        ULONG        PinId,
     _In_        PKSDATARANGE ClientDataRange,
@@ -92,12 +92,12 @@ Routine Description:
 Arguments:
   OutFilterDescriptor - Pointer to the filter description. 
 */
-NTSTATUS CMiniportTopologyMSVAD::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* OutFilterDescriptor)
+NTSTATUS MiniportTopologyMSVAD::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* OutFilterDescriptor)
 {
     PAGED_CODE();
     ASSERT(OutFilterDescriptor);
     DPF_ENTER(("[%s]",__FUNCTION__));
-    *OutFilterDescriptor = m_FilterDescriptor;
+    *OutFilterDescriptor = filterDescriptor_;
     return STATUS_SUCCESS;
 }
 
@@ -109,7 +109,7 @@ Routine Description:
 Arguments:
   Port_ - Pointer to topology port
 */
-NTSTATUS CMiniportTopologyMSVAD::Init(IN PUNKNOWN UnknownAdapter_, IN PPORTTOPOLOGY Port_)
+NTSTATUS MiniportTopologyMSVAD::Init(IN PUNKNOWN UnknownAdapter_, IN PPORTTOPOLOGY Port_)
 {
     UNREFERENCED_PARAMETER(Port_);
 
@@ -120,19 +120,19 @@ NTSTATUS CMiniportTopologyMSVAD::Init(IN PUNKNOWN UnknownAdapter_, IN PPORTTOPOL
 
     DPF_ENTER(("[CMiniportTopologyMSVAD::Init]"));
 
-    NTSTATUS ntStatus = UnknownAdapter_->QueryInterface(IID_IAdapterCommon, (PVOID *) &m_AdapterCommon);
+    NTSTATUS ntStatus = UnknownAdapter_->QueryInterface(IID_IAdapterCommon, (PVOID *) &adapterCommon_);
     if (NT_SUCCESS(ntStatus))
     {
-        m_AdapterCommon->MixerReset();
+        adapterCommon_->MixerReset();
     }
 
     if (!NT_SUCCESS(ntStatus))
     {
         // clean up AdapterCommon
-        if (m_AdapterCommon)
+        if (adapterCommon_)
         {
-            m_AdapterCommon->Release();
-            m_AdapterCommon = nullptr;
+            adapterCommon_->Release();
+            adapterCommon_ = nullptr;
         }
     }
 
@@ -151,7 +151,7 @@ Arguments:
   PropertyRequest - property request structure
 
 */
-NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerBasicSupportVolume(IN  PPCPROPERTY_REQUEST     PropertyRequest)
+NTSTATUS MiniportTopologyMSVAD::PropertyHandlerBasicSupportVolume(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
 
@@ -227,7 +227,7 @@ Arguments:
     
   PropertyRequest - property request structure
 */
-NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerCpuResources(IN  PPCPROPERTY_REQUEST     PropertyRequest)
+NTSTATUS MiniportTopologyMSVAD::PropertyHandlerCpuResources(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
 
@@ -264,7 +264,7 @@ Arguments:
   PropertyRequest - property request structure
 */
 NTSTATUS
-CMiniportTopologyMSVAD::PropertyHandlerGeneric(IN  PPCPROPERTY_REQUEST     PropertyRequest)
+MiniportTopologyMSVAD::PropertyHandlerGeneric(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
 
@@ -310,7 +310,7 @@ Arguments:
   PropertyRequest - property request structure
 */
 NTSTATUS
-CMiniportTopologyMSVAD::PropertyHandlerMute(IN  PPCPROPERTY_REQUEST     PropertyRequest)
+MiniportTopologyMSVAD::PropertyHandlerMute(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
     DPF_ENTER(("[%s]",__FUNCTION__));
@@ -333,12 +333,12 @@ CMiniportTopologyMSVAD::PropertyHandlerMute(IN  PPCPROPERTY_REQUEST     Property
 
             if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
             {
-                *pfMute = m_AdapterCommon->MixerMuteRead(PropertyRequest->Node);
+                *pfMute = adapterCommon_->MixerMuteRead(PropertyRequest->Node);
                 PropertyRequest->ValueSize = sizeof(BOOL);
             }
             else if (PropertyRequest->Verb & KSPROPERTY_TYPE_SET)
             {
-                m_AdapterCommon->MixerMuteWrite(PropertyRequest->Node, *pfMute);
+                adapterCommon_->MixerMuteWrite(PropertyRequest->Node, *pfMute);
             }
         }
         else
@@ -361,7 +361,7 @@ Arguments:
   PropertyRequest - property request structure
 */
 NTSTATUS
-CMiniportTopologyMSVAD::PropertyHandlerMuxSource(IN  PPCPROPERTY_REQUEST PropertyRequest)
+MiniportTopologyMSVAD::PropertyHandlerMuxSource(IN  PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
     DPF_ENTER(("[%s]",__FUNCTION__));
@@ -380,13 +380,13 @@ CMiniportTopologyMSVAD::PropertyHandlerMuxSource(IN  PPCPROPERTY_REQUEST Propert
             
             if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
             {
-                *pulMuxValue = m_AdapterCommon->MixerMuxRead();
+                *pulMuxValue = adapterCommon_->MixerMuxRead();
                 PropertyRequest->ValueSize = sizeof(ULONG);
                 ntStatus = STATUS_SUCCESS;
             }
             else if (PropertyRequest->Verb & KSPROPERTY_TYPE_SET)
             {
-                m_AdapterCommon->MixerMuxWrite(*pulMuxValue);
+                adapterCommon_->MixerMuxWrite(*pulMuxValue);
                 ntStatus = STATUS_SUCCESS;
             }
             else if (PropertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
@@ -411,7 +411,7 @@ Routine Description:
 Arguments:
   PropertyRequest - property request structure
 */
-NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerVolume(IN  PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportTopologyMSVAD::PropertyHandlerVolume(IN  PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
 
@@ -433,12 +433,12 @@ NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerVolume(IN  PPCPROPERTY_REQUEST P
 
             if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
             {
-                *volume = m_AdapterCommon->MixerVolumeRead(PropertyRequest->Node, channel);
+                *volume = adapterCommon_->MixerVolumeRead(PropertyRequest->Node, channel);
                 PropertyRequest->ValueSize = sizeof(ULONG);                
             }
             else if (PropertyRequest->Verb & KSPROPERTY_TYPE_SET)
             {
-                m_AdapterCommon->MixerVolumeWrite(PropertyRequest->Node, channel, *volume);
+                adapterCommon_->MixerVolumeWrite(PropertyRequest->Node, channel, *volume);
             }
         }
         else
@@ -460,7 +460,7 @@ Arguments:
   PropertyRequest - property request structure
 */
 NTSTATUS
-CMiniportTopologyMSVAD::PropertyHandlerDevSpecific(IN  PPCPROPERTY_REQUEST     PropertyRequest)
+MiniportTopologyMSVAD::PropertyHandlerDevSpecific(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
     DPF_ENTER(("[%s]",__FUNCTION__));
@@ -583,12 +583,12 @@ CMiniportTopologyMSVAD::PropertyHandlerDevSpecific(IN  PPCPROPERTY_REQUEST     P
 
                     if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
                     {
-                        *pbDevSpecific = m_AdapterCommon->bDevSpecificRead();
+                        *pbDevSpecific = adapterCommon_->bDevSpecificRead();
                         PropertyRequest->ValueSize = sizeof(BOOL);
                     }
                     else if (PropertyRequest->Verb & KSPROPERTY_TYPE_SET)
                     {
-                        m_AdapterCommon->bDevSpecificWrite(*pbDevSpecific);
+                        adapterCommon_->bDevSpecificWrite(*pbDevSpecific);
                     }
                     else
                     {
@@ -607,12 +607,12 @@ CMiniportTopologyMSVAD::PropertyHandlerDevSpecific(IN  PPCPROPERTY_REQUEST     P
 
                     if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
                     {
-                        *devSpecific = m_AdapterCommon->iDevSpecificRead();
+                        *devSpecific = adapterCommon_->iDevSpecificRead();
                         PropertyRequest->ValueSize = sizeof(int);
                     }
                     else if (PropertyRequest->Verb & KSPROPERTY_TYPE_SET)
                     {
-                        m_AdapterCommon->iDevSpecificWrite(*devSpecific);
+                        adapterCommon_->iDevSpecificWrite(*devSpecific);
                     }
                     else
                     {
@@ -631,12 +631,12 @@ CMiniportTopologyMSVAD::PropertyHandlerDevSpecific(IN  PPCPROPERTY_REQUEST     P
 
                     if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
                     {
-                        *devSpecific = m_AdapterCommon->uiDevSpecificRead();
+                        *devSpecific = adapterCommon_->uiDevSpecificRead();
                         PropertyRequest->ValueSize = sizeof(UINT);
                     }
                     else if (PropertyRequest->Verb & KSPROPERTY_TYPE_SET)
                     {
-                        m_AdapterCommon->uiDevSpecificWrite(*devSpecific);
+                        adapterCommon_->uiDevSpecificWrite(*devSpecific);
                     }
                     else
                     {

@@ -38,7 +38,7 @@ Arguments:
 */
 _Use_decl_annotations_
 STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclicStreamMSVAD::AllocateBuffer(ULONG BufferSize, PPHYSICAL_ADDRESS PhysicalAddressConstraint OPTIONAL)
+MiniportWaveCyclicStreamMSVAD::AllocateBuffer(ULONG BufferSize, PPHYSICAL_ADDRESS PhysicalAddressConstraint OPTIONAL)
 {
     UNREFERENCED_PARAMETER(PhysicalAddressConstraint);
     PAGED_CODE();
@@ -70,7 +70,7 @@ Routine Description:
   Callers of AllocatedBufferSize can run at any IRQL.
 */
 STDMETHODIMP_(ULONG)
-CMiniportWaveCyclicStreamMSVAD::AllocatedBufferSize()
+MiniportWaveCyclicStreamMSVAD::AllocatedBufferSize()
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::AllocatedBufferSize]"));
 
@@ -89,7 +89,7 @@ Routine Description:
   function. Callers of BufferSize can run at any IRQL
 */
 STDMETHODIMP_(ULONG)
-CMiniportWaveCyclicStreamMSVAD::BufferSize()
+MiniportWaveCyclicStreamMSVAD::BufferSize()
 {
     return m_ulDmaBufferSize;
 }
@@ -107,7 +107,7 @@ Arguments:
 */
 _Use_decl_annotations_
 STDMETHODIMP_(void)
-CMiniportWaveCyclicStreamMSVAD::CopyFrom(PVOID Destination, PVOID Source, ULONG ByteCount)
+MiniportWaveCyclicStreamMSVAD::CopyFrom(PVOID Destination, PVOID Source, ULONG ByteCount)
 {
     UNREFERENCED_PARAMETER(Destination);
     UNREFERENCED_PARAMETER(Source);
@@ -129,7 +129,7 @@ Arguments:
 */
 _Use_decl_annotations_
 STDMETHODIMP_(void)
-CMiniportWaveCyclicStreamMSVAD::CopyTo(PVOID Destination, PVOID Source, ULONG ByteCount)
+MiniportWaveCyclicStreamMSVAD::CopyTo(PVOID Destination, PVOID Source, ULONG ByteCount)
 {
     UNREFERENCED_PARAMETER(Destination);
 
@@ -146,7 +146,7 @@ Routine Description:
 */
 #pragma code_seg("PAGE")
 STDMETHODIMP_(void)
-CMiniportWaveCyclicStreamMSVAD::FreeBuffer()
+MiniportWaveCyclicStreamMSVAD::FreeBuffer()
 {
     PAGED_CODE();
 
@@ -170,7 +170,7 @@ Arguments:
   PADAPTER_OBJECT - The return value is the object's internal adapter object.
 */
 STDMETHODIMP_(PADAPTER_OBJECT)
-CMiniportWaveCyclicStreamMSVAD::GetAdapterObject()
+MiniportWaveCyclicStreamMSVAD::GetAdapterObject()
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::GetAdapterObject]"));
 
@@ -182,7 +182,7 @@ CMiniportWaveCyclicStreamMSVAD::GetAdapterObject()
 
 //=============================================================================
 STDMETHODIMP_(ULONG)
-CMiniportWaveCyclicStreamMSVAD::MaximumBufferSize()
+MiniportWaveCyclicStreamMSVAD::MaximumBufferSize()
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::MaximumBufferSize]"));
 
@@ -200,7 +200,7 @@ Routine Description:
                      buffer this DMA object is configured to support.
 */
 STDMETHODIMP_(PHYSICAL_ADDRESS)
-CMiniportWaveCyclicStreamMSVAD::PhysicalAddress()
+MiniportWaveCyclicStreamMSVAD::PhysicalAddress()
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::PhysicalAddress]"));
 
@@ -225,7 +225,7 @@ Arguments:
   BufferSize - Current size in bytes.
 */
 STDMETHODIMP_(void)
-CMiniportWaveCyclicStreamMSVAD::SetBufferSize(_In_ ULONG BufferSize)
+MiniportWaveCyclicStreamMSVAD::SetBufferSize(_In_ ULONG BufferSize)
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::SetBufferSize]"));
 
@@ -248,7 +248,7 @@ Routine Description:
   PVOID - The return value is the virtual system address of the allocated buffer.
 */
 STDMETHODIMP_(PVOID)
-CMiniportWaveCyclicStreamMSVAD::SystemAddress()
+MiniportWaveCyclicStreamMSVAD::SystemAddress()
 {
     return m_pvDmaBuffer;
 }
@@ -263,7 +263,7 @@ Routine Description:
   ULONG - The return value is the size in bytes of the buffer currently being transferred.
 */
 STDMETHODIMP_(ULONG)
-CMiniportWaveCyclicStreamMSVAD::TransferCount()
+MiniportWaveCyclicStreamMSVAD::TransferCount()
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::TransferCount]"));
 

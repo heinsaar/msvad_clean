@@ -11,41 +11,42 @@ Abstract:
 //=============================================================================
 // Referenced Forward
 //=============================================================================
-class CMiniportWaveCyclicStream;
-typedef CMiniportWaveCyclicStream* PCMiniportWaveCyclicStream;
+class MiniportWaveCyclicStream;
+typedef MiniportWaveCyclicStream* PCMiniportWaveCyclicStream;
 
-class CMiniportWaveCyclic : public CMiniportWaveCyclicMSVAD,
-                            public IMiniportWaveCyclic,
-                            public CUnknown {
+class MiniportWaveCyclic : public MiniportWaveCyclicMSVAD,
+                           public IMiniportWaveCyclic,
+                           public CUnknown
+{
 public:
     DECLARE_STD_UNKNOWN();
-    DEFINE_STD_CONSTRUCTOR(CMiniportWaveCyclic);
-    ~CMiniportWaveCyclic();
+    DEFINE_STD_CONSTRUCTOR(MiniportWaveCyclic);
+    ~MiniportWaveCyclic();
 
     IMP_IMiniportWaveCyclic;
 
-    NTSTATUS PropertyHandlerComponentId(IN PPCPROPERTY_REQUEST  PropertyRequest);
+    NTSTATUS PropertyHandlerComponentId(   IN PPCPROPERTY_REQUEST  PropertyRequest);
     NTSTATUS PropertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST  PropertyRequest);
 
     // Friends
-    friend class CMiniportWaveCyclicStream;
+    friend class MiniportWaveCyclicStream;
     friend class CMiniportTopologySimple;
 
 private:
     BOOL isCaptureAllocated_;
     BOOL isRenderAllocated_;
 };
-typedef CMiniportWaveCyclic* PCMiniportWaveCyclic;
+typedef MiniportWaveCyclic* PCMiniportWaveCyclic;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class CMiniportWaveCyclicStream : public CMiniportWaveCyclicStreamMSVAD,
-                                  public CUnknown
+class MiniportWaveCyclicStream : public MiniportWaveCyclicStreamMSVAD,
+                                 public CUnknown
 {
 public:
     DECLARE_STD_UNKNOWN();
-    DEFINE_STD_CONSTRUCTOR(CMiniportWaveCyclicStream);
-    ~CMiniportWaveCyclicStream();
+    DEFINE_STD_CONSTRUCTOR(MiniportWaveCyclicStream);
+    ~MiniportWaveCyclicStream();
 
     NTSTATUS Init
     ( 
@@ -55,11 +56,11 @@ public:
         IN  PKSDATAFORMAT        DataFormat
     );
 
-    friend class CMiniportWaveCyclic;
+    friend class MiniportWaveCyclic;
 
 protected:
     PCMiniportWaveCyclic miniportLocal_;  
 };
-typedef CMiniportWaveCyclicStream *PCMiniportWaveCyclicStream;
+typedef MiniportWaveCyclicStream *PCMiniportWaveCyclicStream;
 
 #endif

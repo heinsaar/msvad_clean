@@ -1,16 +1,7 @@
-/*++
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    basewave.h
-
+/*
 Abstract:
-
     Definition of base wavecyclic and wavecyclic stream class.
-
---*/
+*/
 
 #ifndef _MSVAD_BASEWAVE_H_
 #define _MSVAD_BASEWAVE_H_
@@ -22,8 +13,8 @@ Abstract:
 //=============================================================================
 KDEFERRED_ROUTINE TimerNotify;
 
-class CMiniportWaveCyclicStreamMSVAD;
-typedef CMiniportWaveCyclicStreamMSVAD *PCMiniportWaveCyclicStreamMSVAD;
+class   MiniportWaveCyclicStreamMSVAD;
+typedef MiniportWaveCyclicStreamMSVAD* PCMiniportWaveCyclicStreamMSVAD;
 
 //=============================================================================
 // Classes
@@ -34,73 +25,31 @@ typedef CMiniportWaveCyclicStreamMSVAD *PCMiniportWaveCyclicStreamMSVAD;
 //   This is the common base class for all MSVAD samples. It implements basic
 //   functionality.
 
-class CMiniportWaveCyclicMSVAD
+class MiniportWaveCyclicMSVAD
 {
 protected:
-    PADAPTERCOMMON              m_AdapterCommon;    // Adapter common object
-    PPORTWAVECYCLIC             m_Port;             // Callback interface
-    PPCFILTER_DESCRIPTOR        m_FilterDescriptor; // Filter descriptor
-
-    ULONG                       m_NotificationInterval; // milliseconds.
-    ULONG                       m_SamplingFrequency;    // Frames per second.
-
-    PSERVICEGROUP               m_ServiceGroup;     // For notification.
-    KMUTEX                      m_SampleRateSync;   // Sync for sample rate 
-
-    ULONG                       m_MaxDmaBufferSize; // Dma buffer size.
-
-    // All the below members should be updated by the child classes
-    //
-    ULONG                       m_MaxOutputStreams; // Max stream caps
-    ULONG                       m_MaxInputStreams;
-    ULONG                       m_MaxTotalStreams;
-
-    ULONG                       m_MinChannels;      // Format caps
-    ULONG                       m_MaxChannelsPcm;
-    ULONG                       m_MinBitsPerSamplePcm;
-    ULONG                       m_MaxBitsPerSamplePcm;
-    ULONG                       m_MinSampleRatePcm;
-    ULONG                       m_MaxSampleRatePcm;
-
-protected:
-    NTSTATUS                    ValidateFormat
-    (
-        IN  PKSDATAFORMAT       pDataFormat 
-    );
-
-    NTSTATUS                    ValidatePcm
-    (
-        IN  PWAVEFORMATEX       pWfx
-    );
+    NTSTATUS ValidateFormat(IN PKSDATAFORMAT pDataFormat);
+    NTSTATUS ValidatePcm(   IN PWAVEFORMATEX pWfx);
 
 public:
-    CMiniportWaveCyclicMSVAD();
-    ~CMiniportWaveCyclicMSVAD();
+     MiniportWaveCyclicMSVAD();
+    ~MiniportWaveCyclicMSVAD();
 
-    STDMETHODIMP                GetDescription
-    (   
-        _Out_   PPCFILTER_DESCRIPTOR *Description
-    );
+    STDMETHODIMP GetDescription(_Out_ PPCFILTER_DESCRIPTOR* Description);
 
     STDMETHODIMP                Init
-    (   _In_    PUNKNOWN             UnknownAdapter,
-        _In_    PRESOURCELIST        ResourceList,
-        _In_    PPORTWAVECYCLIC      Port
-    );
-
-    NTSTATUS                    PropertyHandlerCpuResources
-    ( 
-        IN  PPCPROPERTY_REQUEST PropertyRequest 
-    );
-
-    NTSTATUS                    PropertyHandlerGeneric
     (
-        IN  PPCPROPERTY_REQUEST PropertyRequest
+        _In_ PUNKNOWN        UnknownAdapter,
+        _In_ PRESOURCELIST   ResourceList,
+        _In_ PPORTWAVECYCLIC Port
     );
+
+    NTSTATUS PropertyHandlerCpuResources(IN PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS PropertyHandlerGeneric(     IN PPCPROPERTY_REQUEST PropertyRequest);
 
     // Friends
-    friend class                CMiniportWaveCyclicStreamMSVAD;
-    friend class                CMiniportTopologyMSVAD;
+    friend class                MiniportWaveCyclicStreamMSVAD;
+    friend class                MiniportTopologyMSVAD;
     friend void                 TimerNotify
     ( 
         IN  PKDPC               Dpc, 
@@ -108,17 +57,42 @@ public:
         IN  PVOID               SA1, 
         IN  PVOID               SA2 
     );
+
+protected:
+    PADAPTERCOMMON       m_AdapterCommon;        // Adapter common object
+    PPORTWAVECYCLIC      m_Port;                 // Callback interface
+    PPCFILTER_DESCRIPTOR m_FilterDescriptor;     // Filter descriptor
+
+    ULONG                m_NotificationInterval; // milliseconds.
+    ULONG                m_SamplingFrequency;    // Frames per second.
+
+    PSERVICEGROUP        m_ServiceGroup;         // For notification.
+    KMUTEX               m_SampleRateSync;       // Sync for sample rate 
+                                                 
+    ULONG                m_MaxDmaBufferSize;     // Dma buffer size.
+
+    // All the below members should be updated by the child classes
+    //
+    ULONG m_MaxOutputStreams; // Max stream caps
+    ULONG m_MaxInputStreams;
+    ULONG m_MaxTotalStreams;
+          
+    ULONG m_MinChannels;      // Format caps
+    ULONG m_MaxChannelsPcm;
+    ULONG m_MinBitsPerSamplePcm;
+    ULONG m_MaxBitsPerSamplePcm;
+    ULONG m_MinSampleRatePcm;
+    ULONG m_MaxSampleRatePcm;
 };
-typedef CMiniportWaveCyclicMSVAD *PCMiniportWaveCyclicMSVAD;
+typedef MiniportWaveCyclicMSVAD *PCMiniportWaveCyclicMSVAD;
 
 ///////////////////////////////////////////////////////////////////////////////
 // CMiniportWaveCyclicStreamMSVAD
 //   This is the common base class for all MSVAD samples. It implements basic
 //   functionality for wavecyclic streams.
 
-class CMiniportWaveCyclicStreamMSVAD : 
-    public IMiniportWaveCyclicStream,
-    public IDmaChannel
+class MiniportWaveCyclicStreamMSVAD : public IMiniportWaveCyclicStream,
+                                      public IDmaChannel
 {
 protected:
     PCMiniportWaveCyclicMSVAD   m_pMiniport;                        // Miniport that created us
@@ -143,8 +117,8 @@ protected:
     CSaveData                   m_SaveData;                         // Object to save settings.
   
 public:
-    CMiniportWaveCyclicStreamMSVAD();
-    ~CMiniportWaveCyclicStreamMSVAD();
+    MiniportWaveCyclicStreamMSVAD();
+    ~MiniportWaveCyclicStreamMSVAD();
 
     IMP_IMiniportWaveCyclicStream;
     IMP_IDmaChannel;
@@ -158,9 +132,8 @@ public:
     );
 
     // Friends
-    friend class CMiniportWaveCyclicMSVAD;
+    friend class MiniportWaveCyclicMSVAD;
 };
-typedef CMiniportWaveCyclicStreamMSVAD *PCMiniportWaveCyclicStreamMSVAD;
+typedef MiniportWaveCyclicStreamMSVAD *PCMiniportWaveCyclicStreamMSVAD;
 
 #endif
-

@@ -131,6 +131,12 @@
     <ClInclude Include="..\msvad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\basetopo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\basewave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\msvad.rc">

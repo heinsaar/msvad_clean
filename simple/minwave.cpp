@@ -29,11 +29,11 @@ NTSTATUS CreateMiniportWaveCyclicMSVAD
 {
     PAGED_CODE();
     ASSERT(Unknown);
-    STD_CREATE_BODY(CMiniportWaveCyclic, Unknown, UnknownOuter, PoolType);
+    STD_CREATE_BODY(MiniportWaveCyclic, Unknown, UnknownOuter, PoolType);
 }
 
 //=============================================================================
-CMiniportWaveCyclic::~CMiniportWaveCyclic()
+MiniportWaveCyclic::~MiniportWaveCyclic()
 {
     PAGED_CODE();
 
@@ -69,7 +69,7 @@ Arguments:
                           to OutputBufferLength. 
 */
 STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclic::DataRangeIntersection
+MiniportWaveCyclic::DataRangeIntersection
 (
     _In_        ULONG                       PinId,
     _In_        PKSDATARANGE                ClientDataRange,
@@ -108,13 +108,13 @@ Arguments:
   OutFilterDescriptor - Pointer to the filter description. 
 */
 STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclic::GetDescription(_Out_ PPCFILTER_DESCRIPTOR * OutFilterDescriptor)
+MiniportWaveCyclic::GetDescription(_Out_ PPCFILTER_DESCRIPTOR * OutFilterDescriptor)
 {
     PAGED_CODE();
 
     ASSERT(OutFilterDescriptor);
 
-    return CMiniportWaveCyclicMSVAD::GetDescription(OutFilterDescriptor);
+    return MiniportWaveCyclicMSVAD::GetDescription(OutFilterDescriptor);
 }
 
 //=============================================================================
@@ -136,7 +136,7 @@ Arguments:
   Port - Pointer to the topology port object that is linked with this miniport. 
 */
 STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclic::Init
+MiniportWaveCyclic::Init
 (
     _In_  PUNKNOWN                UnknownAdapter_,
     _In_  PRESOURCELIST           ResourceList_,
@@ -162,7 +162,7 @@ CMiniportWaveCyclic::Init
     m_MinSampleRatePcm      = MIN_SAMPLE_RATE;
     m_MaxSampleRatePcm      = MAX_SAMPLE_RATE;
 
-    NTSTATUS ntStatus = CMiniportWaveCyclicMSVAD::Init(UnknownAdapter_, ResourceList_, Port_);
+    NTSTATUS ntStatus = MiniportWaveCyclicMSVAD::Init(UnknownAdapter_, ResourceList_, Port_);
     if (NT_SUCCESS(ntStatus))
     {
         // Set filter descriptor.
@@ -186,7 +186,7 @@ Routine Description:
 */
 _Use_decl_annotations_
 STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclic::NewStream
+MiniportWaveCyclic::NewStream
 (
     PMINIPORTWAVECYCLICSTREAM * OutStream,
     PUNKNOWN                OuterUnknown,
@@ -243,7 +243,7 @@ CMiniportWaveCyclic::NewStream
     if (NT_SUCCESS(ntStatus))
     {
         stream = new (NonPagedPool, MSVAD_POOLTAG) 
-            CMiniportWaveCyclicStream(OuterUnknown);
+            MiniportWaveCyclicStream(OuterUnknown);
 
         if (stream)
         {
@@ -303,7 +303,7 @@ Arguments:
   Object - interface pointer to be returned.
 */
 STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclic::NonDelegatingQueryInterface
+MiniportWaveCyclic::NonDelegatingQueryInterface
 (
     _In_         REFIID  Interface,
     _COM_Outptr_ PVOID * Object
@@ -346,7 +346,7 @@ CMiniportWaveCyclic::NonDelegatingQueryInterface
 Routine Description:
   Handles KSPROPERTY_GENERAL_COMPONENTID
 */
-NTSTATUS CMiniportWaveCyclic::PropertyHandlerComponentId(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportWaveCyclic::PropertyHandlerComponentId(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
 
@@ -395,7 +395,7 @@ NTSTATUS CMiniportWaveCyclic::PropertyHandlerComponentId(IN PPCPROPERTY_REQUEST 
 Routine Description:
   Handles KSPROPERTY_GENERAL_COMPONENTID
 */
-NTSTATUS CMiniportWaveCyclic::PropertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportWaveCyclic::PropertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
 
@@ -506,7 +506,7 @@ NTSTATUS PropertyHandler_WaveFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
 //=============================================================================
 
 //=============================================================================
-CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream()
+MiniportWaveCyclicStream::~MiniportWaveCyclicStream()
 {
     PAGED_CODE();
 
@@ -530,7 +530,7 @@ CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream()
 Routine Description:
   Initializes the stream object. Allocate a DMA buffer, timer and DPC
 */
-NTSTATUS CMiniportWaveCyclicStream::Init
+NTSTATUS MiniportWaveCyclicStream::Init
 ( 
     IN PCMiniportWaveCyclic         Miniport_,
     IN ULONG                        Pin_,
@@ -542,7 +542,7 @@ NTSTATUS CMiniportWaveCyclicStream::Init
 
     miniportLocal_ = Miniport_;
 
-    return CMiniportWaveCyclicStreamMSVAD::Init(Miniport_, Pin_, Capture_, DataFormat_);
+    return MiniportWaveCyclicStreamMSVAD::Init(Miniport_, Pin_, Capture_, DataFormat_);
 }
 
 //=============================================================================
@@ -555,7 +555,7 @@ Arguments:
   Object    - interface pointer to be returned
 */
 STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclicStream::NonDelegatingQueryInterface
+MiniportWaveCyclicStream::NonDelegatingQueryInterface
 (
     _In_         REFIID  Interface,
     _COM_Outptr_ PVOID * Object

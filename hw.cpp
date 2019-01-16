@@ -12,7 +12,7 @@ Abstract:
 
 //=============================================================================
 #pragma code_seg("PAGE")
-CMSVADHW::CMSVADHW()
+MSVADHW::MSVADHW()
   : mux_(0),
     bDevSpecific_(FALSE),
     iDevSpecific_(0),
@@ -28,7 +28,7 @@ CMSVADHW::CMSVADHW()
 Routine Description:
   Gets the HW (!) Device Specific info
 */
-BOOL CMSVADHW::bGetDevSpecific()
+BOOL MSVADHW::bGetDevSpecific()
 {
     return bDevSpecific_;
 }
@@ -42,7 +42,7 @@ Arguments:
 
   devSpecific - true or false for this example.
 */
-void CMSVADHW::bSetDevSpecific(IN  BOOL devSpecific)
+void MSVADHW::bSetDevSpecific(IN  BOOL devSpecific)
 {
     bDevSpecific_ = devSpecific;
 }
@@ -52,7 +52,7 @@ void CMSVADHW::bSetDevSpecific(IN  BOOL devSpecific)
 Routine Description:
   Gets the HW (!) Device Specific info
 */
-INT CMSVADHW::iGetDevSpecific()
+INT MSVADHW::iGetDevSpecific()
 {
     return iDevSpecific_;
 }
@@ -65,7 +65,7 @@ Routine Description:
 Arguments:
   devSpecific - true or false for this example.
 */
-void CMSVADHW::iSetDevSpecific(IN  INT devSpecific)
+void MSVADHW::iSetDevSpecific(IN  INT devSpecific)
 {
     iDevSpecific_ = devSpecific;
 }
@@ -75,7 +75,7 @@ void CMSVADHW::iSetDevSpecific(IN  INT devSpecific)
 Routine Description:
   Gets the HW (!) Device Specific info
 */
-UINT CMSVADHW::uiGetDevSpecific()
+UINT MSVADHW::uiGetDevSpecific()
 {
     return uiDevSpecific_;
 }
@@ -91,7 +91,7 @@ Arguments:
 
   uiDevSpecific - int for this example.
 */
-void CMSVADHW::uiSetDevSpecific(IN  UINT devSpecific)
+void MSVADHW::uiSetDevSpecific(IN  UINT devSpecific)
 {
     uiDevSpecific_ = devSpecific;
 }
@@ -106,7 +106,7 @@ Arguments:
   mute setting
 
 */
-BOOL CMSVADHW::GetMixerMute(IN  ULONG node)
+BOOL MSVADHW::GetMixerMute(IN  ULONG node)
 {
     if (node < MAX_TOPOLOGY_NODES)
     {
@@ -121,7 +121,7 @@ BOOL CMSVADHW::GetMixerMute(IN  ULONG node)
 Routine Description:
   Return the current mux selection
 */
-ULONG CMSVADHW::GetMixerMux()
+ULONG MSVADHW::GetMixerMux()
 {
     return mux_;
 }
@@ -136,7 +136,7 @@ Arguments:
   lChannel - which channel are we setting?
   LONG     - volume level
 */
-LONG CMSVADHW::GetMixerVolume(IN  ULONG node, IN  LONG  channel)
+LONG MSVADHW::GetMixerVolume(IN  ULONG node, IN  LONG  channel)
 {
     UNREFERENCED_PARAMETER(channel);
 
@@ -153,7 +153,7 @@ LONG CMSVADHW::GetMixerVolume(IN  ULONG node, IN  LONG  channel)
   Resets the mixer registers.
 */
 #pragma code_seg("PAGE")
-void CMSVADHW::MixerReset()
+void MSVADHW::MixerReset()
 {
     PAGED_CODE();
     
@@ -174,7 +174,7 @@ Arguments:
   node - topology node id
   fMute - mute flag
 */
-void CMSVADHW::SetMixerMute(IN  ULONG node, IN  BOOL fMute)
+void MSVADHW::SetMixerMute(IN  ULONG node, IN  BOOL fMute)
 {
     if (node < MAX_TOPOLOGY_NODES)
     {
@@ -190,7 +190,7 @@ Routine Description:
 Arguments:
   ulNode - topology node id
 */
-void CMSVADHW::SetMixerMux(IN  ULONG node)
+void MSVADHW::SetMixerMux(IN  ULONG node)
 {
     mux_ = node;
 }
@@ -206,7 +206,7 @@ Arguments:
   volume  - volume level
 
 */
-void CMSVADHW::SetMixerVolume(IN  ULONG node, IN  LONG channel, IN  LONG volume)
+void MSVADHW::SetMixerVolume(IN  ULONG node, IN  LONG channel, IN  LONG volume)
 {
     UNREFERENCED_PARAMETER(channel);
 

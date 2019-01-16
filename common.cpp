@@ -509,7 +509,7 @@ NTSTATUS CAdapterCommon::Init(IN  PDEVICE_OBJECT DeviceObject)
 
     // Initialize HW.
     // 
-    m_pHW = new (NonPagedPool, MSVAD_POOLTAG)  CMSVADHW;
+    m_pHW = new (NonPagedPool, MSVAD_POOLTAG)  MSVADHW;
     if (!m_pHW)
     {
         DPF(D_TERSE, ("Insufficient memory for MSVAD HW"));
