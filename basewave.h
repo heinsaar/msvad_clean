@@ -59,30 +59,30 @@ public:
     );
 
 protected:
-    PADAPTERCOMMON       m_AdapterCommon;        // Adapter common object
-    PPORTWAVECYCLIC      m_Port;                 // Callback interface
-    PPCFILTER_DESCRIPTOR m_FilterDescriptor;     // Filter descriptor
+    PADAPTERCOMMON       adapterCommon_;        // Adapter common object
+    PPORTWAVECYCLIC      port_;                 // Callback interface
+    PPCFILTER_DESCRIPTOR filterDescriptor_;     // Filter descriptor
 
-    ULONG                m_NotificationInterval; // milliseconds.
-    ULONG                m_SamplingFrequency;    // Frames per second.
+    ULONG                notificationInterval_; // milliseconds.
+    ULONG                samplingFrequency_;    // Frames per second.
 
-    PSERVICEGROUP        m_ServiceGroup;         // For notification.
-    KMUTEX               m_SampleRateSync;       // Sync for sample rate 
+    PSERVICEGROUP        serviceGroup_;         // For notification.
+    KMUTEX               sampleRateSync_;       // Sync for sample rate 
                                                  
-    ULONG                m_MaxDmaBufferSize;     // Dma buffer size.
+    ULONG                maxDmaBufferSize_;     // Dma buffer size.
 
     // All the below members should be updated by the child classes
     //
-    ULONG m_MaxOutputStreams; // Max stream caps
-    ULONG m_MaxInputStreams;
-    ULONG m_MaxTotalStreams;
+    ULONG maxOutputStreams_; // Max stream caps
+    ULONG maxInputStreams_;
+    ULONG maxTotalStreams_;
           
-    ULONG m_MinChannels;      // Format caps
-    ULONG m_MaxChannelsPcm;
-    ULONG m_MinBitsPerSamplePcm;
-    ULONG m_MaxBitsPerSamplePcm;
-    ULONG m_MinSampleRatePcm;
-    ULONG m_MaxSampleRatePcm;
+    ULONG minChannels_;      // Format caps
+    ULONG maxChannelsPcm_;
+    ULONG minBitsPerSamplePcm_;
+    ULONG maxBitsPerSamplePcm_;
+    ULONG minSampleRatePcm_;
+    ULONG maxSampleRatePcm_;
 };
 typedef MiniportWaveCyclicMSVAD *PCMiniportWaveCyclicMSVAD;
 
@@ -95,26 +95,26 @@ class MiniportWaveCyclicStreamMSVAD : public IMiniportWaveCyclicStream,
                                       public IDmaChannel
 {
 protected:
-    PCMiniportWaveCyclicMSVAD   m_pMiniport;                        // Miniport that created us
-    BOOLEAN                     m_fCapture;                         // Capture or render.
-    BOOLEAN                     m_fFormat16Bit;                     // 16- or 8-bit samples.
-    USHORT                      m_usBlockAlign;                     // Block alignment of current format.
-    KSSTATE                     m_ksState;                          // Stop, pause, run.
-    ULONG                       m_ulPin;                            // Pin Id.
+    PCMiniportWaveCyclicMSVAD miniport_;                     // Miniport that created us
+    BOOLEAN                   isCapture_;                    // Capture or render.
+    BOOLEAN                   is16BitSample;                 // 16- or 8-bit samples.
+    USHORT                    blockAlign_;                   // Block alignment of current format.
+    KSSTATE                   ksState_;                      // Stop, pause, run.
+    ULONG                     pinId_;                        // Pin Id.
 
-    PRKDPC                      m_pDpc;                             // Deferred procedure call object
-    PKTIMER                     m_pTimer;                           // Timer object
+    PRKDPC                    dpc_;                          // Deferred procedure call object
+    PKTIMER                   timer_;                        // Timer object
+                                                             
+    BOOLEAN                   dmaActive_;                    // Dma currently active? 
+    ULONG                     dmaPosition_;                  // Position in Dma
+    PVOID                     dmaBuffer_;                    // Dma buffer pointer
+    ULONG                     dmaBufferSize_;                // Size of dma buffer
+    ULONG                     dmaMovementRate_;              // Rate of transfer specific to system
+    ULONGLONG                 dmaTimeStamp_;                 // Dma time elapsed 
+    ULONGLONG                 elapsedTimeCarryForward_;      // Time to carry forward in position calc.
+    ULONG                     byteDisplacementCarryForward_; // Bytes to carry forward to next calc.
 
-    BOOLEAN                     m_fDmaActive;                       // Dma currently active? 
-    ULONG                       m_ulDmaPosition;                    // Position in Dma
-    PVOID                       m_pvDmaBuffer;                      // Dma buffer pointer
-    ULONG                       m_ulDmaBufferSize;                  // Size of dma buffer
-    ULONG                       m_ulDmaMovementRate;                // Rate of transfer specific to system
-    ULONGLONG                   m_ullDmaTimeStamp;                  // Dma time elasped 
-    ULONGLONG                   m_ullElapsedTimeCarryForward;       // Time to carry forward in position calc.
-    ULONG                       m_ulByteDisplacementCarryForward;   // Bytes to carry forward to next calc.
-
-    CSaveData                   m_SaveData;                         // Object to save settings.
+    CSaveData                 saveData_;                     // Object to save settings.
   
 public:
     MiniportWaveCyclicStreamMSVAD();
@@ -123,7 +123,7 @@ public:
     IMP_IMiniportWaveCyclicStream;
     IMP_IDmaChannel;
 
-    NTSTATUS                    Init
+    NTSTATUS Init
     ( 
         IN  PCMiniportWaveCyclicMSVAD  Miniport,
         IN  ULONG               Pin,

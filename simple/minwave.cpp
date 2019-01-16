@@ -150,23 +150,23 @@ MiniportWaveCyclic::Init
 
     DPF_ENTER(("[CMiniportWaveCyclic::Init]"));
 
-    m_MaxOutputStreams      = MAX_OUTPUT_STREAMS;
-    m_MaxInputStreams       = MAX_INPUT_STREAMS;
-    m_MaxTotalStreams       = MAX_TOTAL_STREAMS;
+    maxOutputStreams_      = MAX_OUTPUT_STREAMS;
+    maxInputStreams_       = MAX_INPUT_STREAMS;
+    maxTotalStreams_       = MAX_TOTAL_STREAMS;
 
-    m_MinChannels           = MIN_CHANNELS;
-    m_MaxChannelsPcm        = MAX_CHANNELS_PCM;
+    minChannels_           = MIN_CHANNELS;
+    maxChannelsPcm_        = MAX_CHANNELS_PCM;
 
-    m_MinBitsPerSamplePcm   = MIN_BITS_PER_SAMPLE_PCM;
-    m_MaxBitsPerSamplePcm   = MAX_BITS_PER_SAMPLE_PCM;
-    m_MinSampleRatePcm      = MIN_SAMPLE_RATE;
-    m_MaxSampleRatePcm      = MAX_SAMPLE_RATE;
+    minBitsPerSamplePcm_   = MIN_BITS_PER_SAMPLE_PCM;
+    maxBitsPerSamplePcm_   = MAX_BITS_PER_SAMPLE_PCM;
+    minSampleRatePcm_      = MIN_SAMPLE_RATE;
+    maxSampleRatePcm_      = MAX_SAMPLE_RATE;
 
     NTSTATUS ntStatus = MiniportWaveCyclicMSVAD::Init(UnknownAdapter_, ResourceList_, Port_);
     if (NT_SUCCESS(ntStatus))
     {
         // Set filter descriptor.
-        m_FilterDescriptor = &MiniportFilterDescriptor;
+        filterDescriptor_ = &MiniportFilterDescriptor;
 
         isCaptureAllocated_ = FALSE;
         isRenderAllocated_ = FALSE;
@@ -274,7 +274,7 @@ MiniportWaveCyclic::NewStream
          *OutDmaChannel = PDMACHANNEL(stream);
         (*OutDmaChannel)->AddRef();
 
-         *OutServiceGroup = m_ServiceGroup;
+         *OutServiceGroup = serviceGroup_;
         (*OutServiceGroup)->AddRef();
 
         // The stream, the DMA channel, and the service group have
@@ -514,7 +514,7 @@ MiniportWaveCyclicStream::~MiniportWaveCyclicStream()
 
     if (miniportLocal_)
     {
-        if (m_fCapture)
+        if (isCapture_)
         {
             miniportLocal_->isCaptureAllocated_ = FALSE;
         }

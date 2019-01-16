@@ -49,14 +49,14 @@ MiniportWaveCyclicStreamMSVAD::AllocateBuffer(ULONG BufferSize, PPHYSICAL_ADDRES
     // Adjust this cap as needed...
     ASSERT (BufferSize <= DMA_BUFFER_SIZE);
 
-    m_pvDmaBuffer = (PVOID)ExAllocatePoolWithTag(NonPagedPool, BufferSize, MSVAD_POOLTAG);
-    if (!m_pvDmaBuffer)
+    dmaBuffer_ = (PVOID)ExAllocatePoolWithTag(NonPagedPool, BufferSize, MSVAD_POOLTAG);
+    if (!dmaBuffer_)
     {
         ntStatus = STATUS_INSUFFICIENT_RESOURCES;
     }
     else
     {
-        m_ulDmaBufferSize = BufferSize;
+        dmaBufferSize_ = BufferSize;
     }
 
     return ntStatus;
@@ -74,7 +74,7 @@ MiniportWaveCyclicStreamMSVAD::AllocatedBufferSize()
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::AllocatedBufferSize]"));
 
-    return m_ulDmaBufferSize;
+    return dmaBufferSize_;
 }
 
 //=============================================================================
@@ -91,7 +91,7 @@ Routine Description:
 STDMETHODIMP_(ULONG)
 MiniportWaveCyclicStreamMSVAD::BufferSize()
 {
-    return m_ulDmaBufferSize;
+    return dmaBufferSize_;
 }
 
 //=============================================================================
@@ -133,7 +133,7 @@ MiniportWaveCyclicStreamMSVAD::CopyTo(PVOID Destination, PVOID Source, ULONG Byt
 {
     UNREFERENCED_PARAMETER(Destination);
 
-    m_SaveData.WriteData((PBYTE) Source, ByteCount);
+    saveData_.WriteData((PBYTE) Source, ByteCount);
 }
 
 //=============================================================================
@@ -152,10 +152,10 @@ MiniportWaveCyclicStreamMSVAD::FreeBuffer()
 
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::FreeBuffer]"));
 
-    if ( m_pvDmaBuffer )
+    if ( dmaBuffer_ )
     {
-        ExFreePoolWithTag( m_pvDmaBuffer, MSVAD_POOLTAG );
-        m_ulDmaBufferSize = 0;
+        ExFreePoolWithTag( dmaBuffer_, MSVAD_POOLTAG );
+        dmaBufferSize_ = 0;
     }
 }
 #pragma code_seg()
@@ -186,7 +186,7 @@ MiniportWaveCyclicStreamMSVAD::MaximumBufferSize()
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::MaximumBufferSize]"));
 
-    return m_pMiniport->m_MaxDmaBufferSize;
+    return miniport_->maxDmaBufferSize_;
 }
 
 //=============================================================================
@@ -206,7 +206,7 @@ MiniportWaveCyclicStreamMSVAD::PhysicalAddress()
 
     PHYSICAL_ADDRESS pAddress;
 
-    pAddress.QuadPart = (LONGLONG) m_pvDmaBuffer;
+    pAddress.QuadPart = (LONGLONG) dmaBuffer_;
 
     return pAddress;
 }
@@ -229,9 +229,9 @@ MiniportWaveCyclicStreamMSVAD::SetBufferSize(_In_ ULONG BufferSize)
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::SetBufferSize]"));
 
-    if ( BufferSize <= m_ulDmaBufferSize )
+    if ( BufferSize <= dmaBufferSize_ )
     {
-        m_ulDmaBufferSize = BufferSize;
+        dmaBufferSize_ = BufferSize;
     }
     else
     {
@@ -250,7 +250,7 @@ Routine Description:
 STDMETHODIMP_(PVOID)
 MiniportWaveCyclicStreamMSVAD::SystemAddress()
 {
-    return m_pvDmaBuffer;
+    return dmaBuffer_;
 }
 
 //=============================================================================
@@ -267,6 +267,6 @@ MiniportWaveCyclicStreamMSVAD::TransferCount()
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::TransferCount]"));
 
-    return m_ulDmaBufferSize;
+    return dmaBufferSize_;
 }
 

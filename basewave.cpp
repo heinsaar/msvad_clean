@@ -19,26 +19,26 @@ MiniportWaveCyclicMSVAD::MiniportWaveCyclicMSVAD()
 
     // Initialize members.
     //
-    m_AdapterCommon = nullptr;
-    m_Port = nullptr;
-    m_FilterDescriptor = nullptr;
+    adapterCommon_ = nullptr;
+    port_ = nullptr;
+    filterDescriptor_ = nullptr;
 
-    m_NotificationInterval = 0;
-    m_SamplingFrequency = 0;
+    notificationInterval_ = 0;
+    samplingFrequency_ = 0;
 
-    m_ServiceGroup = nullptr;
-    m_MaxDmaBufferSize = DMA_BUFFER_SIZE;
+    serviceGroup_ = nullptr;
+    maxDmaBufferSize_ = DMA_BUFFER_SIZE;
 
-    m_MaxOutputStreams = 0;
-    m_MaxInputStreams = 0;
-    m_MaxTotalStreams = 0;
+    maxOutputStreams_ = 0;
+    maxInputStreams_ = 0;
+    maxTotalStreams_ = 0;
 
-    m_MinChannels = 0;
-    m_MaxChannelsPcm = 0;
-    m_MinBitsPerSamplePcm = 0;
-    m_MaxBitsPerSamplePcm = 0;
-    m_MinSampleRatePcm = 0;
-    m_MaxSampleRatePcm = 0;
+    minChannels_ = 0;
+    maxChannelsPcm_ = 0;
+    minBitsPerSamplePcm_ = 0;
+    maxBitsPerSamplePcm_ = 0;
+    minSampleRatePcm_ = 0;
+    maxSampleRatePcm_ = 0;
 }
 
 //=============================================================================
@@ -48,19 +48,19 @@ MiniportWaveCyclicMSVAD::~MiniportWaveCyclicMSVAD()
 
     DPF_ENTER(("[CMiniportWaveCyclicMSVAD::~CMiniportWaveCyclicMSVAD]"));
 
-    if (m_Port)
+    if (port_)
     {
-        m_Port->Release();
+        port_->Release();
     }
 
-    if (m_ServiceGroup)
+    if (serviceGroup_)
     {
-        m_ServiceGroup->Release();
+        serviceGroup_->Release();
     }
 
-    if (m_AdapterCommon)
+    if (adapterCommon_)
     {
-        m_AdapterCommon->Release();
+        adapterCommon_->Release();
     }
 }
 
@@ -80,7 +80,7 @@ MiniportWaveCyclicMSVAD::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* OutFilterDes
     ASSERT(OutFilterDescriptor);
     DPF_ENTER(("[CMiniportWaveCyclicMSVAD::GetDescription]"));
 
-    *OutFilterDescriptor = m_FilterDescriptor;
+    *OutFilterDescriptor = filterDescriptor_;
 
     return STATUS_SUCCESS;
 }
@@ -114,23 +114,23 @@ Arguments:
 
     // AddRef() is required because we are keeping this pointer.
     //
-    m_Port = Port_;
-    m_Port->AddRef();
+    port_ = Port_;
+    port_->AddRef();
 
     // We want the IAdapterCommon interface on the adapter common object,
     // which is given to us as a IUnknown.  The QueryInterface call gives us
     // an AddRefed pointer to the interface we want.
     //
-    NTSTATUS ntStatus = UnknownAdapter_->QueryInterface(IID_IAdapterCommon, (PVOID *)&m_AdapterCommon);
+    NTSTATUS ntStatus = UnknownAdapter_->QueryInterface(IID_IAdapterCommon, (PVOID *)&adapterCommon_);
 
     if (NT_SUCCESS(ntStatus))
     {
-        KeInitializeMutex(&m_SampleRateSync, 1);
-        ntStatus = PcNewServiceGroup(&m_ServiceGroup, nullptr);
+        KeInitializeMutex(&sampleRateSync_, 1);
+        ntStatus = PcNewServiceGroup(&serviceGroup_, nullptr);
 
         if (NT_SUCCESS(ntStatus))
         {
-            m_AdapterCommon->SetWaveServiceGroup(m_ServiceGroup);
+            adapterCommon_->SetWaveServiceGroup(serviceGroup_);
         }
     }
 
@@ -138,25 +138,25 @@ Arguments:
     {
         // clean up AdapterCommon
         //
-        if (m_AdapterCommon)
+        if (adapterCommon_)
         {
             // clean up the service group
             //
-            if (m_ServiceGroup)
+            if (serviceGroup_)
             {
-                m_AdapterCommon->SetWaveServiceGroup(nullptr);
-                m_ServiceGroup->Release();
-                m_ServiceGroup = nullptr;
+                adapterCommon_->SetWaveServiceGroup(nullptr);
+                serviceGroup_->Release();
+                serviceGroup_ = nullptr;
             }
 
-            m_AdapterCommon->Release();
-            m_AdapterCommon = nullptr;
+            adapterCommon_->Release();
+            adapterCommon_ = nullptr;
         }
 
         // release the port
         //
-        m_Port->Release();
-        m_Port = nullptr;
+        port_->Release();
+        port_ = nullptr;
     }
 
     return ntStatus;
@@ -307,12 +307,12 @@ NTSTATUS MiniportWaveCyclicMSVAD::ValidatePcm(IN  PWAVEFORMATEX  pWfx)
 
     if ( pWfx                                               &&
         (pWfx->cbSize == 0)                                 &&
-        (pWfx->nChannels >= m_MinChannels)                  &&
-        (pWfx->nChannels <= m_MaxChannelsPcm)               &&
-        (pWfx->nSamplesPerSec >= m_MinSampleRatePcm)        &&
-        (pWfx->nSamplesPerSec <= m_MaxSampleRatePcm)        &&
-        (pWfx->wBitsPerSample >= m_MinBitsPerSamplePcm)     &&
-        (pWfx->wBitsPerSample <= m_MaxBitsPerSamplePcm))
+        (pWfx->nChannels >= minChannels_)                  &&
+        (pWfx->nChannels <= maxChannelsPcm_)               &&
+        (pWfx->nSamplesPerSec >= minSampleRatePcm_)        &&
+        (pWfx->nSamplesPerSec <= maxSampleRatePcm_)        &&
+        (pWfx->wBitsPerSample >= minBitsPerSamplePcm_)     &&
+        (pWfx->wBitsPerSample <= maxBitsPerSamplePcm_))
     {
         return STATUS_SUCCESS;
     }
@@ -330,24 +330,24 @@ MiniportWaveCyclicStreamMSVAD::MiniportWaveCyclicStreamMSVAD()
 {
     PAGED_CODE();
 
-    m_pMiniport = nullptr;
-    m_fCapture = FALSE;
-    m_fFormat16Bit = FALSE;
-    m_usBlockAlign = 0;
-    m_ksState = KSSTATE_STOP;
-    m_ulPin = (ULONG)-1;
+    miniport_ = nullptr;
+    isCapture_ = FALSE;
+    is16BitSample = FALSE;
+    blockAlign_ = 0;
+    ksState_ = KSSTATE_STOP;
+    pinId_ = (ULONG)-1;
 
-    m_pDpc   = nullptr;
-    m_pTimer = nullptr;
+    dpc_   = nullptr;
+    timer_ = nullptr;
 
-    m_fDmaActive = FALSE;
-    m_ulDmaPosition = 0;
-    m_ullElapsedTimeCarryForward = 0;
-    m_ulByteDisplacementCarryForward = 0;
-    m_pvDmaBuffer = nullptr;
-    m_ulDmaBufferSize = 0;
-    m_ulDmaMovementRate = 0;
-    m_ullDmaTimeStamp = 0;
+    dmaActive_ = FALSE;
+    dmaPosition_ = 0;
+    elapsedTimeCarryForward_ = 0;
+    byteDisplacementCarryForward_ = 0;
+    dmaBuffer_ = nullptr;
+    dmaBufferSize_ = 0;
+    dmaMovementRate_ = 0;
+    dmaTimeStamp_ = 0;
 }
 
 //=============================================================================
@@ -356,18 +356,18 @@ MiniportWaveCyclicStreamMSVAD::~MiniportWaveCyclicStreamMSVAD()
     PAGED_CODE();
     DPF_ENTER(("[CMiniportWaveCyclicStreamMS::~CMiniportWaveCyclicStreamMS]"));
 
-    if (m_pTimer)
+    if (timer_)
     {
-        KeCancelTimer(m_pTimer);
-        ExFreePoolWithTag(m_pTimer, MSVAD_POOLTAG);
+        KeCancelTimer(timer_);
+        ExFreePoolWithTag(timer_, MSVAD_POOLTAG);
     }
 
     // Since we just canceled the timer, wait for all queued DPCs to complete before we free the DPC.
     KeFlushQueuedDpcs();
 
-    if (m_pDpc)
+    if (dpc_)
     {
-        ExFreePoolWithTag( m_pDpc, MSVAD_POOLTAG );
+        ExFreePoolWithTag( dpc_, MSVAD_POOLTAG );
     }
     
     FreeBuffer(); // free the DMA buffer
@@ -415,30 +415,30 @@ NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
 
     if (NT_SUCCESS(ntStatus))
     {
-        m_pMiniport = Miniport_;
+        miniport_ = Miniport_;
 
-        m_ulPin                           = Pin_;
-        m_fCapture                        = Capture_;
-        m_usBlockAlign                    = pWfx->nBlockAlign;
-        m_fFormat16Bit                    = (pWfx->wBitsPerSample == 16);
-        m_ksState                         = KSSTATE_STOP;
-        m_ulDmaPosition                   = 0;
-        m_ullElapsedTimeCarryForward      = 0;
-        m_ulByteDisplacementCarryForward  = 0;
-        m_fDmaActive                      = FALSE;
-        m_pDpc                            = nullptr;
-        m_pTimer                          = nullptr;
-        m_pvDmaBuffer                     = nullptr;
+        pinId_                           = Pin_;
+        isCapture_                        = Capture_;
+        blockAlign_                    = pWfx->nBlockAlign;
+        is16BitSample                    = (pWfx->wBitsPerSample == 16);
+        ksState_                         = KSSTATE_STOP;
+        dmaPosition_                   = 0;
+        elapsedTimeCarryForward_      = 0;
+        byteDisplacementCarryForward_  = 0;
+        dmaActive_                      = FALSE;
+        dpc_                            = nullptr;
+        timer_                          = nullptr;
+        dmaBuffer_                     = nullptr;
 
         // If this is not the capture stream, create the output file.
         //
-        if (!m_fCapture)
+        if (!isCapture_)
         {
-            DPF(D_TERSE, ("SaveData %p", &m_SaveData));
-            ntStatus = m_SaveData.SetDataFormat(DataFormat_);
+            DPF(D_TERSE, ("SaveData %p", &saveData_));
+            ntStatus = saveData_.SetDataFormat(DataFormat_);
             if (NT_SUCCESS(ntStatus))
             {
-                ntStatus = m_SaveData.Initialize();
+                ntStatus = saveData_.Initialize();
             }
         }
     }
@@ -446,17 +446,17 @@ NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
     // Allocate DMA buffer for this stream.
     if (NT_SUCCESS(ntStatus))
     {
-        ntStatus = AllocateBuffer(m_pMiniport->m_MaxDmaBufferSize, nullptr);
+        ntStatus = AllocateBuffer(miniport_->maxDmaBufferSize_, nullptr);
     }
 
     // Set sample frequency. Note that m_SampleRateSync access should be synchronized.
     if (NT_SUCCESS(ntStatus))
     {
-        ntStatus = KeWaitForSingleObject(&m_pMiniport->m_SampleRateSync, Executive, KernelMode, FALSE, nullptr);
+        ntStatus = KeWaitForSingleObject(&miniport_->sampleRateSync_, Executive, KernelMode, FALSE, nullptr);
         if (STATUS_SUCCESS == ntStatus)
         {
-            m_pMiniport->m_SamplingFrequency = pWfx->nSamplesPerSec;
-            KeReleaseMutex(&m_pMiniport->m_SampleRateSync, FALSE);
+            miniport_->samplingFrequency_ = pWfx->nSamplesPerSec;
+            KeReleaseMutex(&miniport_->sampleRateSync_, FALSE);
         }
         else
         {
@@ -471,8 +471,8 @@ NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
 
     if (NT_SUCCESS(ntStatus))
     {
-        m_pDpc = (PRKDPC)ExAllocatePoolWithTag(NonPagedPool, sizeof(KDPC), MSVAD_POOLTAG);
-        if (!m_pDpc)
+        dpc_ = (PRKDPC)ExAllocatePoolWithTag(NonPagedPool, sizeof(KDPC), MSVAD_POOLTAG);
+        if (!dpc_)
         {
             DPF(D_TERSE, ("[Could not allocate memory for DPC]"));
             ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -481,8 +481,8 @@ NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
 
     if (NT_SUCCESS(ntStatus))
     {
-        m_pTimer = (PKTIMER)ExAllocatePoolWithTag(NonPagedPool, sizeof(KTIMER), MSVAD_POOLTAG);
-        if (!m_pTimer)
+        timer_ = (PKTIMER)ExAllocatePoolWithTag(NonPagedPool, sizeof(KTIMER), MSVAD_POOLTAG);
+        if (!timer_)
         {
             DPF(D_TERSE, ("[Could not allocate memory for Timer]"));
             ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -491,8 +491,8 @@ NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
 
     if (NT_SUCCESS(ntStatus))
     {
-        KeInitializeDpc(m_pDpc, TimerNotify, m_pMiniport);
-        KeInitializeTimerEx(m_pTimer, NotificationTimer);
+        KeInitializeDpc(dpc_, TimerNotify, miniport_);
+        KeInitializeTimerEx(timer_, NotificationTimer);
     }
 
     return ntStatus;
@@ -519,7 +519,7 @@ Arguments:
 STDMETHODIMP
 MiniportWaveCyclicStreamMSVAD::GetPosition(_Out_ PULONG Position)
 {
-    if (m_fDmaActive)
+    if (dmaActive_)
     {
         // Get the current time
         //
@@ -530,40 +530,40 @@ MiniportWaveCyclicStreamMSVAD::GetPosition(_Out_ PULONG Position)
         // may cause us to lose some of the time, so we will carry the remainder forward 
         // to the next GetPosition() call.
         //
-        ULONG TimeElapsedInMS = ((ULONG)(CurrentTime - m_ullDmaTimeStamp + m_ullElapsedTimeCarryForward)) / 10000;
+        ULONG TimeElapsedInMS = ((ULONG)(CurrentTime - dmaTimeStamp_ + elapsedTimeCarryForward_)) / 10000;
 
         // Carry forward the remainder of this division so we don't fall behind with our position.
         //
-        m_ullElapsedTimeCarryForward = (CurrentTime - m_ullDmaTimeStamp + m_ullElapsedTimeCarryForward) % 10000;
+        elapsedTimeCarryForward_ = (CurrentTime - dmaTimeStamp_ + elapsedTimeCarryForward_) % 10000;
 
         // Calculate how many bytes in the DMA buffer would have been processed in the elapsed
         // time.  Note that the division by 1000 to convert to milliseconds may cause us to 
         // lose some bytes, so we will carry the remainder forward to the next GetPosition() call.
         //
-        ULONG ByteDisplacement = ((m_ulDmaMovementRate * TimeElapsedInMS) + m_ulByteDisplacementCarryForward) / 1000;
+        ULONG ByteDisplacement = ((dmaMovementRate_ * TimeElapsedInMS) + byteDisplacementCarryForward_) / 1000;
 
         // Carry forward the remainder of this division so we don't fall behind with our position.
         //
-        m_ulByteDisplacementCarryForward = ((m_ulDmaMovementRate * TimeElapsedInMS) + m_ulByteDisplacementCarryForward) % 1000;
+        byteDisplacementCarryForward_ = ((dmaMovementRate_ * TimeElapsedInMS) + byteDisplacementCarryForward_) % 1000;
 
         // Increment the DMA position by the number of bytes displaced since the last
         // call to GetPosition() and ensure we properly wrap at buffer length.
         //
-        m_ulDmaPosition = (m_ulDmaPosition + ByteDisplacement) % m_ulDmaBufferSize;
+        dmaPosition_ = (dmaPosition_ + ByteDisplacement) % dmaBufferSize_;
 
         // Return the new DMA position
         //
-        *Position = m_ulDmaPosition;
+        *Position = dmaPosition_;
 
         // Update the DMA time stamp for the next call to GetPosition()
         //
-        m_ullDmaTimeStamp = CurrentTime;
+        dmaTimeStamp_ = CurrentTime;
     }
     else
     {
         // DMA is inactive so just return the current DMA position.
         //
-        *Position = m_ulDmaPosition;
+        *Position = dmaPosition_;
     }
 
     return STATUS_SUCCESS;
@@ -587,7 +587,7 @@ MiniportWaveCyclicStreamMSVAD::NormalizePhysicalPosition(_Inout_ PLONGLONG Physi
 {
     ASSERT(PhysicalPosition);
 
-    *PhysicalPosition = (_100NS_UNITS_PER_SECOND / m_usBlockAlign * *PhysicalPosition) / m_pMiniport->m_SamplingFrequency;
+    *PhysicalPosition = (_100NS_UNITS_PER_SECOND / blockAlign_ * *PhysicalPosition) / miniport_->samplingFrequency_;
 
     return STATUS_SUCCESS;
 }
@@ -615,30 +615,30 @@ MiniportWaveCyclicStreamMSVAD::SetFormat(_In_  PKSDATAFORMAT Format)
 
     NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
 
-    if (m_ksState != KSSTATE_RUN)
+    if (ksState_ != KSSTATE_RUN)
     {
         // MSVAD does not validate the format.
         //
         const PWAVEFORMATEX pWfx = GetWaveFormatEx(Format);
         if (pWfx)
         {
-            ntStatus = KeWaitForSingleObject(&m_pMiniport->m_SampleRateSync, Executive, KernelMode, FALSE, nullptr);
+            ntStatus = KeWaitForSingleObject(&miniport_->sampleRateSync_, Executive, KernelMode, FALSE, nullptr);
             if (STATUS_SUCCESS == ntStatus)
             {
-                if (!m_fCapture)
+                if (!isCapture_)
                 {
-                    ntStatus = m_SaveData.SetDataFormat(Format);
+                    ntStatus = saveData_.SetDataFormat(Format);
                 }
 
-                m_usBlockAlign                   =  pWfx->nBlockAlign;
-                m_fFormat16Bit                   = (pWfx->wBitsPerSample == 16);
-                m_pMiniport->m_SamplingFrequency =  pWfx->nSamplesPerSec;
-                m_ulDmaMovementRate              =  pWfx->nAvgBytesPerSec;
+                blockAlign_                   =  pWfx->nBlockAlign;
+                is16BitSample                   = (pWfx->wBitsPerSample == 16);
+                miniport_->samplingFrequency_ =  pWfx->nSamplesPerSec;
+                dmaMovementRate_              =  pWfx->nAvgBytesPerSec;
 
                 DPF(D_TERSE, ("New Format: %d", pWfx->nSamplesPerSec));
             }
 
-            KeReleaseMutex(&m_pMiniport->m_SampleRateSync, FALSE);
+            KeReleaseMutex(&miniport_->sampleRateSync_, FALSE);
         }
     }
 
@@ -668,10 +668,10 @@ MiniportWaveCyclicStreamMSVAD::SetNotificationFreq(_In_  ULONG  Interval, _Out_ 
     ASSERT(FramingSize);
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::SetNotificationFreq]"));
 
-    m_pMiniport->m_NotificationInterval = Interval;
-    *FramingSize = m_usBlockAlign * m_pMiniport->m_SamplingFrequency * Interval / 1000;
+    miniport_->notificationInterval_ = Interval;
+    *FramingSize = blockAlign_ * miniport_->samplingFrequency_ * Interval / 1000;
 
-    return m_pMiniport->m_NotificationInterval;
+    return miniport_->notificationInterval_;
 }
 
 //=============================================================================
@@ -702,14 +702,14 @@ MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
         NewState = KSSTATE_STOP;
     }
 
-    if (m_ksState != NewState)
+    if (ksState_ != NewState)
     {
         switch (NewState)
         {
             case KSSTATE_PAUSE:
             {
                 DPF(D_TERSE, ("KSSTATE_PAUSE"));
-                m_fDmaActive = FALSE;
+                dmaActive_ = FALSE;
             }
             break;
 
@@ -721,13 +721,13 @@ MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
 
                 // Set the timer for DPC.
                 //
-                m_ullDmaTimeStamp             = KeQueryInterruptTime();
-                m_ullElapsedTimeCarryForward  = 0;
-                m_fDmaActive                  = TRUE;
+                dmaTimeStamp_             = KeQueryInterruptTime();
+                elapsedTimeCarryForward_  = 0;
+                dmaActive_                  = TRUE;
                 delay.HighPart                = 0;
-                delay.LowPart                 = m_pMiniport->m_NotificationInterval;
+                delay.LowPart                 = miniport_->notificationInterval_;
 
-                KeSetTimerEx(m_pTimer, delay, m_pMiniport->m_NotificationInterval, m_pDpc);
+                KeSetTimerEx(timer_, delay, miniport_->notificationInterval_, dpc_);
             }
             break;
 
@@ -735,24 +735,24 @@ MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
 
             DPF(D_TERSE, ("KSSTATE_STOP"));
 
-            m_fDmaActive                      = FALSE;
-            m_ulDmaPosition                   = 0;
-            m_ullElapsedTimeCarryForward      = 0;
-            m_ulByteDisplacementCarryForward  = 0;
+            dmaActive_                      = FALSE;
+            dmaPosition_                   = 0;
+            elapsedTimeCarryForward_      = 0;
+            byteDisplacementCarryForward_  = 0;
 
-            KeCancelTimer( m_pTimer );
+            KeCancelTimer( timer_ );
 
             // Wait until all work items are completed.
             //
-            if (!m_fCapture)
+            if (!isCapture_)
             {
-                m_SaveData.WaitAllWorkItems();
+                saveData_.WaitAllWorkItems();
             }
 
             break;
         }
 
-        m_ksState = NewState;
+        ksState_ = NewState;
     }
 
     return ntStatus;
@@ -778,7 +778,7 @@ _Use_decl_annotations_
 STDMETHODIMP_(void)
 MiniportWaveCyclicStreamMSVAD::Silence(PVOID Buffer, ULONG ByteCount)
 {
-    RtlFillMemory(Buffer, ByteCount, m_fFormat16Bit ? 0 : 0x80);
+    RtlFillMemory(Buffer, ByteCount, is16BitSample ? 0 : 0x80);
 }
 
 //=============================================================================
@@ -813,9 +813,9 @@ void TimerNotify
 
     PCMiniportWaveCyclicMSVAD pMiniport = (PCMiniportWaveCyclicMSVAD) DeferredContext;
 
-    if (pMiniport && pMiniport->m_Port)
+    if (pMiniport && pMiniport->port_)
     {
-        pMiniport->m_Port->Notify(pMiniport->m_ServiceGroup);
+        pMiniport->port_->Notify(pMiniport->serviceGroup_);
     }
 }
 
