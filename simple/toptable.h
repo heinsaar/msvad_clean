@@ -1,15 +1,6 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    toptable.h
-
 Abstract:
-
     Declaration of topology tables.
-
 */
 
 #ifndef _MSVAD_TOPTABLE_H_
@@ -46,18 +37,18 @@ PCPIN_DESCRIPTOR MiniportPins[] =
     0,
     0,
     0,                                              // InstanceCount
-    nullptr,                                           // AutomationTable
+    nullptr,                                        // AutomationTable
     {                                               // KsPinDescriptor
       0,                                            // InterfacesCount
-      nullptr,                                         // Interfaces
+      nullptr,                                      // Interfaces
       0,                                            // MediumsCount
-      nullptr,                                         // Mediums
+      nullptr,                                      // Mediums
       SIZEOF_ARRAY(PinDataRangePointersBridge),     // DataRangesCount
       PinDataRangePointersBridge,                   // DataRanges
       KSPIN_DATAFLOW_IN,                            // DataFlow
       KSPIN_COMMUNICATION_NONE,                     // Communication
       &KSCATEGORY_AUDIO,                            // Category
-      nullptr,                                         // Name
+      nullptr,                                      // Name
       0                                             // Reserved
     }
   },
@@ -67,12 +58,12 @@ PCPIN_DESCRIPTOR MiniportPins[] =
     0,
     0, 
     0,                                              // InstanceCount
-    nullptr,                                           // AutomationTable
+    nullptr,                                        // AutomationTable
     {                                               // KsPinDescriptor
       0,                                            // InterfacesCount
-      nullptr,                                         // Interfaces
+      nullptr,                                      // Interfaces
       0,                                            // MediumsCount
-      nullptr,                                         // Mediums
+      nullptr,                                      // Mediums
       SIZEOF_ARRAY(PinDataRangePointersBridge),     // DataRangesCount
       PinDataRangePointersBridge,                   // DataRanges
       KSPIN_DATAFLOW_IN,                            // DataFlow
@@ -88,12 +79,12 @@ PCPIN_DESCRIPTOR MiniportPins[] =
     0,
     0, 
     0,                                              // InstanceCount
-    nullptr,                                           // AutomationTable
+    nullptr,                                        // AutomationTable
     {                                               // KsPinDescriptor
       0,                                            // InterfacesCount
-      nullptr,                                         // Interfaces
+      nullptr,                                      // Interfaces
       0,                                            // MediumsCount
-      nullptr,                                         // Mediums
+      nullptr,                                      // Mediums
       SIZEOF_ARRAY(PinDataRangePointersBridge),     // DataRangesCount
       PinDataRangePointersBridge,                   // DataRanges
       KSPIN_DATAFLOW_IN,                            // DataFlow
@@ -109,18 +100,18 @@ PCPIN_DESCRIPTOR MiniportPins[] =
     0,
     0,
     0,                                              // InstanceCount
-    nullptr,                                           // AutomationTable
+    nullptr,                                        // AutomationTable
     {                                               // KsPinDescriptor
       0,                                            // InterfacesCount
-      nullptr,                                         // Interfaces
+      nullptr,                                      // Interfaces
       0,                                            // MediumsCount
-      nullptr,                                         // Mediums
+      nullptr,                                      // Mediums
       SIZEOF_ARRAY(PinDataRangePointersBridge),     // DataRangesCount
       PinDataRangePointersBridge,                   // DataRanges
       KSPIN_DATAFLOW_IN,                            // DataFlow
       KSPIN_COMMUNICATION_NONE,                     // Communication
       &KSNODETYPE_MICROPHONE,                       // Category
-      nullptr,                                         // Name
+      nullptr,                                      // Name
       0                                             // Reserved
     }
   },
@@ -130,18 +121,18 @@ PCPIN_DESCRIPTOR MiniportPins[] =
     0,
     0,
     0,                                              // InstanceCount
-    nullptr,                                           // AutomationTable
+    nullptr,                                        // AutomationTable
     {                                               // KsPinDescriptor
       0,                                            // InterfacesCount
-      nullptr,                                         // Interfaces
+      nullptr,                                      // Interfaces
       0,                                            // MediumsCount
-      nullptr,                                         // Mediums
+      nullptr,                                      // Mediums
       SIZEOF_ARRAY(PinDataRangePointersBridge),     // DataRangesCount
       PinDataRangePointersBridge,                   // DataRanges
       KSPIN_DATAFLOW_OUT,                           // DataFlow
       KSPIN_COMMUNICATION_NONE,                     // Communication
       &KSNODETYPE_SPEAKER,                          // Category
-      nullptr,                                         // Name
+      nullptr,                                      // Name
       0                                             // Reserved
     }
   },
@@ -151,18 +142,18 @@ PCPIN_DESCRIPTOR MiniportPins[] =
     0,
     0,
     0,                                              // InstanceCount
-    nullptr,                                           // AutomationTable
+    nullptr,                                        // AutomationTable
     {                                               // KsPinDescriptor
       0,                                            // InterfacesCount
-      nullptr,                                         // Interfaces
+      nullptr,                                      // Interfaces
       0,                                            // MediumsCount
-      nullptr,                                         // Mediums
+      nullptr,                                      // Mediums
       SIZEOF_ARRAY(PinDataRangePointersBridge),     // DataRangesCount
       PinDataRangePointersBridge,                   // DataRanges
       KSPIN_DATAFLOW_OUT,                           // DataFlow
       KSPIN_COMMUNICATION_NONE,                     // Communication
       &KSCATEGORY_AUDIO,                            // Category
-      nullptr,                                         // Name
+      nullptr,                                      // Name
       0                                             // Reserved
     }
   }
@@ -315,49 +306,49 @@ PCNODE_DESCRIPTOR TopologyNodes[] =
   // KSNODE_TOPO_LINEOUT_MIX
   {
     0,                      // Flags
-    nullptr,                   // AutomationTable
+    nullptr,                // AutomationTable
     &KSNODETYPE_SUM,        // Type
-    nullptr                    // Name
+    nullptr                 // Name
   },
 
   // KSNODE_TOPO_LINEOUT_VOLUME
   {
-    0,                      // Flags
-    &AutomationVolume,      // AutomationTable
-    &KSNODETYPE_VOLUME,     // Type
+    0,                        // Flags
+    &AutomationVolume,        // AutomationTable
+    &KSNODETYPE_VOLUME,       // Type
     &KSAUDFNAME_MASTER_VOLUME // Name
   },
 
   // KSNODE_TOPO_WAVEIN_MUX
   {
-    0,                      // Flags
-    &AutomationMux,         // AutomationTable
-    &KSNODETYPE_MUX,        // Type
+    0,                           // Flags
+    &AutomationMux,              // AutomationTable
+    &KSNODETYPE_MUX,             // Type
     &KSAUDFNAME_RECORDING_SOURCE // Name
   },
 
   // KSNODE_TOPO_DEV_SPECIFIC_BOOL
   {
-    0,                      // Flags
-    &AutomationDevSpecific, // AutomationTable
-    &KSNODETYPE_DEV_SPECIFIC,// Type
-    nullptr                     // Name
+    0,                           // Flags
+    &AutomationDevSpecific,      // AutomationTable
+    &KSNODETYPE_DEV_SPECIFIC,    // Type
+    nullptr                      // Name
   },
 
   // KSNODE_TOPO_DEV_SPECIFIC_INT
   {
-    0,                      // Flags
-    &AutomationDevSpecific, // AutomationTable
-    &KSNODETYPE_DEV_SPECIFIC,// Type
-    nullptr                     // Name
+    0,                           // Flags
+    &AutomationDevSpecific,      // AutomationTable
+    &KSNODETYPE_DEV_SPECIFIC,    // Type
+    nullptr                      // Name
   },
 
   // KSNODE_TOPO_DEV_SPECIFIC_UINT
   {
-    0,                      // Flags
-    &AutomationDevSpecific, // AutomationTable
-    &KSNODETYPE_DEV_SPECIFIC,// Type
-    nullptr                     // Name
+    0,                           // Flags
+    &AutomationDevSpecific,      // AutomationTable
+    &KSNODETYPE_DEV_SPECIFIC,    // Type
+    nullptr                      // Name
   },
 };
 
@@ -436,7 +427,7 @@ PCFILTER_DESCRIPTOR MiniportFilterDescriptor =
   SIZEOF_ARRAY(MiniportConnections),  // ConnectionCount
   MiniportConnections,                // Connections
   0,                                  // CategoryCount
-  nullptr                                // Categories
+  nullptr                             // Categories
 };
 
 #endif

@@ -1,15 +1,6 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    adapter.cpp
-
 Abstract:
-
     Setup and miniport installation.  No resources are used by msvad.
-
 */
 
 #pragma warning (disable : 4127)
@@ -42,12 +33,6 @@ NTSTATUS StartDevice(IN  PDEVICE_OBJECT, IN  PIRP, IN  PRESOURCELIST);
 //-----------------------------------------------------------------------------
 
 //=============================================================================
-#pragma code_seg("PAGE")
-NTSTATUS PnpHandler
-(
-    _In_ DEVICE_OBJECT *_DeviceObject, 
-    _In_ IRP *_Irp
-)
 /*
 
 Routine Description:
@@ -60,17 +45,15 @@ Arguments:
   _Irp - The Irp being passed
 
 */
+#pragma code_seg("PAGE")
+NTSTATUS PnpHandler(_In_ DEVICE_OBJECT *_DeviceObject, _In_ IRP *_Irp)
 {
-    NTSTATUS ntStatus = STATUS_UNSUCCESSFUL;
-
     PAGED_CODE(); 
-
     ASSERT(_DeviceObject);
     ASSERT(_Irp);
 
     // Check for the REMOVE_DEVICE irp.  If we're being unloaded, 
-    // uninstantiate our devices and release the adapter common
-    // object.
+    // uninstantiate our devices and release the adapter common object.
     //
     IO_STACK_LOCATION* stack = IoGetCurrentIrpStackLocation(_Irp);
     
@@ -88,42 +71,27 @@ Arguments:
         }
     }
     
-    ntStatus = PcDispatchIrp(_DeviceObject, _Irp);
-
-    return ntStatus;
+    return PcDispatchIrp(_DeviceObject, _Irp);
 }
 
 //=============================================================================
-#pragma code_seg("INIT")
-extern "C" DRIVER_INITIALIZE DriverEntry;
-extern "C" NTSTATUS DriverEntry
-( 
-    IN  PDRIVER_OBJECT  DriverObject,
-    IN  PUNICODE_STRING RegistryPathName
-)
-{
 /*
-
 Routine Description:
 
   Installable driver initialization entry point.
   This entry point is called directly by the I/O system.
-
   All audio adapter drivers can use this code without change.
 
 Arguments:
 
   DriverObject - pointer to the driver object
-
   RegistryPath - pointer to a Unicode string representing the path,
-                   to driver-specific key in the registry.
-
-
-
-  STATUS_SUCCESS if successful,
-  STATUS_UNSUCCESSFUL otherwise.
-
+                 to driver-specific key in the registry.
 */
+#pragma code_seg("INIT")
+extern "C" DRIVER_INITIALIZE DriverEntry;
+extern "C" NTSTATUS DriverEntry(IN  PDRIVER_OBJECT  DriverObject, IN  PUNICODE_STRING RegistryPathName)
+{
     DPF(D_TERSE, ("[DriverEntry]"));
 
     // Tell the class driver to initialize the driver.
@@ -148,13 +116,7 @@ Arguments:
 #pragma warning(disable:28152)
 #pragma code_seg("PAGE")
 //=============================================================================
-NTSTATUS AddDevice
-( 
-    IN  PDRIVER_OBJECT          DriverObject,
-    IN  PDEVICE_OBJECT          PhysicalDeviceObject 
-)
 /*
-
 Routine Description:
 
   The Plug & Play subsystem is handing us a brand new PDO, for which we
@@ -173,6 +135,7 @@ Arguments:
   DriverObject - pointer to a driver object
   PhysicalDeviceObject -  pointer to a device object created by the underlying bus driver.
 */
+NTSTATUS AddDevice(IN  PDRIVER_OBJECT DriverObject, IN  PDEVICE_OBJECT PhysicalDeviceObject)
 {
     PAGED_CODE();
     DPF(D_TERSE, ("[AddDevice]"));
@@ -183,36 +146,26 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS StartDevice
-( 
-    IN  PDEVICE_OBJECT          DeviceObject,     
-    IN  PIRP                    Irp,              
-    IN  PRESOURCELIST           ResourceList      
-)  
-{
 /*
-
 Routine Description:
 
-  This function is called by the operating system when the device is 
-  started.
-  It is responsible for starting the miniports.  This code is specific to    
-  the adapter because it calls out miniports for functions that are specific 
-  to the adapter.                                                            
+  This function is called by the operating system when the device is started.
+  It is responsible for starting the miniports.  This code is specific to the   
+  adapter because it calls out miniports for functions that are specific to the adapter.                                                            
 
 Arguments:
 
   DeviceObject - pointer to the driver object
-
-  Irp - pointer to the irp 
-
+  Irp          - pointer to the irp 
   ResourceList - pointer to the resource list assigned by PnP manager
-
-
-
-  .
-
 */
+NTSTATUS StartDevice
+(
+    IN  PDEVICE_OBJECT DeviceObject,
+    IN  PIRP           Irp,
+    IN  PRESOURCELIST  ResourceList
+)
+{
     UNREFERENCED_PARAMETER(ResourceList);
     UNREFERENCED_PARAMETER(Irp);
 

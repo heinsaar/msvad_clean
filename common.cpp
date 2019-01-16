@@ -1,15 +1,6 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    common.cpp
-
 Abstract:
-
     Implementation of the AdapterCommon class. 
-
 */
 
 #pragma warning (disable : 4127)
@@ -68,22 +59,6 @@ NTSTATUS CreateMiniportTopologyMSVAD
 //=============================================================================
 // Helper Routines
 //=============================================================================
-//=============================================================================
-#pragma code_seg("PAGE")
-NTSTATUS InstallSubdevice
-( 
-    _In_        PDEVICE_OBJECT          DeviceObject,
-    _In_opt_    PIRP                    Irp,
-    _In_        PWSTR                   Name,
-    _In_        REFGUID                 PortClassId,
-    _In_        REFGUID                 MiniportClassId,
-    _In_opt_    PMSVADMINIPORTCREATE    MiniportCreate,
-    _In_opt_    PUNKNOWN                UnknownAdapter,
-    _In_opt_    PRESOURCELIST           ResourceList,
-    _Out_opt_   PUNKNOWN *              OutPortUnknown,
-    _Out_opt_   PUNKNOWN *              OutMiniportUnknown
-)
-{
 /*
 
 Routine Description:
@@ -121,6 +96,21 @@ Arguments:
 
     OutPortUnknown - pointer to store the unknown port interface.
 */
+#pragma code_seg("PAGE")
+NTSTATUS InstallSubdevice
+(
+    _In_        PDEVICE_OBJECT          DeviceObject,
+    _In_opt_    PIRP                    Irp,
+    _In_        PWSTR                   Name,
+    _In_        REFGUID                 PortClassId,
+    _In_        REFGUID                 MiniportClassId,
+    _In_opt_    PMSVADMINIPORTCREATE    MiniportCreate,
+    _In_opt_    PUNKNOWN                UnknownAdapter,
+    _In_opt_    PRESOURCELIST           ResourceList,
+    _Out_opt_   PUNKNOWN *              OutPortUnknown,
+    _Out_opt_   PUNKNOWN *              OutMiniportUnknown
+)
+{
     PAGED_CODE();
 
     ASSERT(DeviceObject);
@@ -243,15 +233,6 @@ void InstantiateTimerWorkRoutine
 }
 
 //=============================================================================
-#pragma code_seg()
-KDEFERRED_ROUTINE InstantiateTimerNotify;
-void InstantiateTimerNotify
-(
-    IN  PKDPC Dpc,
-    IN  PVOID DeferredContext,
-    IN  PVOID SA1,
-    IN  PVOID SA2
-)
 /*
 
 Routine Description:
@@ -267,14 +248,17 @@ Arguments:
                     the DeferredRoutine when it is called
 
   SA1 - System argument 1
-
   SA2 - System argument 2
-
-
-
-  .
-
 */
+#pragma code_seg()
+KDEFERRED_ROUTINE InstantiateTimerNotify;
+void InstantiateTimerNotify
+(
+    IN  PKDPC Dpc,
+    IN  PVOID DeferredContext,
+    IN  PVOID SA1,
+    IN  PVOID SA2
+)
 {
     UNREFERENCED_PARAMETER(Dpc);
     UNREFERENCED_PARAMETER(SA1);
@@ -322,35 +306,10 @@ Arguments:
 // CAdapterCommon
 //   
 
-class CAdapterCommon : 
-    public IAdapterCommon,
-    public IAdapterPowerManagement,
-    public CUnknown    
+class CAdapterCommon : public IAdapterCommon,
+                       public IAdapterPowerManagement,
+                       public CUnknown    
 {
-    private:
-        PUNKNOWN                m_pPortWave;            // Port Wave Interface
-        PUNKNOWN                m_pMiniportWave;        // Miniport Wave Interface
-        PUNKNOWN                m_pPortTopology;        // Port Mixer Topology Interface
-        PUNKNOWN                m_pMiniportTopology;    // Miniport Mixer Topology Interface
-        PSERVICEGROUP           m_pServiceGroupWave;
-        PDEVICE_OBJECT          m_pDeviceObject;      
-        DEVICE_POWER_STATE      m_PowerState;        
-        PCMSVADHW               m_pHW;                  // Virtual MSVAD HW object
-        PKTIMER                 m_pInstantiateTimer;    // Timer object
-        PRKDPC                  m_pInstantiateDpc;      // Deferred procedure call object
-        BOOL                    m_bInstantiated;        // Flag indicating whether or not subdevices are exposed
-        BOOL                    m_bPluggedIn;           // Flag indicating whether or not a jack is plugged in
-        PIO_WORKITEM            m_pInstantiateWorkItem; // Work Item for instantiate timer callback
-
-        //=====================================================================
-        // Helper routines for managing the states of topologies being exposed
-        STDMETHODIMP_(NTSTATUS) ExposeMixerTopology();
-        STDMETHODIMP_(NTSTATUS) ExposeWaveTopology();
-        STDMETHODIMP_(NTSTATUS) UnexposeMixerTopology();
-        STDMETHODIMP_(NTSTATUS) UnexposeWaveTopology();
-        STDMETHODIMP_(NTSTATUS) ConnectTopologies();
-        STDMETHODIMP_(NTSTATUS) DisconnectTopologies();
-
     public:
         //=====================================================================
         // Default CUnknown
@@ -406,11 +365,31 @@ class CAdapterCommon :
         //=====================================================================
         // friends
 
-        friend NTSTATUS NewAdapterCommon
-        ( 
-            OUT PADAPTERCOMMON * OutAdapterCommon, 
-            IN  PRESOURCELIST   ResourceList 
-        );
+        friend NTSTATUS NewAdapterCommon(OUT PADAPTERCOMMON * OutAdapterCommon, IN  PRESOURCELIST   ResourceList);
+
+private:
+    PUNKNOWN                m_pPortWave;            // Port Wave Interface
+    PUNKNOWN                m_pMiniportWave;        // Miniport Wave Interface
+    PUNKNOWN                m_pPortTopology;        // Port Mixer Topology Interface
+    PUNKNOWN                m_pMiniportTopology;    // Miniport Mixer Topology Interface
+    PSERVICEGROUP           m_pServiceGroupWave;
+    PDEVICE_OBJECT          m_pDeviceObject;
+    DEVICE_POWER_STATE      m_PowerState;
+    PCMSVADHW               m_pHW;                  // Virtual MSVAD HW object
+    PKTIMER                 m_pInstantiateTimer;    // Timer object
+    PRKDPC                  m_pInstantiateDpc;      // Deferred procedure call object
+    BOOL                    m_bInstantiated;        // Flag indicating whether or not subdevices are exposed
+    BOOL                    m_bPluggedIn;           // Flag indicating whether or not a jack is plugged in
+    PIO_WORKITEM            m_pInstantiateWorkItem; // Work Item for instantiate timer callback
+
+    //=====================================================================
+    // Helper routines for managing the states of topologies being exposed
+    STDMETHODIMP_(NTSTATUS) ExposeMixerTopology();
+    STDMETHODIMP_(NTSTATUS) ExposeWaveTopology();
+    STDMETHODIMP_(NTSTATUS) UnexposeMixerTopology();
+    STDMETHODIMP_(NTSTATUS) UnexposeWaveTopology();
+    STDMETHODIMP_(NTSTATUS) ConnectTopologies();
+    STDMETHODIMP_(NTSTATUS) DisconnectTopologies();
 };
 
 //-----------------------------------------------------------------------------
@@ -429,11 +408,6 @@ NTSTATUS NewAdapterCommon
 			 "Allocation failures cause a system crash"))
     IN  POOL_TYPE               PoolType 
 )
-/*
-
-Routine Description:
-  Creates a new CAdapterCommon
-*/
 {
     PAGED_CODE();
 
@@ -446,7 +420,6 @@ Routine Description:
 CAdapterCommon::~CAdapterCommon()
 {
     PAGED_CODE();
-
     DPF_ENTER(("[CAdapterCommon::~CAdapterCommon]"));
 
     if (m_pInstantiateTimer)
@@ -504,21 +477,8 @@ CAdapterCommon::~CAdapterCommon()
 
 //=============================================================================
 #pragma code_seg()
-STDMETHODIMP_(PDEVICE_OBJECT)   
+STDMETHODIMP_(PDEVICE_OBJECT)
 CAdapterCommon::GetDeviceObject()
-/*
-
-Routine Description:
-
-  Returns the deviceobject
-
-Arguments:
-
-
-
-  PDEVICE_OBJECT
-
-*/
 {
     return m_pDeviceObject;
 }
@@ -526,21 +486,6 @@ Arguments:
 //=============================================================================
 #pragma code_seg("PAGE")
 NTSTATUS CAdapterCommon::Init(IN  PDEVICE_OBJECT DeviceObject)
-/*
-
-Routine Description:
-
-    Initialize adapter common object.
-
-Arguments:
-
-    DeviceObject - pointer to the device object
-
-
-
-  .
-
-*/
 {
     PAGED_CODE();
 
@@ -621,12 +566,12 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(void)
-CAdapterCommon::MixerReset()
 /*
 Routine Description:
   Reset mixer registers from registry.
 */
+STDMETHODIMP_(void)
+CAdapterCommon::MixerReset()
 {
     PAGED_CODE();
     
@@ -637,12 +582,6 @@ Routine Description:
 }
 
 //=============================================================================
-STDMETHODIMP
-CAdapterCommon::NonDelegatingQueryInterface
-( 
-    _In_         REFIID Interface,
-    _COM_Outptr_ PVOID* Object 
-)
 /*
 
 Routine Description:
@@ -650,6 +589,12 @@ Routine Description:
   QueryInterface routine for AdapterCommon
 
 */
+STDMETHODIMP
+CAdapterCommon::NonDelegatingQueryInterface
+(
+    _In_         REFIID Interface,
+    _COM_Outptr_ PVOID* Object
+)
 {
     PAGED_CODE();
 
@@ -683,10 +628,7 @@ Routine Description:
 
 //=============================================================================
 STDMETHODIMP_(void)
-CAdapterCommon::SetWaveServiceGroup
-( 
-    IN PSERVICEGROUP ServiceGroup 
-)
+CAdapterCommon::SetWaveServiceGroup(IN PSERVICEGROUP ServiceGroup)
 {
     PAGED_CODE();
     
@@ -706,21 +648,12 @@ CAdapterCommon::SetWaveServiceGroup
 }
 
 //=============================================================================
+/*
+Routine Description:
+  Instantiates the wave and topology ports and exposes them.
+*/
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::InstantiateDevices()
-/*
-
-Routine Description:
-
-  Instantiates the wave and topology ports and exposes them.
-
-Arguments:
-
-
-
-  NTSTATUS
-
-*/
 {
     PAGED_CODE();
 
@@ -757,21 +690,12 @@ Arguments:
 }
 
 //=============================================================================
+/*
+Routine Description:
+  Uninstantiates the wave and topology ports.
+*/
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::UninstantiateDevices()
-/*
-
-Routine Description:
-
-  Uninstantiates the wave and topology ports.
-
-Arguments:
-
-
-
-  NTSTATUS
-
-*/
 {
     PAGED_CODE();
 
@@ -810,21 +734,12 @@ Arguments:
 }
 
 //=============================================================================
+/*
+Routine Description:
+  Called in response to jacks being plugged in.
+*/
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::Plugin()
-/*
-
-Routine Description:
-
-  Called in response to jacks being plugged in.
-
-Arguments:
-
-
-
-  NTSTATUS
-
-*/
 {
     PAGED_CODE();
 
@@ -863,15 +778,12 @@ Arguments:
 }
 
 //=============================================================================
+/*
+Routine Description:
+  Called in response to jacks being unplugged.
+*/
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::Unplug()
-/*
-
-Routine Description:
-
-  Called in response to jacks being unplugged.
-  
-*/
 {
     PAGED_CODE();
 
@@ -909,13 +821,11 @@ Routine Description:
     return ntStatus;
 }
 
-STDMETHODIMP_(NTSTATUS) 
-CAdapterCommon::ExposeMixerTopology()
 /*
-
   Creates and registers the mixer topology.
-
 */
+STDMETHODIMP_(NTSTATUS)
+CAdapterCommon::ExposeMixerTopology()
 {
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
@@ -939,11 +849,11 @@ CAdapterCommon::ExposeMixerTopology()
     return ntStatus;
 }
 
-STDMETHODIMP_(NTSTATUS) 
-CAdapterCommon::ExposeWaveTopology()
 /*
   Creates and registers wave topology.
 */
+STDMETHODIMP_(NTSTATUS)
+CAdapterCommon::ExposeWaveTopology()
 {
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
@@ -1011,21 +921,12 @@ CAdapterCommon::UnexposeMixerTopology()
     return ntStatus;
 }
 
+/*
+Routine Description:
+  Unregisters and releases the wave topology.
+*/
 STDMETHODIMP_(NTSTATUS)
 CAdapterCommon::UnexposeWaveTopology()
-/*
-
-Routine Description:
-
-  Unregisters and releases the wave topology.
-
-Arguments:
-
-
-
-  NTSTATUS
-
-*/
 {
     NTSTATUS ntStatus = STATUS_SUCCESS;
     PUNREGISTERSUBDEVICE pUnregisterSubdevice = nullptr;
@@ -1066,11 +967,11 @@ Arguments:
     return ntStatus;
 }
 
-STDMETHODIMP_(NTSTATUS)
-CAdapterCommon::ConnectTopologies()
 /*
   Connects the bridge pins between the wave and mixer topologies.
 */
+STDMETHODIMP_(NTSTATUS)
+CAdapterCommon::ConnectTopologies()
 {
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
@@ -1079,7 +980,7 @@ CAdapterCommon::ConnectTopologies()
     // Connect the capture path.
     //
     if ((TopologyPhysicalConnections.ulTopologyOut != (ULONG)-1) &&
-        (TopologyPhysicalConnections.ulWaveIn != (ULONG)-1))
+        (TopologyPhysicalConnections.ulWaveIn      != (ULONG)-1))
     {
         ntStatus = PcRegisterPhysicalConnection(m_pDeviceObject,
                                                 m_pPortTopology, TopologyPhysicalConnections.ulTopologyOut,
@@ -1102,11 +1003,11 @@ CAdapterCommon::ConnectTopologies()
     return ntStatus;
 }
 
-STDMETHODIMP_(NTSTATUS)
-CAdapterCommon::DisconnectTopologies()
 /*
   Disconnects the bridge pins between the wave and mixer topologies.
 */
+STDMETHODIMP_(NTSTATUS)
+CAdapterCommon::DisconnectTopologies()
 {
     NTSTATUS                        ntStatus    = STATUS_SUCCESS;
     NTSTATUS                        ntStatus2   = STATUS_SUCCESS;
@@ -1160,25 +1061,21 @@ CAdapterCommon::DisconnectTopologies()
     return ntStatus;
 }
 
-#pragma code_seg()
 //=============================================================================
-STDMETHODIMP_(NTSTATUS)		
-CAdapterCommon::SetInstantiateWorkItem
-(
-    _In_ __drv_aliasesMem PIO_WORKITEM WorkItem
-)
 /*
 
 Routine Description:
 
-  Sets the work item that will be called to instantiate or 
-  uninstantiate topologies.
+  Sets the work item that will be called to instantiate or uninstantiate topologies.
 
 Arguments:
 
   PIO_WORKITEM - [in] work item that was previously allocated.
 
 */
+#pragma code_seg()
+STDMETHODIMP_(NTSTATUS)
+CAdapterCommon::SetInstantiateWorkItem(_In_ __drv_aliasesMem PIO_WORKITEM WorkItem)
 {
     // Make sure there isn't already a work item allocated.
     //
@@ -1194,10 +1091,7 @@ Arguments:
     return STATUS_SUCCESS;
 }
 
-#pragma code_seg("PAGE")
 //=============================================================================
-STDMETHODIMP_(NTSTATUS)
-CAdapterCommon::FreeInstantiateWorkItem()
 /*
 
 Routine Description:
@@ -1206,6 +1100,9 @@ Routine Description:
   uninstantiate topologies.
   
 */
+#pragma code_seg("PAGE")
+STDMETHODIMP_(NTSTATUS)
+CAdapterCommon::FreeInstantiateWorkItem()
 {
     PAGED_CODE();
 
@@ -1227,19 +1124,6 @@ Routine Description:
 //=============================================================================
 STDMETHODIMP_(PUNKNOWN *)
 CAdapterCommon::WavePortDriverDest()
-/*
-
-Routine Description:
-
-  Returns the wave port.
-
-Arguments:
-
-
-
-  PUNKNOWN : pointer to waveport
-
-*/
 {
     PAGED_CODE();
 
@@ -1249,19 +1133,13 @@ Arguments:
 #pragma code_seg()
 
 //=============================================================================
+/*
+Routine Description:
+  Fetch Device Specific information.
+  BOOL - Device Specific info
+*/
 STDMETHODIMP_(BOOL)
 CAdapterCommon::bDevSpecificRead()
-/*
-
-Routine Description:
-
-  Fetch Device Specific information.
-
-
-
-    BOOL - Device Specific info
-
-*/
 {
     if (m_pHW)
     {
@@ -1272,26 +1150,14 @@ Routine Description:
 }
 
 //=============================================================================
-STDMETHODIMP_(void)
-CAdapterCommon::bDevSpecificWrite
-(
-    IN  BOOL devSpecific
-)
 /*
-
 Routine Description:
-
   Store the new value in the Device Specific location.
-
 Arguments:
-
   bDevSpecific - Value to store
-
-
-
-  N/A.
-
 */
+STDMETHODIMP_(void)
+CAdapterCommon::bDevSpecificWrite(IN  BOOL devSpecific)
 {
     if (m_pHW)
     {
@@ -1300,23 +1166,14 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(INT)
-CAdapterCommon::iDevSpecificRead()
 /*
-
 Routine Description:
-
   Fetch Device Specific information.
 
-Arguments:
-
-  N/A
-
-
-
     INT - Device Specific info
-
 */
+STDMETHODIMP_(INT)
+CAdapterCommon::iDevSpecificRead()
 {
     if (m_pHW)
     {
@@ -1327,15 +1184,12 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(void)
-CAdapterCommon::iDevSpecificWrite
-(
-    IN  INT devSpecific
-)
 /*
 Routine Description:
   Store the new value in the Device Specific location.
 */
+STDMETHODIMP_(void)
+CAdapterCommon::iDevSpecificWrite(IN  INT devSpecific)
 {
     if (m_pHW)
     {
@@ -1344,12 +1198,12 @@ Routine Description:
 }
 
 //=============================================================================
-STDMETHODIMP_(UINT)
-CAdapterCommon::uiDevSpecificRead()
 /*
 Routine Description:
   Fetch Device Specific information.
 */
+STDMETHODIMP_(UINT)
+CAdapterCommon::uiDevSpecificRead()
 {
     if (m_pHW)
     {
@@ -1360,15 +1214,12 @@ Routine Description:
 }
 
 //=============================================================================
-STDMETHODIMP_(void)
-CAdapterCommon::uiDevSpecificWrite
-(
-    IN  UINT devSpecific
-)
 /*
 Routine Description:
   Store the new value in the Device Specific location.
 */
+STDMETHODIMP_(void)
+CAdapterCommon::uiDevSpecificWrite(IN  UINT devSpecific)
 {
     if (m_pHW)
     {
@@ -1377,26 +1228,16 @@ Routine Description:
 }
 
 //=============================================================================
-STDMETHODIMP_(BOOL)
-CAdapterCommon::MixerMuteRead
-(
-    IN  ULONG index
-)
 /*
-
 Routine Description:
-
   Store the new value in mixer register array.
 
 Arguments:
-
   Index - node id
-
-
-
     BOOL - mixer mute setting for this node
-
 */
+STDMETHODIMP_(BOOL)
+CAdapterCommon::MixerMuteRead(IN  ULONG index)
 {
     if (m_pHW)
     {
@@ -1407,29 +1248,16 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(void)
-CAdapterCommon::MixerMuteWrite
-(
-    IN  ULONG Index,
-    IN  BOOL Value
-)
 /*
-
 Routine Description:
-
   Store the new value in mixer register array.
 
 Arguments:
-
   Index - node id
-
   Value - new mute settings
-
-
-
-  .
-
 */
+STDMETHODIMP_(void)
+CAdapterCommon::MixerMuteWrite(IN  ULONG Index, IN  BOOL Value)
 {
     if (m_pHW)
     {
@@ -1438,25 +1266,16 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(ULONG)
-CAdapterCommon::MixerMuxRead() 
 /*
-
 Routine Description:
-
   Return the mux selection
 
 Arguments:
-
   Index - node id
-
   Value - new mute settings
-
-
-
-  .
-
 */
+STDMETHODIMP_(ULONG)
+CAdapterCommon::MixerMuxRead()
 {
     if (m_pHW)
     {
@@ -1467,28 +1286,16 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(void)
-CAdapterCommon::MixerMuxWrite
-(
-    IN  ULONG Index
-)
 /*
-
 Routine Description:
-
   Store the new mux selection
 
 Arguments:
-
   Index - node id
-
   Value - new mute settings
-
-
-
-  .
-
 */
+STDMETHODIMP_(void)
+CAdapterCommon::MixerMuxWrite(IN  ULONG Index)
 {
     if (m_pHW)
     {
@@ -1497,29 +1304,18 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(LONG)
-CAdapterCommon::MixerVolumeRead
-( 
-    IN  ULONG Index,
-    IN  LONG Channel
-)
 /*
-
 Routine Description:
-
   Return the value in mixer register array.
 
 Arguments:
-
   Index - node id
 
   Channel = which channel
-
-
-
     Byte - mixer volume settings for this line
-
 */
+STDMETHODIMP_(LONG)
+CAdapterCommon::MixerVolumeRead(IN  ULONG Index, IN  LONG Channel)
 {
     if (m_pHW)
     {
@@ -1530,27 +1326,18 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(void)
-CAdapterCommon::MixerVolumeWrite
-( 
-    IN  ULONG Index,
-    IN  LONG Channel,
-    IN  LONG Value
-)
 /*
-
 Routine Description:
-
   Store the new value in mixer register array.
 
 Arguments:
 
-  Index - node id
-
+  Index   - node id
   Channel - which channel
-
-  Value - new volume level
+  Value   - new volume level
 */
+STDMETHODIMP_(void)
+CAdapterCommon::MixerVolumeWrite(IN  ULONG Index, IN  LONG Channel, IN  LONG Value)
 {
     if (m_pHW)
     {
@@ -1559,15 +1346,12 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(void)
-CAdapterCommon::PowerChangeState
-( 
-    _In_  POWER_STATE NewState 
-)
 /*
 Arguments:
-  NewState - The requested, new power state for the device. 
+  NewState - The requested, new power state for the device.
 */
+STDMETHODIMP_(void)
+CAdapterCommon::PowerChangeState(_In_  POWER_STATE NewState)
 {
     DPF_ENTER(("[CAdapterCommon::PowerChangeState]"));
 
@@ -1594,9 +1378,6 @@ Arguments:
 }
 
 //=============================================================================
-_Use_decl_annotations_
-STDMETHODIMP_(NTSTATUS)
-CAdapterCommon::QueryDeviceCapabilities(PDEVICE_CAPABILITIES PowerDeviceCaps)
 /*
 Routine Description:
 
@@ -1607,6 +1388,9 @@ Routine Description:
 Arguments:
   PowerDeviceCaps - The device's capabilities. 
 */
+_Use_decl_annotations_
+STDMETHODIMP_(NTSTATUS)
+CAdapterCommon::QueryDeviceCapabilities(PDEVICE_CAPABILITIES PowerDeviceCaps)
 {
     UNREFERENCED_PARAMETER(PowerDeviceCaps);
 
@@ -1616,18 +1400,15 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(NTSTATUS)
-CAdapterCommon::QueryPowerChangeState(_In_  POWER_STATE NewStateQuery)
 /*
-
 Routine Description:
-
   Query to see if the device can change to this power state 
 
 Arguments:
-
   NewStateQuery - The requested, new power state for the device
 */
+STDMETHODIMP_(NTSTATUS)
+CAdapterCommon::QueryPowerChangeState(_In_  POWER_STATE NewStateQuery)
 {
     UNREFERENCED_PARAMETER(NewStateQuery);
 
@@ -1635,4 +1416,3 @@ Arguments:
 
     return STATUS_SUCCESS;
 }
-

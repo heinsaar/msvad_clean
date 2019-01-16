@@ -1,15 +1,6 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    wavtable.h
-
 Abstract:
-
     Declaration of wave miniport tables.
-
 */
 
 #ifndef _MSVAD_WAVTABLE_H_
@@ -160,16 +151,16 @@ PCNODE_DESCRIPTOR MiniportNodes[] =
     // KSNODE_WAVE_ADC
     {
         0,                      // Flags
-        nullptr,                   // AutomationTable
+        nullptr,                // AutomationTable
         &KSNODETYPE_ADC,        // Type
-        nullptr                    // Name
+        nullptr                 // Name
     },
     // KSNODE_WAVE_DAC
     {
         0,                      // Flags
-        nullptr,                   // AutomationTable
+        nullptr,                // AutomationTable
         &KSNODETYPE_DAC,        // Type
-        nullptr                    // Name
+        nullptr                 // Name
     }
 };
 
@@ -219,7 +210,7 @@ PCFILTER_DESCRIPTOR MiniportFilterDescriptor =
     SIZEOF_ARRAY(MiniportConnections),  // ConnectionCount
     MiniportConnections,                // Connections
     0,                                  // CategoryCount
-    nullptr                                // Categories  - use defaults (audio, render, capture)
+    nullptr                             // Categories  - use defaults (audio, render, capture)
 };
 
 #endif

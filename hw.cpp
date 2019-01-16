@@ -1,18 +1,7 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    hw.cpp
-
 Abstract:
-
     Implementation of MSVAD HW class. 
-    MSVAD HW has an array for storing mixer and volume settings
-    for the topology.
-
-
+    MSVAD HW has an array for storing mixer and volume settings for the topology.
 */
 #include <msvad.h>
 #include "hw.h"
@@ -34,114 +23,64 @@ CMSVADHW::CMSVADHW()
 }
 #pragma code_seg()
 
-
 //=============================================================================
-BOOL
-CMSVADHW::bGetDevSpecific()
 /*
-
 Routine Description:
-
   Gets the HW (!) Device Specific info
-
-
-
-  True or False (in this example).
-
 */
+BOOL CMSVADHW::bGetDevSpecific()
 {
     return m_bDevSpecific;
 }
 
 //=============================================================================
-void
-CMSVADHW::bSetDevSpecific
-(
-    IN  BOOL devSpecific
-)
 /*
-
 Routine Description:
-
   Sets the HW (!) Device Specific info
 
 Arguments:
 
-  fDevSpecific - true or false for this example.
+  devSpecific - true or false for this example.
 */
+void CMSVADHW::bSetDevSpecific(IN  BOOL devSpecific)
 {
     m_bDevSpecific = devSpecific;
 }
 
 //=============================================================================
-INT
-CMSVADHW::iGetDevSpecific()
 /*
-
 Routine Description:
-
   Gets the HW (!) Device Specific info
-
-Arguments:
-
-  N/A
-
-
-
-  int (in this example).
-
 */
+INT CMSVADHW::iGetDevSpecific()
 {
     return m_iDevSpecific;
 }
 
 //=============================================================================
-void
-CMSVADHW::iSetDevSpecific
-(
-    IN  INT                 devSpecific
-)
 /*
 Routine Description:
-
   Sets the HW (!) Device Specific info
 
 Arguments:
-
-  fDevSpecific - true or false for this example.
+  devSpecific - true or false for this example.
 */
+void CMSVADHW::iSetDevSpecific(IN  INT devSpecific)
 {
     m_iDevSpecific = devSpecific;
 }
 
 //=============================================================================
-UINT
-CMSVADHW::uiGetDevSpecific()
 /*
-
 Routine Description:
-
   Gets the HW (!) Device Specific info
-
-Arguments:
-
-  N/A
-
-
-
-  UINT (in this example).
-
 */
+UINT CMSVADHW::uiGetDevSpecific()
 {
     return m_uiDevSpecific;
 }
 
 //=============================================================================
-void
-CMSVADHW::uiSetDevSpecific
-(
-    IN  UINT                devSpecific
-)
 /*
 
 Routine Description:
@@ -152,32 +91,22 @@ Arguments:
 
   uiDevSpecific - int for this example.
 */
+void CMSVADHW::uiSetDevSpecific(IN  UINT devSpecific)
 {
     m_uiDevSpecific = devSpecific;
 }
 
-
 //=============================================================================
-BOOL
-CMSVADHW::GetMixerMute
-(
-    IN  ULONG node
-)
 /*
-
 Routine Description:
-
   Gets the HW (!) mute levels for MSVAD
 
 Arguments:
-
   ulNode - topology node id
-
-
-
   mute setting
 
 */
+BOOL CMSVADHW::GetMixerMute(IN  ULONG node)
 {
     if (node < MAX_TOPOLOGY_NODES)
     {
@@ -188,43 +117,26 @@ Arguments:
 }
 
 //=============================================================================
-ULONG                       
-CMSVADHW::GetMixerMux()
 /*
-
 Routine Description:
-
   Return the current mux selection
-
 */
+ULONG CMSVADHW::GetMixerMux()
 {
     return m_ulMux;
 }
 
 //=============================================================================
-LONG
-CMSVADHW::GetMixerVolume
-(   
-    IN  ULONG node,
-    IN  LONG  channel
-)
 /*
-
 Routine Description:
-
   Gets the HW (!) volume for MSVAD.
 
 Arguments:
-
-  ulNode - topology node id
-
+  ulNode   - topology node id
   lChannel - which channel are we setting?
-
-
-
-  LONG - volume level
-
+  LONG     - volume level
 */
+LONG CMSVADHW::GetMixerVolume(IN  ULONG node, IN  LONG  channel)
 {
     UNREFERENCED_PARAMETER(channel);
 
@@ -237,11 +149,11 @@ Arguments:
 }
 
 //=============================================================================
-#pragma code_seg("PAGE")
-void CMSVADHW::MixerReset()
 /*
   Resets the mixer registers.
 */
+#pragma code_seg("PAGE")
+void CMSVADHW::MixerReset()
 {
     PAGED_CODE();
     
@@ -254,19 +166,15 @@ void CMSVADHW::MixerReset()
 #pragma code_seg()
 
 //=============================================================================
-void CMSVADHW::SetMixerMute(IN  ULONG node, IN  BOOL fMute)
 /*
-
 Routine Description:
-
   Sets the HW (!) mute levels for MSVAD
 
 Arguments:
-
   node - topology node id
-
   fMute - mute flag
 */
+void CMSVADHW::SetMixerMute(IN  ULONG node, IN  BOOL fMute)
 {
     if (node < MAX_TOPOLOGY_NODES)
     {
@@ -275,41 +183,30 @@ Arguments:
 }
 
 //=============================================================================
-void CMSVADHW::SetMixerMux(IN  ULONG node)
 /*
-
 Routine Description:
-
   Sets the HW (!) mux selection
 
 Arguments:
-
   ulNode - topology node id
-
-
-
-
-
 */
+void CMSVADHW::SetMixerMux(IN  ULONG node)
 {
     m_ulMux = node;
 }
 
 //=============================================================================
-void CMSVADHW::SetMixerVolume(IN  ULONG node, IN  LONG channel, IN  LONG volume)
 /*
-
 Routine Description:
-
   Sets the HW (!) volume for MSVAD.
 
 Arguments:
-
-  node - topology node id
+  node    - topology node id
   channel - which channel are we setting?
-  volume - volume level
+  volume  - volume level
 
 */
+void CMSVADHW::SetMixerVolume(IN  ULONG node, IN  LONG channel, IN  LONG volume)
 {
     UNREFERENCED_PARAMETER(channel);
 

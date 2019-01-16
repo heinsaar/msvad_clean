@@ -1,15 +1,5 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    minwave.cpp
-
-Abstract:
-
     Implementation of wavecyclic miniport.
-
 */
 
 #pragma warning (disable : 4127)
@@ -26,7 +16,6 @@ Abstract:
 // CMiniportWaveCyclic
 //=============================================================================
 
-//=============================================================================
 NTSTATUS CreateMiniportWaveCyclicMSVAD
 ( 
     OUT PUNKNOWN *              Unknown,
@@ -37,53 +26,14 @@ NTSTATUS CreateMiniportWaveCyclicMSVAD
 			 "Allocation failures cause a system crash"))
     IN  POOL_TYPE               PoolType 
 )
-/*
-
-Routine Description:
-
-  Create the wavecyclic miniport.
-
-Arguments:
-
-  Unknown - 
-
-  RefClsId -
-
-  UnknownOuter -
-
-  PoolType -
-
-
-
-  .
-
-*/
 {
     PAGED_CODE();
-
     ASSERT(Unknown);
-
     STD_CREATE_BODY(CMiniportWaveCyclic, Unknown, UnknownOuter, PoolType);
 }
 
 //=============================================================================
-CMiniportWaveCyclic::~CMiniportWaveCyclic
-( 
- 
-)
-/*
-
-Routine Description:
-
-  Destructor for wavecyclic miniport
-
-Arguments:
-
-
-
-  .
-
-*/
+CMiniportWaveCyclic::~CMiniportWaveCyclic()
 {
     PAGED_CODE();
 
@@ -92,19 +42,7 @@ Arguments:
 
 
 //=============================================================================
-STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclic::DataRangeIntersection
-( 
-    _In_        ULONG                       PinId,
-    _In_        PKSDATARANGE                ClientDataRange,
-    _In_        PKSDATARANGE                MyDataRange,
-    _In_        ULONG                       OutputBufferLength,
-    _Out_writes_bytes_to_opt_(OutputBufferLength, *ResultantFormatLength)
-                PVOID                       ResultantFormat,
-    _Out_       PULONG                      ResultantFormatLength 
-)
 /*
-
 Routine Description:
 
   The DataRangeIntersection function determines the highest quality 
@@ -112,31 +50,35 @@ Routine Description:
 
 Arguments:
 
-  PinId -           Pin for which data intersection is being determined. 
+  PinId                 - Pin for which data intersection is being determined. 
 
-  ClientDataRange - Pointer to KSDATARANGE structure which contains the data 
-                    range submitted by client in the data range intersection 
-                    property request. 
+  ClientDataRange       - Pointer to KSDATARANGE structure which contains the data 
+                          range submitted by client in the data range intersection 
+                          property request. 
 
-  MyDataRange -         Pin's data range to be compared with client's data 
-                        range. In this case we actually ignore our own data 
-                        range, because we know that we only support one range.
+  MyDataRange           - Pin's data range to be compared with client's data 
+                          range. In this case we actually ignore our own data 
+                          range, because we know that we only support one range.
 
-  OutputBufferLength -  Size of the buffer pointed to by the resultant format 
-                        parameter. 
+  OutputBufferLength    - Size of the buffer pointed to by the resultant format parameter. 
 
-  ResultantFormat -     Pointer to value where the resultant format should be 
-                        returned. 
+  ResultantFormat       - Pointer to value where the resultant format should be returned. 
 
-  ResultantFormatLength -   Actual length of the resultant format placed in 
-                            ResultantFormat. This should be less than or equal 
-                            to OutputBufferLength. 
-
-  
-
-    .
-
+  ResultantFormatLength - Actual length of the resultant format placed in 
+                          ResultantFormat. This should be less than or equal 
+                          to OutputBufferLength. 
 */
+STDMETHODIMP_(NTSTATUS)
+CMiniportWaveCyclic::DataRangeIntersection
+(
+    _In_        ULONG                       PinId,
+    _In_        PKSDATARANGE                ClientDataRange,
+    _In_        PKSDATARANGE                MyDataRange,
+    _In_        ULONG                       OutputBufferLength,
+    _Out_writes_bytes_to_opt_(OutputBufferLength, *ResultantFormatLength)
+    PVOID                       ResultantFormat,
+    _Out_       PULONG                      ResultantFormatLength
+)
 {
     UNREFERENCED_PARAMETER(PinId);
     UNREFERENCED_PARAMETER(ClientDataRange);
@@ -155,29 +97,18 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclic::GetDescription
-( 
-    _Out_ PPCFILTER_DESCRIPTOR * OutFilterDescriptor 
-)
 /*
-
 Routine Description:
-
   The GetDescription function gets a pointer to a filter description. 
   It provides a location to deposit a pointer in miniport's description 
   structure. This is the placeholder for the FromNode or ToNode fields in 
   connections which describe connections to the filter's pins. 
 
 Arguments:
-
   OutFilterDescriptor - Pointer to the filter description. 
-
-
-
-  .
-
 */
+STDMETHODIMP_(NTSTATUS)
+CMiniportWaveCyclic::GetDescription(_Out_ PPCFILTER_DESCRIPTOR * OutFilterDescriptor)
 {
     PAGED_CODE();
 
@@ -187,15 +118,7 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclic::Init
-( 
-    _In_  PUNKNOWN                UnknownAdapter_,
-    _In_  PRESOURCELIST           ResourceList_,
-    _In_  PPORTWAVECYCLIC         Port_ 
-)
 /*
-
 Routine Description:
 
   The Init function initializes the miniport. Callers of this function 
@@ -211,12 +134,14 @@ Arguments:
                  modify the ResourceList contents. 
 
   Port - Pointer to the topology port object that is linked with this miniport. 
-
-
-
-  .
-
 */
+STDMETHODIMP_(NTSTATUS)
+CMiniportWaveCyclic::Init
+(
+    _In_  PUNKNOWN                UnknownAdapter_,
+    _In_  PRESOURCELIST           ResourceList_,
+    _In_  PPORTWAVECYCLIC         Port_
+)
 {
     PAGED_CODE();
 
@@ -251,19 +176,6 @@ Arguments:
 }
 
 //=============================================================================
-_Use_decl_annotations_
-STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclic::NewStream
-( 
-    PMINIPORTWAVECYCLICSTREAM * OutStream,
-    PUNKNOWN                OuterUnknown,
-    POOL_TYPE               PoolType,
-    ULONG                   Pin,
-    BOOLEAN                 Capture,
-    PKSDATAFORMAT           DataFormat,
-    PDMACHANNEL *           OutDmaChannel,
-    PSERVICEGROUP *         OutServiceGroup 
-)
 /*
 
 Routine Description:
@@ -272,6 +184,19 @@ Routine Description:
   associated with a specified physical channel. Callers of NewStream should 
   run at IRQL PASSIVE_LEVEL.
 */
+_Use_decl_annotations_
+STDMETHODIMP_(NTSTATUS)
+CMiniportWaveCyclic::NewStream
+(
+    PMINIPORTWAVECYCLICSTREAM * OutStream,
+    PUNKNOWN                OuterUnknown,
+    POOL_TYPE               PoolType,
+    ULONG                   Pin,
+    BOOLEAN                 Capture,
+    PKSDATAFORMAT           DataFormat,
+    PDMACHANNEL *           OutDmaChannel,
+    PSERVICEGROUP *         OutServiceGroup
+)
 {
     UNREFERENCED_PARAMETER(PoolType);
 
@@ -369,29 +294,20 @@ Routine Description:
 }
 
 //=============================================================================
-STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclic::NonDelegatingQueryInterface
-( 
-    _In_         REFIID  Interface,
-    _COM_Outptr_ PVOID * Object 
-)
 /*
-
 Routine Description:
-
   QueryInterface
 
 Arguments:
-
   Interface - GUID
-
   Object - interface pointer to be returned.
-
-
-
-  .
-
 */
+STDMETHODIMP_(NTSTATUS)
+CMiniportWaveCyclic::NonDelegatingQueryInterface
+(
+    _In_         REFIID  Interface,
+    _COM_Outptr_ PVOID * Object
+)
 {
     PAGED_CODE();
 
@@ -426,25 +342,11 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS CMiniportWaveCyclic::PropertyHandlerComponentId
-(
-    IN PPCPROPERTY_REQUEST      PropertyRequest
-)
 /*
-
 Routine Description:
-
   Handles KSPROPERTY_GENERAL_COMPONENTID
-
-Arguments:
-
-  PropertyRequest - 
-
-
-
-  .
-
 */
+NTSTATUS CMiniportWaveCyclic::PropertyHandlerComponentId(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
 
@@ -489,25 +391,11 @@ Arguments:
 #define CB_EXTENSIBLE (sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX))
 
 //=============================================================================
-NTSTATUS CMiniportWaveCyclic::PropertyHandlerProposedFormat
-(
-    IN PPCPROPERTY_REQUEST      PropertyRequest
-)
 /*
-
 Routine Description:
-
   Handles KSPROPERTY_GENERAL_COMPONENTID
-
-Arguments:
-
-  PropertyRequest - 
-
-
-
-  .
-
 */
+NTSTATUS CMiniportWaveCyclic::PropertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
 
@@ -585,30 +473,16 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS PropertyHandler_WaveFilter
-( 
-    IN PPCPROPERTY_REQUEST      PropertyRequest 
-)
 /*
-
 Routine Description:
-
   Redirects general property request to miniport object
-
-Arguments:
-
-  PropertyRequest - 
-
-
-
-  .
-
 */
+NTSTATUS PropertyHandler_WaveFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
 
-    NTSTATUS                    ntStatus = STATUS_INVALID_DEVICE_REQUEST;
-    PCMiniportWaveCyclic        pWave = (PCMiniportWaveCyclic) PropertyRequest->MajorTarget;
+    NTSTATUS          ntStatus = STATUS_INVALID_DEVICE_REQUEST;
+    PCMiniportWaveCyclic pWave = (PCMiniportWaveCyclic) PropertyRequest->MajorTarget;
 
     switch (PropertyRequest->PropertyItem->Id)
     {
@@ -638,13 +512,13 @@ CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream()
 
     DPF_ENTER(("[CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream]"));
 
-    if (nullptr != m_pMiniportLocal)
+    if (m_pMiniportLocal)
     {
         if (m_fCapture)
         {
             m_pMiniportLocal->m_fCaptureAllocated = FALSE;
         }
-        else
+        else // render
         {
             m_pMiniportLocal->m_fRenderAllocated = FALSE;
         }
@@ -652,6 +526,10 @@ CMiniportWaveCyclicStream::~CMiniportWaveCyclicStream()
 }
 
 //=============================================================================
+/*
+Routine Description:
+  Initializes the stream object. Allocate a DMA buffer, timer and DPC
+*/
 NTSTATUS CMiniportWaveCyclicStream::Init
 ( 
     IN PCMiniportWaveCyclic         Miniport_,
@@ -659,42 +537,29 @@ NTSTATUS CMiniportWaveCyclicStream::Init
     IN BOOLEAN                      Capture_,
     IN PKSDATAFORMAT                DataFormat_
 )
-/*
-Routine Description:
-  Initializes the stream object. Allocate a DMA buffer, timer and DPC
-*/
 {
     PAGED_CODE();
 
     m_pMiniportLocal = Miniport_;
 
-    return         CMiniportWaveCyclicStreamMSVAD::Init(Miniport_, Pin_, Capture_, DataFormat_);
+    return CMiniportWaveCyclicStreamMSVAD::Init(Miniport_, Pin_, Capture_, DataFormat_);
 }
 
 //=============================================================================
-STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclicStream::NonDelegatingQueryInterface
-( 
-    _In_         REFIID  Interface,
-    _COM_Outptr_ PVOID * Object 
-)
 /*
-
 Routine Description:
-
   QueryInterface
 
 Arguments:
-
   Interface - GUID
-
-  Object - interface pointer to be returned
-
-
-
-  .
-
+  Object    - interface pointer to be returned
 */
+STDMETHODIMP_(NTSTATUS)
+CMiniportWaveCyclicStream::NonDelegatingQueryInterface
+(
+    _In_         REFIID  Interface,
+    _COM_Outptr_ PVOID * Object
+)
 {
     PAGED_CODE();
 
@@ -726,4 +591,3 @@ Arguments:
     return STATUS_INVALID_PARAMETER;
 }
 #pragma code_seg()
-

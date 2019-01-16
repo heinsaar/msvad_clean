@@ -1,15 +1,6 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    basewave.cpp
-
 Abstract:
-
     Implementation of wavecyclic miniport.
-
 */
 
 #pragma warning (disable : 4127)
@@ -17,10 +8,6 @@ Abstract:
 #include <msvad.h>
 #include "common.h"
 #include "basewave.h"
-
-//=============================================================================
-// CMiniportWaveCyclicMSVAD
-//=============================================================================
 
 //=============================================================================
 #pragma code_seg("PAGE")
@@ -78,32 +65,19 @@ CMiniportWaveCyclicMSVAD::~CMiniportWaveCyclicMSVAD()
 }
 
 //=============================================================================
-STDMETHODIMP
-CMiniportWaveCyclicMSVAD::GetDescription
-(
-    _Out_ PPCFILTER_DESCRIPTOR * OutFilterDescriptor
-)
 /*
-
 Routine Description:
-
     The GetDescription function gets a pointer to a filter description.
     The descriptor is defined in wavtable.h for each MSVAD sample.
 
 Arguments:
-
   OutFilterDescriptor - Pointer to the filter description
-
-
-
-  .
-
 */
+STDMETHODIMP
+CMiniportWaveCyclicMSVAD::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* OutFilterDescriptor)
 {
     PAGED_CODE();
-
     ASSERT(OutFilterDescriptor);
-
     DPF_ENTER(("[CMiniportWaveCyclicMSVAD::GetDescription]"));
 
     *OutFilterDescriptor = m_FilterDescriptor;
@@ -124,23 +98,15 @@ CMiniportWaveCyclicMSVAD::Init
 Routine Description:
 
 Arguments:
-
   UnknownAdapter_ - pointer to adapter common.
-
-  ResourceList_ - resource list. MSVAD does not use resources.
-
-  Port_ - pointer to the port
-
-
-
-  .
+  ResourceList_   - resource list. MSVAD does not use resources.
+  Port_           - pointer to the port
 
 */
 {
     UNREFERENCED_PARAMETER(ResourceList_);
 
     PAGED_CODE();
-
     ASSERT(UnknownAdapter_);
     ASSERT(Port_);
 
@@ -197,30 +163,17 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS CMiniportWaveCyclicMSVAD::PropertyHandlerCpuResources
-(
-    IN  PPCPROPERTY_REQUEST     PropertyRequest
-)
 /*
-
 Routine Description:
-
   Processes KSPROPERTY_AUDIO_CPURESOURCES
 
 Arguments:
-
   PropertyRequest - property request structure
-
-
-
-  .
-
 */
+NTSTATUS CMiniportWaveCyclicMSVAD::PropertyHandlerCpuResources(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
-
     ASSERT(PropertyRequest);
-
     DPF_ENTER(("[CMiniportWaveCyclicMSVAD::PropertyHandlerCpuResources]"));
 
     NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
@@ -244,10 +197,6 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS CMiniportWaveCyclicMSVAD::PropertyHandlerGeneric
-(
-    IN  PPCPROPERTY_REQUEST     PropertyRequest
-)
 /*
 
 Routine Description:
@@ -258,11 +207,8 @@ Arguments:
 
   PropertyRequest - property request structure
 
-
-
-  .
-
 */
+NTSTATUS CMiniportWaveCyclicMSVAD::PropertyHandlerGeneric(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
 
@@ -286,10 +232,6 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS CMiniportWaveCyclicMSVAD::ValidateFormat
-(
-    IN  PKSDATAFORMAT pDataFormat
-)
 /*
 
 Routine Description:
@@ -301,11 +243,8 @@ Arguments:
 
   pDataFormat - The dataformat for validation.
 
-
-
-  .
-
 */
+NTSTATUS CMiniportWaveCyclicMSVAD::ValidateFormat(IN  PKSDATAFORMAT pDataFormat)
 {
     PAGED_CODE();
 
@@ -351,9 +290,7 @@ Arguments:
 }
 
 //-----------------------------------------------------------------------------
-NTSTATUS CMiniportWaveCyclicMSVAD::ValidatePcm(IN  PWAVEFORMATEX  pWfx)
 /*
-
 Routine Description:
 
   Given a waveformatex and format size validates that the format is in device datarange.
@@ -361,12 +298,8 @@ Routine Description:
 Arguments:
 
   pWfx - wave format structure.
-
-
-
-    .
-
 */
+NTSTATUS CMiniportWaveCyclicMSVAD::ValidatePcm(IN  PWAVEFORMATEX  pWfx)
 {
     PAGED_CODE();
 
@@ -441,15 +374,6 @@ CMiniportWaveCyclicStreamMSVAD::~CMiniportWaveCyclicStreamMSVAD()
 }
 
 //=============================================================================
-#pragma warning (push)
-#pragma warning (disable : 26165)
-NTSTATUS CMiniportWaveCyclicStreamMSVAD::Init
-(
-    IN  PCMiniportWaveCyclicMSVAD Miniport_,
-    IN  ULONG                     Pin_,
-    IN  BOOLEAN                   Capture_,
-    IN  PKSDATAFORMAT             DataFormat_
-)
 /*
 
 Routine Description:
@@ -464,6 +388,15 @@ Arguments:
   DataFormat_ - new dataformat
 
 */
+#pragma warning (push)
+#pragma warning (disable : 26165)
+NTSTATUS CMiniportWaveCyclicStreamMSVAD::Init
+(
+    IN  PCMiniportWaveCyclicMSVAD Miniport_,
+    IN  ULONG                     Pin_,
+    IN  BOOLEAN                   Capture_,
+    IN  PKSDATAFORMAT             DataFormat_
+)
 {
     PAGED_CODE();
 
@@ -637,13 +570,7 @@ CMiniportWaveCyclicStreamMSVAD::GetPosition(_Out_ PULONG Position)
 }
 
 //=============================================================================
-STDMETHODIMP
-CMiniportWaveCyclicStreamMSVAD::NormalizePhysicalPosition
-(
-    _Inout_ PLONGLONG PhysicalPosition
-)
 /*
-
 Routine Description:
 
   Given a physical position based on the actual number of bytes transferred,
@@ -654,12 +581,9 @@ Arguments:
 
   PhysicalPosition - On entry this variable contains the value to convert.
                      On return it contains the converted value
-
-
-
-  .
-
 */
+STDMETHODIMP
+CMiniportWaveCyclicStreamMSVAD::NormalizePhysicalPosition(_Inout_ PLONGLONG PhysicalPosition)
 {
     ASSERT(PhysicalPosition);
 
@@ -670,11 +594,6 @@ Arguments:
 
 #pragma code_seg("PAGE")
 //=============================================================================
-STDMETHODIMP_(NTSTATUS)
-CMiniportWaveCyclicStreamMSVAD::SetFormat
-(
-    _In_  PKSDATAFORMAT           Format
-)
 /*
 
 Routine Description:
@@ -687,6 +606,8 @@ Arguments:
   Format - Pointer to a KSDATAFORMAT structure which indicates the new format
            of the stream.
 */
+STDMETHODIMP_(NTSTATUS)
+CMiniportWaveCyclicStreamMSVAD::SetFormat(_In_  PKSDATAFORMAT Format)
 {
     PAGED_CODE();
     ASSERT(Format);
@@ -725,14 +646,7 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP_(ULONG)
-CMiniportWaveCyclicStreamMSVAD::SetNotificationFreq
-(
-    _In_  ULONG  Interval,
-    _Out_ PULONG FramingSize
-)
 /*
-
 Routine Description:
 
   The SetNotificationFrequency function sets the frequency at which
@@ -747,6 +661,8 @@ Arguments:
   FramingSize - Pointer to a ULONG value where the number of bytes equivalent
                 to Interval milliseconds is returned
 */
+STDMETHODIMP_(ULONG)
+CMiniportWaveCyclicStreamMSVAD::SetNotificationFreq(_In_  ULONG  Interval, _Out_ PULONG FramingSize)
 {
     PAGED_CODE();
     ASSERT(FramingSize);
@@ -759,10 +675,7 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP
-CMiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
 /*
-
 Routine Description:
 
   The SetState function sets the new state of playback or recording for the
@@ -771,12 +684,9 @@ Routine Description:
 Arguments:
 
   NewState - KSSTATE indicating the new state for the stream.
-
-
-
-  .
-
 */
+STDMETHODIMP
+CMiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
 {
     PAGED_CODE();
 
@@ -851,15 +761,7 @@ Arguments:
 #pragma code_seg()
 
 //=============================================================================
-_Use_decl_annotations_
-STDMETHODIMP_(void)
-CMiniportWaveCyclicStreamMSVAD::Silence
-(
-    PVOID Buffer,
-    ULONG ByteCount
-)
 /*
-
 Routine Description:
 
   The Silence function is used to copy silence samplings to a certain location.
@@ -871,25 +773,15 @@ Arguments:
            be deposited.
 
   ByteCount - Size of buffer indicating number of bytes to be deposited.
-
-
-
-  .
-
 */
+_Use_decl_annotations_
+STDMETHODIMP_(void)
+CMiniportWaveCyclicStreamMSVAD::Silence(PVOID Buffer, ULONG ByteCount)
 {
     RtlFillMemory(Buffer, ByteCount, m_fFormat16Bit ? 0 : 0x80);
 }
 
 //=============================================================================
-void
-TimerNotify
-(
-    IN  PKDPC Dpc,
-    IN  PVOID DeferredContext,
-    IN  PVOID SA1,
-    IN  PVOID SA2
-)
 /*
 
 Routine Description:
@@ -905,14 +797,15 @@ Arguments:
                     the DeferredRoutine when it is called
 
   SA1 - System argument 1
-
   SA2 - System argument 2
-
-
-
-  .
-
 */
+void TimerNotify
+(
+    IN  PKDPC Dpc,
+    IN  PVOID DeferredContext,
+    IN  PVOID SA1,
+    IN  PVOID SA2
+)
 {
     UNREFERENCED_PARAMETER(Dpc);
     UNREFERENCED_PARAMETER(SA1);

@@ -1,15 +1,6 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    minwave.h
-
 Abstract:
-
     Definition of wavecyclic miniport class.
-
 */
 
 #ifndef _MSVAD_MINWAVE_H_
@@ -21,24 +12,11 @@ Abstract:
 // Referenced Forward
 //=============================================================================
 class CMiniportWaveCyclicStream;
-typedef CMiniportWaveCyclicStream *PCMiniportWaveCyclicStream;
+typedef CMiniportWaveCyclicStream* PCMiniportWaveCyclicStream;
 
-//=============================================================================
-// Classes
-//=============================================================================
-///////////////////////////////////////////////////////////////////////////////
-// CMiniportWaveCyclic 
-//   
-
-class CMiniportWaveCyclic : 
-    public CMiniportWaveCyclicMSVAD,
-    public IMiniportWaveCyclic,
-    public CUnknown
-{
-private:
-    BOOL m_fCaptureAllocated;
-    BOOL m_fRenderAllocated;
-
+class CMiniportWaveCyclic : public CMiniportWaveCyclicMSVAD,
+                            public IMiniportWaveCyclic,
+                            public CUnknown {
 public:
     DECLARE_STD_UNKNOWN();
     DEFINE_STD_CONSTRUCTOR(CMiniportWaveCyclic);
@@ -52,26 +30,26 @@ public:
     // Friends
     friend class CMiniportWaveCyclicStream;
     friend class CMiniportTopologySimple;
+
+private:
+    BOOL m_fCaptureAllocated;
+    BOOL m_fRenderAllocated;
 };
-typedef CMiniportWaveCyclic *PCMiniportWaveCyclic;
+typedef CMiniportWaveCyclic* PCMiniportWaveCyclic;
 
 ///////////////////////////////////////////////////////////////////////////////
 // CMiniportWaveCyclicStream 
 //   
 
-class CMiniportWaveCyclicStream : 
-    public CMiniportWaveCyclicStreamMSVAD,
-    public CUnknown
+class CMiniportWaveCyclicStream : public CMiniportWaveCyclicStreamMSVAD,
+                                  public CUnknown
 {
-protected:
-    PCMiniportWaveCyclic m_pMiniportLocal;  
-
 public:
     DECLARE_STD_UNKNOWN();
     DEFINE_STD_CONSTRUCTOR(CMiniportWaveCyclicStream);
     ~CMiniportWaveCyclicStream();
 
-    NTSTATUS                    Init
+    NTSTATUS Init
     ( 
         IN  PCMiniportWaveCyclic Miniport,
         IN  ULONG               Channel,
@@ -81,6 +59,9 @@ public:
 
     // Friends
     friend class CMiniportWaveCyclic;
+
+protected:
+    PCMiniportWaveCyclic m_pMiniportLocal;  
 };
 typedef CMiniportWaveCyclicStream *PCMiniportWaveCyclicStream;
 

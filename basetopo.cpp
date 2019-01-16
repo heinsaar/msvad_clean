@@ -1,16 +1,6 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    basetopo.cpp
-
 Abstract:
-
-    Implementation of topology miniport. This the base class for 
-    all MSVAD samples
-
+    Implementation of topology miniport. This the base class for all MSVAD samples
 */
 
 #pragma warning (disable : 4127)
@@ -44,18 +34,7 @@ CMiniportTopologyMSVAD::~CMiniportTopologyMSVAD()
 }
 
 //=============================================================================
-NTSTATUS CMiniportTopologyMSVAD::DataRangeIntersection
-( 
-    _In_        ULONG                   PinId,
-    _In_        PKSDATARANGE            ClientDataRange,
-    _In_        PKSDATARANGE            MyDataRange,
-    _In_        ULONG                   OutputBufferLength,
-    _Out_writes_bytes_to_opt_(OutputBufferLength, *ResultantFormatLength)
-                PVOID                   ResultantFormat,
-    _Out_       PULONG                  ResultantFormatLength 
-)
 /*
-
 Routine Description:
 
   The DataRangeIntersection function determines the highest 
@@ -63,24 +42,31 @@ Routine Description:
 
 Arguments:
 
-  PinId - Pin for which data intersection is being determined. 
+  PinId                 - Pin for which data intersection is being determined. 
 
-  ClientDataRange - Pointer to KSDATARANGE structure which contains the data range 
-                    submitted by client in the data range intersection property 
-                    request
+  ClientDataRange       - Pointer to KSDATARANGE structure which contains the data range 
+                          submitted by client in the data range intersection property request
 
-  MyDataRange - Pin's data range to be compared with client's data range
+  MyDataRange           - Pin's data range to be compared with client's data range
 
-  OutputBufferLength - Size of the buffer pointed to by the resultant format 
-                       parameter
-
-  ResultantFormat - Pointer to value where the resultant format should be 
-                    returned
+  OutputBufferLength    - Size of the buffer pointed to by the resultant format parameter
+  
+  ResultantFormat       - Pointer to value where the resultant format should be returned
 
   ResultantFormatLength - Actual length of the resultant format that is placed 
                           at ResultantFormat. This should be less than or equal 
                           to OutputBufferLength
 */
+NTSTATUS CMiniportTopologyMSVAD::DataRangeIntersection
+(
+    _In_        ULONG        PinId,
+    _In_        PKSDATARANGE ClientDataRange,
+    _In_        PKSDATARANGE MyDataRange,
+    _In_        ULONG        OutputBufferLength,
+    _Out_writes_bytes_to_opt_(OutputBufferLength, *ResultantFormatLength)
+    PVOID                    ResultantFormat,
+    _Out_       PULONG       ResultantFormatLength
+)
 {
     UNREFERENCED_PARAMETER(PinId);
     UNREFERENCED_PARAMETER(ClientDataRange);
@@ -90,35 +76,23 @@ Arguments:
     UNREFERENCED_PARAMETER(ResultantFormatLength);
 
     PAGED_CODE();
-
     DPF_ENTER(("[%s]",__FUNCTION__));
 
     return (STATUS_NOT_IMPLEMENTED);
 }
 
 //=============================================================================
-NTSTATUS CMiniportTopologyMSVAD::GetDescription
-( 
-    _Out_ PPCFILTER_DESCRIPTOR *  OutFilterDescriptor 
-)
 /*
-
 Routine Description:
-
   The GetDescription function gets a pointer to a filter description. 
   It provides a location to deposit a pointer in miniport's description 
   structure. This is the placeholder for the FromNode or ToNode fields in 
   connections which describe connections to the filter's pins
 
 Arguments:
-
   OutFilterDescriptor - Pointer to the filter description. 
-
-
-
-  .
-
 */
+NTSTATUS CMiniportTopologyMSVAD::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* OutFilterDescriptor)
 {
     PAGED_CODE();
     ASSERT(OutFilterDescriptor);
@@ -128,28 +102,14 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS CMiniportTopologyMSVAD::Init
-( 
-    IN  PUNKNOWN                UnknownAdapter_,
-    IN  PPORTTOPOLOGY           Port_ 
-)
 /*
-
 Routine Description:
-
   Initializes the topology miniport.
 
 Arguments:
-
-  UnknownAdapter -
-
   Port_ - Pointer to topology port
-
-
-
-  .
-
 */
+NTSTATUS CMiniportTopologyMSVAD::Init(IN PUNKNOWN UnknownAdapter_, IN PPORTTOPOLOGY Port_)
 {
     UNREFERENCED_PARAMETER(Port_);
 
@@ -180,10 +140,6 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerBasicSupportVolume
-(
-    IN  PPCPROPERTY_REQUEST     PropertyRequest
-)
 /*
 
 Routine Description:
@@ -194,11 +150,8 @@ Arguments:
     
   PropertyRequest - property request structure
 
-
-
-  .
-
 */
+NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerBasicSupportVolume(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
 
@@ -264,10 +217,6 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerCpuResources
-( 
-    IN  PPCPROPERTY_REQUEST     PropertyRequest 
-)
 /*
 
 Routine Description:
@@ -277,12 +226,8 @@ Routine Description:
 Arguments:
     
   PropertyRequest - property request structure
-
-
-
-  .
-
 */
+NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerCpuResources(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
 
@@ -308,11 +253,6 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS                            
-CMiniportTopologyMSVAD::PropertyHandlerGeneric
-(
-    IN  PPCPROPERTY_REQUEST     PropertyRequest
-)
 /*
 
 Routine Description:
@@ -322,12 +262,9 @@ Routine Description:
 Arguments:
 
   PropertyRequest - property request structure
-
-
-
-  .
-
 */
+NTSTATUS
+CMiniportTopologyMSVAD::PropertyHandlerGeneric(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
 
@@ -363,13 +300,7 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS                            
-CMiniportTopologyMSVAD::PropertyHandlerMute
-(
-    IN  PPCPROPERTY_REQUEST     PropertyRequest
-)
 /*
-
 Routine Description:
 
   Property handler for KSPROPERTY_AUDIO_MUTE
@@ -377,15 +308,11 @@ Routine Description:
 Arguments:
 
   PropertyRequest - property request structure
-
-
-
-  .
-
 */
+NTSTATUS
+CMiniportTopologyMSVAD::PropertyHandlerMute(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
-
     DPF_ENTER(("[%s]",__FUNCTION__));
 
     NTSTATUS ntStatus;
@@ -424,13 +351,7 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS                            
-CMiniportTopologyMSVAD::PropertyHandlerMuxSource
-(
-    IN  PPCPROPERTY_REQUEST     PropertyRequest
-)
 /*
-
 Routine Description:
 
   PropertyHandler for KSPROPERTY_AUDIO_MUX_SOURCE.
@@ -438,15 +359,11 @@ Routine Description:
 Arguments:
 
   PropertyRequest - property request structure
-
-
-
-  .
-
 */
+NTSTATUS
+CMiniportTopologyMSVAD::PropertyHandlerMuxSource(IN  PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
-
     DPF_ENTER(("[%s]",__FUNCTION__));
 
     NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
@@ -488,25 +405,13 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerVolume
-(
-    IN  PPCPROPERTY_REQUEST     PropertyRequest
-)
 /*
-
 Routine Description:
-
   Property handler for KSPROPERTY_AUDIO_VOLUMELEVEL
-
 Arguments:
-
   PropertyRequest - property request structure
-
-
-
-  .
-
 */
+NTSTATUS CMiniportTopologyMSVAD::PropertyHandlerVolume(IN  PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
 
@@ -547,29 +452,17 @@ Arguments:
 
 
 //=============================================================================
-NTSTATUS                            
-CMiniportTopologyMSVAD::PropertyHandlerDevSpecific
-(
-    IN  PPCPROPERTY_REQUEST     PropertyRequest
-)
 /*
-
 Routine Description:
-
   Property handler for KSPROPERTY_AUDIO_DEV_SPECIFIC
 
 Arguments:
-
   PropertyRequest - property request structure
-
-
-
-  .
-
 */
+NTSTATUS
+CMiniportTopologyMSVAD::PropertyHandlerDevSpecific(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
-
     DPF_ENTER(("[%s]",__FUNCTION__));
 
     NTSTATUS ntStatus=STATUS_SUCCESS;
@@ -766,7 +659,4 @@ Arguments:
     return ntStatus;
 }
 
-
-
 #pragma code_seg()
-

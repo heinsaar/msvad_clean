@@ -1,15 +1,5 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    simple.h
-
-Abstract:
-
     Node and Pin numbers for simple sample.
-
 */
 
 #ifndef _MSVAD_SIMPLE_H_
@@ -80,4 +70,3 @@ enum
 };
 
 #endif
-

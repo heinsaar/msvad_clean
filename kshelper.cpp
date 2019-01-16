@@ -1,15 +1,6 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    kshelper.cpp
-
 Abstract:
-
     Helper functions for msvad
-
 */
 
 #include "kshelper.h"
@@ -17,23 +8,16 @@ Abstract:
 #pragma code_seg("PAGE")
 
 //-----------------------------------------------------------------------------
-PWAVEFORMATEX GetWaveFormatEx(IN  PKSDATAFORMAT pDataFormat)
 /*
-
 Routine Description:
-
   Returns the waveformatex for known formats. 
 
 Arguments:
-
-  pDataFormat - data format.
-
-
-    
+    pDataFormat - data format.
     waveformatex in DataFormat.
     nullptr for unknown data formats.
-
 */
+PWAVEFORMATEX GetWaveFormatEx(IN  PKSDATAFORMAT pDataFormat)
 {
     PAGED_CODE();
 
@@ -59,34 +43,22 @@ Arguments:
 }
 
 //-----------------------------------------------------------------------------
-NTSTATUS                        
+/*
+Routine Description:
+  Default basic support handler. Basic processing depends on the size of data.
+  For ULONG it only returns Flags. For KSPROPERTY_DESCRIPTION, the structure is filled.
+
+Arguments:
+  Flags         - Support flags.
+  PropTypeSetId - PropTypeSetId
+*/
+NTSTATUS
 PropertyHandler_BasicSupport
 (
     IN PPCPROPERTY_REQUEST PropertyRequest,
     IN ULONG               Flags,
     IN DWORD               PropTypeSetId
 )
-/*
-
-Routine Description:
-
-  Default basic support handler. Basic processing depends on the size of data.
-  For ULONG it only returns Flags. For KSPROPERTY_DESCRIPTION, the structure   
-  is filled.
-
-Arguments:
-
-  PropertyRequest - 
-
-  Flags - Support flags.
-
-  PropTypeSetId - PropTypeSetId
-
-
-    
-    .
-
-*/
 {
     PAGED_CODE();
 
@@ -138,17 +110,17 @@ Arguments:
 }
 
 //-----------------------------------------------------------------------------
-NTSTATUS 
+/*
+Routine Description:
+  Validates property parameters.
+*/
+NTSTATUS
 ValidatePropertyParams
 (
     IN PPCPROPERTY_REQUEST PropertyRequest, 
     IN ULONG               cbSize,
     IN ULONG               cbInstanceSize // = 0
 )
-/*
-Routine Description:
-  Validates property parameters.
-*/
 {
     PAGED_CODE();
 
@@ -203,5 +175,3 @@ Routine Description:
 
     return ntStatus;
 }
-
-

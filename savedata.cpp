@@ -1,18 +1,9 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    savedata.cpp
-
 Abstract:
-
     Implementation of MSVAD data saving class.
 
     To save the playback data to disk, this class maintains a circular data
-    buffer, associated frame structures and worker items to save frames to
-    disk.
+    buffer, associated frame structures and worker items to save frames to disk.
     Each frame structure represents a portion of buffer. When that portion
     of frame is full, a workitem is scheduled to save it to disk.
 */
@@ -94,8 +85,8 @@ CSaveData::~CSaveData()
     if(filePtr_)
     {
         fileHeader_.dwFileSize   = (DWORD) filePtr_->QuadPart - 2 * sizeof(DWORD);
-        dataHeader_.dwDataLength = (DWORD) filePtr_->QuadPart - sizeof(fileHeader_) -
-                                     fileHeader_.dwFormatLength - sizeof(dataHeader_);
+        dataHeader_.dwDataLength = (DWORD) filePtr_->QuadPart - sizeof(fileHeader_)
+                                 - fileHeader_.dwFormatLength - sizeof(dataHeader_);
 
         if (STATUS_SUCCESS == KeWaitForSingleObject(&fileSync_, Executive, KernelMode, FALSE, nullptr))
         {
@@ -734,5 +725,3 @@ CSaveData::WriteData
         DPF(D_BLAB, ("[Frame %d is in use]", framePtr_));
     }
 }
-
-

@@ -1,15 +1,6 @@
 /*
-
-Copyright (c) 1997-2000  Microsoft Corporation All Rights Reserved
-
-Module Name:
-
-    mintopo.cpp
-
 Abstract:
-
     Implementation of topology miniport.
-
 */
 
 #pragma warning (disable : 4127)
@@ -58,27 +49,6 @@ NTSTATUS CreateMiniportTopologyMSVAD
 			 "Allocation failures cause a system crash"))
     IN  POOL_TYPE               PoolType 
 )
-/*
-
-Routine Description:
-
-    Creates a new topology miniport.
-
-Arguments:
-
-  Unknown - 
-
-  RefclsId -
-
-  UnknownOuter -
-
-  PoolType - 
-
-
-
-  .
-
-*/
 {
     PAGED_CODE();
 
@@ -88,23 +58,7 @@ Arguments:
 }
 
 //=============================================================================
-CMiniportTopology::~CMiniportTopology
-(
-
-)
-/*
-
-Routine Description:
-
-  Topology miniport destructor
-
-Arguments:
-
-
-
-  .
-
-*/
+CMiniportTopology::~CMiniportTopology()
 {
     PAGED_CODE();
 
@@ -112,43 +66,38 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS CMiniportTopology::DataRangeIntersection
-( 
-    _In_        ULONG                   PinId,
-    _In_        PKSDATARANGE            ClientDataRange,
-    _In_        PKSDATARANGE            MyDataRange,
-    _In_        ULONG                   OutputBufferLength,
-    _Out_writes_bytes_to_opt_(OutputBufferLength, *ResultantFormatLength)
-                PVOID                   ResultantFormat,
-    _Out_       PULONG                  ResultantFormatLength 
-)
 /*
-
 Routine Description:
-
   The DataRangeIntersection function determines the highest quality 
   intersection of two data ranges.
 
 Arguments:
 
-  PinId - Pin for which data intersection is being determined. 
+  PinId                 - Pin for which data intersection is being determined. 
 
-  ClientDataRange - Pointer to KSDATARANGE structure which contains the data range 
-                    submitted by client in the data range intersection property 
-                    request. 
+  ClientDataRange       - Pointer to KSDATARANGE structure which contains the data range 
+                          submitted by client in the data range intersection property request. 
 
-  MyDataRange - Pin's data range to be compared with client's data range. 
+  MyDataRange           - Pin's data range to be compared with client's data range. 
 
-  OutputBufferLength - Size of the buffer pointed to by the resultant format 
-                       parameter. 
+  OutputBufferLength    - Size of the buffer pointed to by the resultant format parameter. 
 
-  ResultantFormat - Pointer to value where the resultant format should be 
-                    returned. 
+  ResultantFormat       - Pointer to value where the resultant format should be returned. 
 
   ResultantFormatLength - Actual length of the resultant format that is placed 
                           at ResultantFormat. This should be less than or equal 
                           to OutputBufferLength. 
 */
+NTSTATUS CMiniportTopology::DataRangeIntersection
+(
+    _In_        ULONG        PinId,
+    _In_        PKSDATARANGE ClientDataRange,
+    _In_        PKSDATARANGE MyDataRange,
+    _In_        ULONG        OutputBufferLength,
+    _Out_writes_bytes_to_opt_(OutputBufferLength, *ResultantFormatLength)
+    PVOID                    ResultantFormat,
+    _Out_       PULONG       ResultantFormatLength
+)
 {
     PAGED_CODE();
 
@@ -161,13 +110,7 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP
-CMiniportTopology::GetDescription
-( 
-    _Out_ PPCFILTER_DESCRIPTOR *  OutFilterDescriptor 
-)
 /*
-
 Routine Description:
 
   The GetDescription function gets a pointer to a filter description. 
@@ -176,30 +119,17 @@ Routine Description:
   connections which describe connections to the filter's pins. 
 
 Arguments:
-
   OutFilterDescriptor - Pointer to the filter description. 
-
-
-
-  .
-
 */
+STDMETHODIMP CMiniportTopology::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* outFilterDescriptor)
 {
     PAGED_CODE();
 
-    return CMiniportTopologyMSVAD::GetDescription(OutFilterDescriptor);
+    return CMiniportTopologyMSVAD::GetDescription(outFilterDescriptor);
 }
 
 //=============================================================================
-STDMETHODIMP
-CMiniportTopology::Init
-( 
-    _In_ PUNKNOWN                 UnknownAdapter,
-    _In_ PRESOURCELIST            ResourceList,
-    _In_ PPORTTOPOLOGY            Port_ 
-)
 /*
-
 Routine Description:
 
   The Init function initializes the miniport. Callers of this function 
@@ -215,12 +145,14 @@ Arguments:
                  modify the ResourceList contents. 
 
   Port - Pointer to the topology port object that is linked with this miniport. 
-
-
-
-  .
-
 */
+STDMETHODIMP
+CMiniportTopology::Init
+(
+    _In_ PUNKNOWN                 UnknownAdapter,
+    _In_ PRESOURCELIST            ResourceList,
+    _In_ PPORTTOPOLOGY            Port_
+)
 {
     UNREFERENCED_PARAMETER(ResourceList);
 
@@ -243,14 +175,7 @@ Arguments:
 }
 
 //=============================================================================
-STDMETHODIMP
-CMiniportTopology::NonDelegatingQueryInterface
-( 
-    _In_         REFIID                  Interface,
-    _COM_Outptr_ PVOID                   * Object 
-)
 /*
-
 Routine Description:
 
   QueryInterface for MiniportTopology
@@ -258,17 +183,16 @@ Routine Description:
 Arguments:
 
   Interface - GUID of the interface
-
   Object - interface object to be returned.
-
-
-
-  .
-
 */
+STDMETHODIMP
+CMiniportTopology::NonDelegatingQueryInterface
+(
+    _In_         REFIID Interface,
+    _COM_Outptr_ PVOID* Object
+)
 {
     PAGED_CODE();
-
     ASSERT(Object);
 
     if (IsEqualGUIDAligned(Interface, IID_IUnknown))
@@ -299,30 +223,14 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS CMiniportTopology::PropertyHandlerJackDescription
-( 
-    IN PPCPROPERTY_REQUEST      PropertyRequest 
-)
 /*
-
 Routine Description:
-
   Handles ( KSPROPSETID_Jack, KSPROPERTY_JACK_DESCRIPTION )
-
-Arguments:
-
-  PropertyRequest - 
-
-
-
-  .
-
 */
+NTSTATUS CMiniportTopology::PropertyHandlerJackDescription(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
-
     ASSERT(PropertyRequest);
-
     DPF_ENTER(("[PropertyHandlerJackDescription]"));
 
     NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
@@ -373,30 +281,14 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS PropertyHandler_TopoFilter
-( 
-    IN PPCPROPERTY_REQUEST      PropertyRequest 
-)
 /*
-
 Routine Description:
-
   Redirects property request to miniport object
-
-Arguments:
-
-  PropertyRequest - 
-
-
-
-  .
-
 */
+NTSTATUS PropertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
-
     ASSERT(PropertyRequest);
-
     DPF_ENTER(("[PropertyHandler_TopoFilter]"));
 
     // PropertryRequest structure is filled by portcls. 
@@ -415,30 +307,14 @@ Arguments:
 }
 
 //=============================================================================
-NTSTATUS PropertyHandler_Topology
-( 
-    IN PPCPROPERTY_REQUEST      PropertyRequest 
-)
 /*
-
 Routine Description:
-
   Redirects property request to miniport object
-
-Arguments:
-
-  PropertyRequest - 
-
-
-
-  .
-
 */
+NTSTATUS PropertyHandler_Topology(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
-
     ASSERT(PropertyRequest);
-
     DPF_ENTER(("[PropertyHandler_Topology]"));
 
     // PropertryRequest structure is filled by portcls. 
@@ -448,4 +324,3 @@ Arguments:
 }
 
 #pragma code_seg()
-
