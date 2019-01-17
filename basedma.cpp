@@ -133,7 +133,7 @@ MiniportWaveCyclicStreamMSVAD::CopyTo(PVOID Destination, PVOID Source, ULONG Byt
 {
     UNREFERENCED_PARAMETER(Destination);
 
-    saveData_.WriteData((PBYTE) Source, ByteCount);
+    saveData_.writeData((PBYTE) Source, ByteCount);
 }
 
 //=============================================================================

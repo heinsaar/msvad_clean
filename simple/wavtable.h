@@ -183,13 +183,13 @@ PCPROPERTY_ITEM PropertiesWaveFilter[] =
         &KSPROPSETID_General,
         KSPROPERTY_GENERAL_COMPONENTID,
         KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_BASICSUPPORT,
-        PropertyHandler_WaveFilter
+        propertyHandler_WaveFilter
     },
     {
         &KSPROPSETID_Pin,
         KSPROPERTY_PIN_PROPOSEDATAFORMAT,
         KSPROPERTY_TYPE_SET | KSPROPERTY_TYPE_BASICSUPPORT,
-        PropertyHandler_WaveFilter
+        propertyHandler_WaveFilter
     }
 };
 

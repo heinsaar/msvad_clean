@@ -70,7 +70,7 @@ CSaveData::CSaveData()
     RtlZeroMemory(&objectAttributes_, sizeof(objectAttributes_));
 
     streamId_++;
-    InitializeWorkItems(GetDeviceObject());
+    initializeWorkItems(getDeviceObject());
 }
 
 //=============================================================================
@@ -90,10 +90,10 @@ CSaveData::~CSaveData()
 
         if (STATUS_SUCCESS == KeWaitForSingleObject(&fileSync_, Executive, KernelMode, FALSE, nullptr))
         {
-            if (NT_SUCCESS(FileOpen(FALSE)))
+            if (NT_SUCCESS(fileOpen(FALSE)))
             {
-                FileWriteHeader();
-                FileClose();
+                fileWriteHeader();
+                fileClose();
             }
 
             KeReleaseMutex(&fileSync_, FALSE);
@@ -135,7 +135,7 @@ CSaveData::~CSaveData()
 }
 
 //=============================================================================
-void CSaveData::DestroyWorkItems()
+void CSaveData::destroyWorkItems()
 {
     PAGED_CODE();
 
@@ -147,7 +147,7 @@ void CSaveData::DestroyWorkItems()
 }
 
 //=============================================================================
-void CSaveData::Disable(BOOL fDisable)
+void CSaveData::disable(BOOL fDisable)
 {
     PAGED_CODE();
 
@@ -155,7 +155,7 @@ void CSaveData::Disable(BOOL fDisable)
 }
 
 //=============================================================================
-NTSTATUS CSaveData::FileClose()
+NTSTATUS CSaveData::fileClose()
 {
     PAGED_CODE();
 
@@ -171,7 +171,7 @@ NTSTATUS CSaveData::FileClose()
 }
 
 //=============================================================================
-NTSTATUS CSaveData::FileOpen(IN  BOOL fOverWrite)
+NTSTATUS CSaveData::fileOpen(IN  BOOL fOverWrite)
 {
     PAGED_CODE();
 
@@ -206,7 +206,7 @@ NTSTATUS CSaveData::FileOpen(IN  BOOL fOverWrite)
 }
 
 //=============================================================================
-NTSTATUS CSaveData::FileWrite
+NTSTATUS CSaveData::fileWrite
 (
     _In_reads_bytes_(ulDataSize)    PBYTE   pData,
     _In_                            ULONG   ulDataSize
@@ -246,7 +246,7 @@ NTSTATUS CSaveData::FileWrite
 }
 
 //=============================================================================
-NTSTATUS CSaveData::FileWriteHeader()
+NTSTATUS CSaveData::fileWriteHeader()
 {
     PAGED_CODE();
 
@@ -309,7 +309,7 @@ NTSTATUS CSaveData::FileWriteHeader()
 
     return ntStatus;
 }
-NTSTATUS CSaveData::SetDeviceObject(IN  PDEVICE_OBJECT DeviceObject)
+NTSTATUS CSaveData::setDeviceObject(IN  PDEVICE_OBJECT DeviceObject)
 {
     PAGED_CODE();
 
@@ -322,7 +322,7 @@ NTSTATUS CSaveData::SetDeviceObject(IN  PDEVICE_OBJECT DeviceObject)
 }
 
 PDEVICE_OBJECT
-CSaveData::GetDeviceObject()
+CSaveData::getDeviceObject()
 {
     PAGED_CODE();
 
@@ -332,7 +332,7 @@ CSaveData::GetDeviceObject()
 #pragma code_seg()
 //=============================================================================
 PSAVEWORKER_PARAM
-CSaveData::GetNewWorkItem()
+CSaveData::getNewWorkItem()
 {
     LARGE_INTEGER timeOut = { 0 };
 
@@ -353,7 +353,7 @@ CSaveData::GetNewWorkItem()
 #pragma code_seg("PAGE")
 
 //=============================================================================
-NTSTATUS CSaveData::Initialize()
+NTSTATUS CSaveData::initialize()
 {
     PAGED_CODE();
 
@@ -433,12 +433,12 @@ NTSTATUS CSaveData::Initialize()
 
         if (STATUS_SUCCESS == ntStatus)
         {
-            ntStatus = FileOpen(TRUE);
+            ntStatus = fileOpen(TRUE);
             if (NT_SUCCESS(ntStatus))
             {
-                ntStatus = FileWriteHeader();
+                ntStatus = fileWriteHeader();
 
-                FileClose();
+                fileClose();
             }
 
             KeReleaseMutex( &fileSync_, FALSE );
@@ -449,7 +449,7 @@ NTSTATUS CSaveData::Initialize()
 }
 
 //=============================================================================
-NTSTATUS CSaveData::InitializeWorkItems
+NTSTATUS CSaveData::initializeWorkItems
 (
     IN  PDEVICE_OBJECT DeviceObject
 )
@@ -488,10 +488,10 @@ NTSTATUS CSaveData::InitializeWorkItems
 
 //=============================================================================
 
-IO_WORKITEM_ROUTINE SaveFrameWorkerCallback;
+IO_WORKITEM_ROUTINE saveFrameWorkerCallback;
 
 VOID
-SaveFrameWorkerCallback
+saveFrameWorkerCallback
 (
     PDEVICE_OBJECT pDeviceObject, IN  PVOID  Context
 )
@@ -521,10 +521,10 @@ SaveFrameWorkerCallback
 
         if (STATUS_SUCCESS == KeWaitForSingleObject(&pSaveData->fileSync_, Executive, KernelMode, FALSE, nullptr))
         {
-            if (NT_SUCCESS(pSaveData->FileOpen(FALSE)))
+            if (NT_SUCCESS(pSaveData->fileOpen(FALSE)))
             { 
-                pSaveData->FileWrite(pParam->pData, pParam->ulDataSize);
-                pSaveData->FileClose();
+                pSaveData->fileWrite(pParam->pData, pParam->ulDataSize);
+                pSaveData->fileClose();
             }
             InterlockedExchange( (LONG *)&(pSaveData->frameUsed_[pParam->ulFrameNo]), FALSE );
 
@@ -536,7 +536,7 @@ SaveFrameWorkerCallback
 }
 
 //=============================================================================
-NTSTATUS CSaveData::SetDataFormat(IN PKSDATAFORMAT pDataFormat)
+NTSTATUS CSaveData::setDataFormat(IN PKSDATAFORMAT pDataFormat)
 {
     PAGED_CODE();
     NTSTATUS ntStatus = STATUS_SUCCESS; 
@@ -580,7 +580,7 @@ NTSTATUS CSaveData::SetDataFormat(IN PKSDATAFORMAT pDataFormat)
 
 //=============================================================================
 void
-CSaveData::ReadData
+CSaveData::readData
 (
     _Inout_updates_bytes_all_(ulByteCount)  PBYTE   pBuffer,
     _In_                                    ULONG   ulByteCount
@@ -596,11 +596,11 @@ CSaveData::ReadData
 
 //=============================================================================
 #pragma code_seg()
-void CSaveData::SaveFrame(IN ULONG frameNo, IN ULONG dataSize)
+void CSaveData::saveFrame(IN ULONG frameNo, IN ULONG dataSize)
 {
     DPF_ENTER(("[CSaveData::SaveFrame]"));
 
-    PSAVEWORKER_PARAM pParam = GetNewWorkItem();
+    PSAVEWORKER_PARAM pParam = getNewWorkItem();
     if (pParam)
     {
         pParam->pSaveData  = this;
@@ -608,18 +608,18 @@ void CSaveData::SaveFrame(IN ULONG frameNo, IN ULONG dataSize)
         pParam->ulDataSize = dataSize;
         pParam->pData      = dataBuffer_ + frameNo * frameSize_;
         KeResetEvent(&pParam->EventDone);
-        IoQueueWorkItem(pParam->WorkItem, SaveFrameWorkerCallback, CriticalWorkQueue, (PVOID)pParam);
+        IoQueueWorkItem(pParam->WorkItem, saveFrameWorkerCallback, CriticalWorkQueue, (PVOID)pParam);
     }
 }
 #pragma code_seg("PAGE")
 //=============================================================================
-void CSaveData::WaitAllWorkItems()
+void CSaveData::waitAllWorkItems()
 {
     PAGED_CODE();
     DPF_ENTER(("[CSaveData::WaitAllWorkItems]"));
 
     // Save the last partially-filled frame
-    SaveFrame(framePtr_, bufferPtr_ - (framePtr_ * frameSize_));
+    saveFrame(framePtr_, bufferPtr_ - (framePtr_ * frameSize_));
 
     for (int i = 0; i < MAX_WORKER_ITEM_COUNT; i++)
     {
@@ -631,7 +631,7 @@ void CSaveData::WaitAllWorkItems()
 #pragma code_seg()
 //=============================================================================
 void
-CSaveData::WriteData
+CSaveData::writeData
 (
     _In_reads_bytes_(byteCount)   PBYTE   pBuffer,
     _In_                          ULONG   byteCount
@@ -716,7 +716,7 @@ CSaveData::WriteData
 
         if (fSaveFrame)
         {
-            SaveFrame(ulSaveFramePtr, frameSize_);
+            saveFrame(ulSaveFramePtr, frameSize_);
         }
     }
     else

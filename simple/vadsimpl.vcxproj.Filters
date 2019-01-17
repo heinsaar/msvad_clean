@@ -137,6 +137,9 @@
     <ClInclude Include="..\basewave.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\savedata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\msvad.rc">

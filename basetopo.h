@@ -27,13 +27,13 @@ class MiniportTopologyMSVAD
     NTSTATUS Init(IN  PUNKNOWN UnknownAdapter, IN  PPORTTOPOLOGY Port_);
 
     // PropertyHandlers.
-    NTSTATUS PropertyHandlerBasicSupportVolume(IN  PPCPROPERTY_REQUEST PropertyRequest);
-    NTSTATUS PropertyHandlerCpuResources(      IN  PPCPROPERTY_REQUEST PropertyRequest);
-    NTSTATUS PropertyHandlerGeneric(           IN  PPCPROPERTY_REQUEST PropertyRequest);
-    NTSTATUS PropertyHandlerMute(              IN  PPCPROPERTY_REQUEST PropertyRequest);
-    NTSTATUS PropertyHandlerMuxSource(         IN  PPCPROPERTY_REQUEST PropertyRequest);
-    NTSTATUS PropertyHandlerVolume(            IN  PPCPROPERTY_REQUEST PropertyRequest);
-    NTSTATUS PropertyHandlerDevSpecific(       IN  PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS propertyHandlerBasicSupportVolume(IN PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS propertyHandlerCpuResources(      IN PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS propertyHandlerGeneric(           IN PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS propertyHandlerMute(              IN PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS propertyHandlerMuxSource(         IN PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS propertyHandlerVolume(            IN PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS propertyHandlerDevSpecific(       IN PPCPROPERTY_REQUEST PropertyRequest);
 
 protected:
     PADAPTERCOMMON       adapterCommon_;    // Adapter common object.

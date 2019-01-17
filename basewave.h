@@ -11,7 +11,7 @@ Abstract:
 //=============================================================================
 // Referenced Forward
 //=============================================================================
-KDEFERRED_ROUTINE TimerNotify;
+KDEFERRED_ROUTINE timerNotify;
 
 class   MiniportWaveCyclicStreamMSVAD;
 typedef MiniportWaveCyclicStreamMSVAD* PCMiniportWaveCyclicStreamMSVAD;
@@ -28,8 +28,8 @@ typedef MiniportWaveCyclicStreamMSVAD* PCMiniportWaveCyclicStreamMSVAD;
 class MiniportWaveCyclicMSVAD
 {
 protected:
-    NTSTATUS ValidateFormat(IN PKSDATAFORMAT pDataFormat);
-    NTSTATUS ValidatePcm(   IN PWAVEFORMATEX pWfx);
+    NTSTATUS validateFormat(IN PKSDATAFORMAT pDataFormat);
+    NTSTATUS validatePcm(   IN PWAVEFORMATEX pWfx);
 
 public:
      MiniportWaveCyclicMSVAD();
@@ -44,19 +44,13 @@ public:
         _In_ PPORTWAVECYCLIC Port
     );
 
-    NTSTATUS PropertyHandlerCpuResources(IN PPCPROPERTY_REQUEST PropertyRequest);
-    NTSTATUS PropertyHandlerGeneric(     IN PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS propertyHandlerCpuResources(IN PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS propertyHandlerGeneric(     IN PPCPROPERTY_REQUEST PropertyRequest);
 
     // Friends
-    friend class                MiniportWaveCyclicStreamMSVAD;
-    friend class                MiniportTopologyMSVAD;
-    friend void                 TimerNotify
-    ( 
-        IN  PKDPC               Dpc, 
-        IN  PVOID               DeferredContext, 
-        IN  PVOID               SA1, 
-        IN  PVOID               SA2 
-    );
+    friend class MiniportWaveCyclicStreamMSVAD;
+    friend class MiniportTopologyMSVAD;
+    friend void  timerNotify(IN PKDPC Dpc, IN PVOID DeferredContext, IN PVOID SA1, IN PVOID SA2);
 
 protected:
     PADAPTERCOMMON       adapterCommon_;        // Adapter common object
@@ -117,7 +111,7 @@ protected:
     CSaveData                 saveData_;                     // Object to save settings.
   
 public:
-    MiniportWaveCyclicStreamMSVAD();
+     MiniportWaveCyclicStreamMSVAD();
     ~MiniportWaveCyclicStreamMSVAD();
 
     IMP_IMiniportWaveCyclicStream;
@@ -125,10 +119,10 @@ public:
 
     NTSTATUS Init
     ( 
-        IN  PCMiniportWaveCyclicMSVAD  Miniport,
-        IN  ULONG               Pin,
-        IN  BOOLEAN             Capture,
-        IN  PKSDATAFORMAT       DataFormat
+        IN  PCMiniportWaveCyclicMSVAD Miniport,
+        IN  ULONG                     Pin,
+        IN  BOOLEAN                   Capture,
+        IN  PKSDATAFORMAT             DataFormat
     );
 
     // Friends

@@ -18,10 +18,10 @@ public:
 
     IMP_IMiniportTopology;
 
-    NTSTATUS PropertyHandlerJackDescription(IN PPCPROPERTY_REQUEST  PropertyRequest);
+    NTSTATUS propertyHandlerJackDescription(IN PPCPROPERTY_REQUEST  PropertyRequest);
 };
 typedef MiniportTopology *PCMiniportTopology;
 
-extern NTSTATUS PropertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest);
+extern NTSTATUS propertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest);
 
 #endif

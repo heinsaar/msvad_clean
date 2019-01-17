@@ -26,7 +26,7 @@ class MSVADHW
 public:
     MSVADHW();
     
-    void MixerReset();
+    void mixerReset();
     BOOL bGetDevSpecific();
     void bSetDevSpecific(IN  BOOL  bDevSpecific);
 
@@ -36,15 +36,15 @@ public:
     UINT  uiGetDevSpecific();
     void  uiSetDevSpecific(IN  UINT  uiDevSpecific);
 
-    BOOL  GetMixerMute(  IN  ULONG ulNode);
-    void  SetMixerMute(  IN  ULONG ulNode, IN  BOOL fMute);
-    ULONG GetMixerMux(); 
-    void  SetMixerMux(   IN  ULONG ulNode);
-    LONG  GetMixerVolume(IN  ULONG ulNode, IN  LONG lChannel);
-    void  SetMixerVolume(IN  ULONG ulNode, IN  LONG lChannel, IN  LONG lVolume);
+    BOOL  getMixerMute(  IN  ULONG ulNode);
+    void  setMixerMute(  IN  ULONG ulNode, IN  BOOL fMute);
+    ULONG getMixerMux(); 
+    void  setMixerMux(   IN  ULONG ulNode);
+    LONG  getMixerVolume(IN  ULONG ulNode, IN  LONG lChannel);
+    void  setMixerVolume(IN  ULONG ulNode, IN  LONG lChannel, IN  LONG lVolume);
 
 protected:
-    BOOL  muteControls_[MAX_TOPOLOGY_NODES];
+    BOOL  muteControls_[  MAX_TOPOLOGY_NODES];
     LONG  volumeControls_[MAX_TOPOLOGY_NODES];
     ULONG mux_;            // Mux selection
     BOOL  bDevSpecific_;

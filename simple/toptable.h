@@ -203,7 +203,7 @@ PCPROPERTY_ITEM PropertiesVolume[] =
     &KSPROPSETID_Audio,
     KSPROPERTY_AUDIO_VOLUMELEVEL,
     KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_SET | KSPROPERTY_TYPE_BASICSUPPORT,
-    PropertyHandler_Topology
+    propertyHandler_Topology
   }
 };
 
@@ -217,7 +217,7 @@ PCPROPERTY_ITEM PropertiesMute[] =
     &KSPROPSETID_Audio,
     KSPROPERTY_AUDIO_MUTE,
     KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_SET | KSPROPERTY_TYPE_BASICSUPPORT,
-    PropertyHandler_Topology
+    propertyHandler_Topology
   }
 };
 
@@ -231,7 +231,7 @@ PCPROPERTY_ITEM PropertiesMux[] =
     &KSPROPSETID_Audio,
     KSPROPERTY_AUDIO_MUX_SOURCE,
     KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_SET | KSPROPERTY_TYPE_BASICSUPPORT,
-    PropertyHandler_Topology
+    propertyHandler_Topology
   }
 };
 
@@ -245,7 +245,7 @@ PCPROPERTY_ITEM PropertiesDevSpecific[] =
     &KSPROPSETID_Audio,
     KSPROPERTY_AUDIO_DEV_SPECIFIC,
     KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_SET | KSPROPERTY_TYPE_BASICSUPPORT,
-    PropertyHandler_Topology
+    propertyHandler_Topology
   }
 };
 
@@ -406,7 +406,7 @@ PCPROPERTY_ITEM PropertiesTopoFilter[] =
         &KSPROPSETID_Jack,
         KSPROPERTY_JACK_DESCRIPTION,
         KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_BASICSUPPORT,
-        PropertyHandler_TopoFilter
+        propertyHandler_TopoFilter
     }
 };
 

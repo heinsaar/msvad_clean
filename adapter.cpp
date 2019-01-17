@@ -24,9 +24,9 @@ Abstract:
 // Referenced forward.
 //-----------------------------------------------------------------------------
 
-DRIVER_ADD_DEVICE AddDevice;
+DRIVER_ADD_DEVICE addDevice;
 
-NTSTATUS StartDevice(IN  PDEVICE_OBJECT, IN  PIRP, IN  PRESOURCELIST);
+NTSTATUS startDevice(IN  PDEVICE_OBJECT, IN  PIRP, IN  PRESOURCELIST);
 
 //-----------------------------------------------------------------------------
 // Functions
@@ -46,7 +46,7 @@ Arguments:
 
 */
 #pragma code_seg("PAGE")
-NTSTATUS PnpHandler(_In_ DEVICE_OBJECT *_DeviceObject, _In_ IRP *_Irp)
+NTSTATUS pnpHandler(_In_ DEVICE_OBJECT *_DeviceObject, _In_ IRP *_Irp)
 {
     PAGED_CODE(); 
     ASSERT(_DeviceObject);
@@ -65,7 +65,7 @@ NTSTATUS PnpHandler(_In_ DEVICE_OBJECT *_DeviceObject, _In_ IRP *_Irp)
 
         if (ext->common_ != nullptr)
         {
-            ext->common_->UninstantiateDevices();
+            ext->common_->uninstantiateDevices();
             ext->common_->Release();
             ext->common_ = nullptr;
         }
@@ -96,14 +96,14 @@ extern "C" NTSTATUS DriverEntry(IN  PDRIVER_OBJECT  DriverObject, IN  PUNICODE_S
 
     // Tell the class driver to initialize the driver.
     //
-    NTSTATUS ntStatus = PcInitializeAdapterDriver(DriverObject, RegistryPathName, (PDRIVER_ADD_DEVICE)AddDevice);
+    NTSTATUS ntStatus = PcInitializeAdapterDriver(DriverObject, RegistryPathName, (PDRIVER_ADD_DEVICE)addDevice);
 
     if (NT_SUCCESS(ntStatus))
     {
 #pragma warning (push)
 #pragma warning( disable:28169 ) 
 #pragma warning( disable:28023 ) 
-        DriverObject->MajorFunction[IRP_MJ_PNP] = PnpHandler;
+        DriverObject->MajorFunction[IRP_MJ_PNP] = pnpHandler;
 #pragma warning (pop)
     }
 
@@ -135,14 +135,14 @@ Arguments:
   DriverObject - pointer to a driver object
   PhysicalDeviceObject -  pointer to a device object created by the underlying bus driver.
 */
-NTSTATUS AddDevice(IN  PDRIVER_OBJECT DriverObject, IN  PDEVICE_OBJECT PhysicalDeviceObject)
+NTSTATUS addDevice(IN  PDRIVER_OBJECT DriverObject, IN  PDEVICE_OBJECT PhysicalDeviceObject)
 {
     PAGED_CODE();
     DPF(D_TERSE, ("[AddDevice]"));
 
     // Tell the class driver to add the device.
     //
-    return PcAddAdapterDevice(DriverObject, PhysicalDeviceObject, PCPFNSTARTDEVICE(StartDevice), MAX_MINIPORTS, 0);
+    return PcAddAdapterDevice(DriverObject, PhysicalDeviceObject, PCPFNSTARTDEVICE(startDevice), MAX_MINIPORTS, 0);
 }
 
 //=============================================================================
@@ -159,7 +159,7 @@ Arguments:
   Irp          - pointer to the irp 
   ResourceList - pointer to the resource list assigned by PnP manager
 */
-NTSTATUS StartDevice
+NTSTATUS startDevice
 (
     IN  PDEVICE_OBJECT DeviceObject,
     IN  PIRP           Irp,
@@ -183,7 +183,7 @@ NTSTATUS StartDevice
 
     // create a new adapter common object
     //
-    NTSTATUS ntStatus = NewAdapterCommon(&pUnknownCommon, IID_IAdapterCommon, nullptr, NonPagedPool);
+    NTSTATUS ntStatus = newAdapterCommon(&pUnknownCommon, IID_IAdapterCommon, nullptr, NonPagedPool);
     if (NT_SUCCESS(ntStatus))
     {
         ntStatus = pUnknownCommon->QueryInterface(IID_IAdapterCommon, (PVOID *) &pAdapterCommon);
@@ -205,7 +205,7 @@ NTSTATUS StartDevice
     //
     if (NT_SUCCESS(ntStatus))
     {
-        ntStatus = pAdapterCommon->InstantiateDevices();
+        ntStatus = pAdapterCommon->instantiateDevices();
     }
 
     // Stash the adapter common object in the device extension so

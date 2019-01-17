@@ -100,11 +100,11 @@ typedef struct _PortClassDeviceContext               // 32       64      Byte of
 // Physical connection table. Defined in mintopo.cpp for each sample
 extern PHYSICALCONNECTIONTABLE TopologyPhysicalConnections;
 
-extern NTSTATUS PropertyHandler_Topology(IN PPCPROPERTY_REQUEST PropertyRequest ); // Generic topology  handler
-extern NTSTATUS PropertyHandler_Wave(    IN PPCPROPERTY_REQUEST PropertyRequest);  // Generic wave port handler
+extern NTSTATUS propertyHandler_Topology(IN PPCPROPERTY_REQUEST PropertyRequest ); // Generic topology  handler
+extern NTSTATUS propertyHandler_Wave(    IN PPCPROPERTY_REQUEST PropertyRequest);  // Generic wave port handler
 
 // Default WaveFilter automation table.
 // Handles the GeneralComponentId request.
-extern NTSTATUS PropertyHandler_WaveFilter(IN PPCPROPERTY_REQUEST PropertyRequest);
+extern NTSTATUS propertyHandler_WaveFilter(IN PPCPROPERTY_REQUEST PropertyRequest);
 
 #endif

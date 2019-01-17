@@ -102,11 +102,11 @@ NTSTATUS MiniportTopology::DataRangeIntersection
     PAGED_CODE();
 
     return MiniportTopologyMSVAD::DataRangeIntersection(PinId,
-                                                         ClientDataRange,
-                                                         MyDataRange,
-                                                         OutputBufferLength,
-                                                         ResultantFormat,
-                                                         ResultantFormatLength);
+                                                        ClientDataRange,
+                                                        MyDataRange,
+                                                        OutputBufferLength,
+                                                        ResultantFormat,
+                                                        ResultantFormatLength);
 }
 
 //=============================================================================
@@ -168,7 +168,7 @@ MiniportTopology::Init
     if (NT_SUCCESS(ntStatus))
     {
         filterDescriptor_ = &MiniportFilterDescriptor;
-        adapterCommon_->MixerMuxWrite(KSPIN_TOPO_MIC_SOURCE);
+        adapterCommon_->mixerMuxWrite(KSPIN_TOPO_MIC_SOURCE);
     }
 
     return ntStatus;
@@ -227,7 +227,7 @@ MiniportTopology::NonDelegatingQueryInterface
 Routine Description:
   Handles ( KSPROPSETID_Jack, KSPROPERTY_JACK_DESCRIPTION )
 */
-NTSTATUS MiniportTopology::PropertyHandlerJackDescription(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportTopology::propertyHandlerJackDescription(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
     ASSERT(PropertyRequest);
@@ -285,7 +285,7 @@ NTSTATUS MiniportTopology::PropertyHandlerJackDescription(IN PPCPROPERTY_REQUEST
 Routine Description:
   Redirects property request to miniport object
 */
-NTSTATUS PropertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS propertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
     ASSERT(PropertyRequest);
@@ -300,7 +300,7 @@ NTSTATUS PropertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
     if (IsEqualGUIDAligned(*PropertyRequest->PropertyItem->Set, KSPROPSETID_Jack) &&
                            (PropertyRequest->PropertyItem->Id == KSPROPERTY_JACK_DESCRIPTION))
     {
-        ntStatus = pMiniport->PropertyHandlerJackDescription(PropertyRequest);
+        ntStatus = pMiniport->propertyHandlerJackDescription(PropertyRequest);
     }
 
     return ntStatus;
@@ -311,7 +311,7 @@ NTSTATUS PropertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
 Routine Description:
   Redirects property request to miniport object
 */
-NTSTATUS PropertyHandler_Topology(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS propertyHandler_Topology(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
     ASSERT(PropertyRequest);
@@ -320,7 +320,7 @@ NTSTATUS PropertyHandler_Topology(IN PPCPROPERTY_REQUEST PropertyRequest)
     // PropertryRequest structure is filled by portcls. 
     // MajorTarget is a pointer to miniport object for miniports.
     //
-    return ((PCMiniportTopology)(PropertyRequest->MajorTarget))->PropertyHandlerGeneric(PropertyRequest);
+    return ((PCMiniportTopology)(PropertyRequest->MajorTarget))->propertyHandlerGeneric(PropertyRequest);
 }
 
 #pragma code_seg()

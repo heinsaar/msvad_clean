@@ -25,8 +25,8 @@ public:
 
     IMP_IMiniportWaveCyclic;
 
-    NTSTATUS PropertyHandlerComponentId(   IN PPCPROPERTY_REQUEST  PropertyRequest);
-    NTSTATUS PropertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST  PropertyRequest);
+    NTSTATUS propertyHandlerComponentId(   IN PPCPROPERTY_REQUEST PropertyRequest);
+    NTSTATUS propertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST PropertyRequest);
 
     // Friends
     friend class MiniportWaveCyclicStream;

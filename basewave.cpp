@@ -130,7 +130,7 @@ Arguments:
 
         if (NT_SUCCESS(ntStatus))
         {
-            adapterCommon_->SetWaveServiceGroup(serviceGroup_);
+            adapterCommon_->setWaveServiceGroup(serviceGroup_);
         }
     }
 
@@ -144,7 +144,7 @@ Arguments:
             //
             if (serviceGroup_)
             {
-                adapterCommon_->SetWaveServiceGroup(nullptr);
+                adapterCommon_->setWaveServiceGroup(nullptr);
                 serviceGroup_->Release();
                 serviceGroup_ = nullptr;
             }
@@ -170,7 +170,7 @@ Routine Description:
 Arguments:
   PropertyRequest - property request structure
 */
-NTSTATUS MiniportWaveCyclicMSVAD::PropertyHandlerCpuResources(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportWaveCyclicMSVAD::propertyHandlerCpuResources(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
     ASSERT(PropertyRequest);
@@ -208,7 +208,7 @@ Arguments:
   PropertyRequest - property request structure
 
 */
-NTSTATUS MiniportWaveCyclicMSVAD::PropertyHandlerGeneric(IN  PPCPROPERTY_REQUEST     PropertyRequest)
+NTSTATUS MiniportWaveCyclicMSVAD::propertyHandlerGeneric(IN  PPCPROPERTY_REQUEST     PropertyRequest)
 {
     PAGED_CODE();
 
@@ -220,7 +220,7 @@ NTSTATUS MiniportWaveCyclicMSVAD::PropertyHandlerGeneric(IN  PPCPROPERTY_REQUEST
     switch (PropertyRequest->PropertyItem->Id)
     {
         case KSPROPERTY_AUDIO_CPU_RESOURCES:
-            ntStatus = PropertyHandlerCpuResources(PropertyRequest);
+            ntStatus = propertyHandlerCpuResources(PropertyRequest);
             break;
 
         default:
@@ -244,7 +244,7 @@ Arguments:
   pDataFormat - The dataformat for validation.
 
 */
-NTSTATUS MiniportWaveCyclicMSVAD::ValidateFormat(IN  PKSDATAFORMAT pDataFormat)
+NTSTATUS MiniportWaveCyclicMSVAD::validateFormat(IN  PKSDATAFORMAT pDataFormat)
 {
     PAGED_CODE();
 
@@ -268,7 +268,7 @@ NTSTATUS MiniportWaveCyclicMSVAD::ValidateFormat(IN  PKSDATAFORMAT pDataFormat)
                     {
                         case WAVE_FORMAT_PCM:
                         {
-                            ntStatus = ValidatePcm(pwfx);
+                            ntStatus = validatePcm(pwfx);
                             break;
                         }
                     }
@@ -299,14 +299,14 @@ Arguments:
 
   pWfx - wave format structure.
 */
-NTSTATUS MiniportWaveCyclicMSVAD::ValidatePcm(IN  PWAVEFORMATEX  pWfx)
+NTSTATUS MiniportWaveCyclicMSVAD::validatePcm(IN  PWAVEFORMATEX  pWfx)
 {
     PAGED_CODE();
 
     DPF_ENTER(("CMiniportWaveCyclicMSVAD::ValidatePcm"));
 
-    if ( pWfx                                               &&
-        (pWfx->cbSize == 0)                                 &&
+    if ( pWfx                                              &&
+        (pWfx->cbSize == 0)                                &&
         (pWfx->nChannels >= minChannels_)                  &&
         (pWfx->nChannels <= maxChannelsPcm_)               &&
         (pWfx->nSamplesPerSec >= minSampleRatePcm_)        &&
@@ -435,10 +435,10 @@ NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
         if (!isCapture_)
         {
             DPF(D_TERSE, ("SaveData %p", &saveData_));
-            ntStatus = saveData_.SetDataFormat(DataFormat_);
+            ntStatus = saveData_.setDataFormat(DataFormat_);
             if (NT_SUCCESS(ntStatus))
             {
-                ntStatus = saveData_.Initialize();
+                ntStatus = saveData_.initialize();
             }
         }
     }
@@ -491,7 +491,7 @@ NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
 
     if (NT_SUCCESS(ntStatus))
     {
-        KeInitializeDpc(dpc_, TimerNotify, miniport_);
+        KeInitializeDpc(dpc_, timerNotify, miniport_);
         KeInitializeTimerEx(timer_, NotificationTimer);
     }
 
@@ -627,7 +627,7 @@ MiniportWaveCyclicStreamMSVAD::SetFormat(_In_  PKSDATAFORMAT Format)
             {
                 if (!isCapture_)
                 {
-                    ntStatus = saveData_.SetDataFormat(Format);
+                    ntStatus = saveData_.setDataFormat(Format);
                 }
 
                 blockAlign_                   =  pWfx->nBlockAlign;
@@ -746,7 +746,7 @@ MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
             //
             if (!isCapture_)
             {
-                saveData_.WaitAllWorkItems();
+                saveData_.waitAllWorkItems();
             }
 
             break;
@@ -799,7 +799,7 @@ Arguments:
   SA1 - System argument 1
   SA2 - System argument 2
 */
-void TimerNotify
+void timerNotify
 (
     IN  PKDPC Dpc,
     IN  PVOID DeferredContext,

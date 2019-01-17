@@ -70,7 +70,7 @@ typedef OUTPUT_DATA_HEADER *POUTPUT_DATA_HEADER;
 // CSaveData
 //   Saves the wave data to disk.
 //
-IO_WORKITEM_ROUTINE SaveFrameWorkerCallback;
+IO_WORKITEM_ROUTINE saveFrameWorkerCallback;
 
 class CSaveData
 {
@@ -107,31 +107,31 @@ public:
     CSaveData();
     ~CSaveData();
 
-    static void                 DestroyWorkItems();
-    void                        Disable(BOOL fDisable);
-    static PSAVEWORKER_PARAM    GetNewWorkItem();
-    NTSTATUS                    Initialize();
-    static NTSTATUS             SetDeviceObject(IN  PDEVICE_OBJECT DeviceObject);
-    static PDEVICE_OBJECT       GetDeviceObject();
+    static void                 destroyWorkItems();
+    void                        disable(BOOL fDisable);
+    static PSAVEWORKER_PARAM    getNewWorkItem();
+    NTSTATUS                    initialize();
+    static NTSTATUS             setDeviceObject(IN  PDEVICE_OBJECT DeviceObject);
+    static PDEVICE_OBJECT       getDeviceObject();
 
-    void                        ReadData(_Inout_updates_bytes_all_(ulByteCount)  PBYTE pBuffer,
+    void                        readData(_Inout_updates_bytes_all_(ulByteCount)  PBYTE pBuffer,
                                          _In_                                    ULONG ulByteCount);
 
-    NTSTATUS                    SetDataFormat(IN  PKSDATAFORMAT       pDataFormat);
-    void                        WaitAllWorkItems();
-    void                        WriteData(_In_reads_bytes_(ulByteCount)   PBYTE   pBuffer,
+    NTSTATUS                    setDataFormat(IN  PKSDATAFORMAT       pDataFormat);
+    void                        waitAllWorkItems();
+    void                        writeData(_In_reads_bytes_(ulByteCount)   PBYTE   pBuffer,
                                           _In_                            ULONG   ulByteCount);
 private:
-    static NTSTATUS             InitializeWorkItems(IN  PDEVICE_OBJECT DeviceObject);
+    static NTSTATUS             initializeWorkItems(IN  PDEVICE_OBJECT DeviceObject);
 
-    NTSTATUS                    FileClose(void);
-    NTSTATUS                    FileOpen(IN  BOOL fOverWrite);
-    NTSTATUS                    FileWrite(_In_reads_bytes_(ulDataSize) PBYTE   pData,
+    NTSTATUS                    fileClose(void);
+    NTSTATUS                    fileOpen(IN  BOOL fOverWrite);
+    NTSTATUS                    fileWrite(_In_reads_bytes_(ulDataSize) PBYTE   pData,
                                           _In_                         ULONG   ulDataSize);
 
-    NTSTATUS                    FileWriteHeader();
-    void                        SaveFrame(IN  ULONG ulFrameNo, IN  ULONG ulDataSize);
-    friend VOID                 SaveFrameWorkerCallback(PDEVICE_OBJECT pDeviceObject, IN  PVOID  Context);
+    NTSTATUS                    fileWriteHeader();
+    void                        saveFrame(IN  ULONG ulFrameNo, IN  ULONG ulDataSize);
+    friend VOID                 saveFrameWorkerCallback(PDEVICE_OBJECT pDeviceObject, IN  PVOID  Context);
 };
 
 typedef CSaveData *PCSaveData;

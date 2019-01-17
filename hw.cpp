@@ -19,7 +19,7 @@ MSVADHW::MSVADHW()
     uiDevSpecific_(0)
 {
     PAGED_CODE();    
-    MixerReset();
+    mixerReset();
 }
 #pragma code_seg()
 
@@ -106,7 +106,7 @@ Arguments:
   mute setting
 
 */
-BOOL MSVADHW::GetMixerMute(IN  ULONG node)
+BOOL MSVADHW::getMixerMute(IN  ULONG node)
 {
     if (node < MAX_TOPOLOGY_NODES)
     {
@@ -121,7 +121,7 @@ BOOL MSVADHW::GetMixerMute(IN  ULONG node)
 Routine Description:
   Return the current mux selection
 */
-ULONG MSVADHW::GetMixerMux()
+ULONG MSVADHW::getMixerMux()
 {
     return mux_;
 }
@@ -136,7 +136,7 @@ Arguments:
   lChannel - which channel are we setting?
   LONG     - volume level
 */
-LONG MSVADHW::GetMixerVolume(IN  ULONG node, IN  LONG  channel)
+LONG MSVADHW::getMixerVolume(IN  ULONG node, IN  LONG  channel)
 {
     UNREFERENCED_PARAMETER(channel);
 
@@ -153,7 +153,7 @@ LONG MSVADHW::GetMixerVolume(IN  ULONG node, IN  LONG  channel)
   Resets the mixer registers.
 */
 #pragma code_seg("PAGE")
-void MSVADHW::MixerReset()
+void MSVADHW::mixerReset()
 {
     PAGED_CODE();
     
@@ -174,7 +174,7 @@ Arguments:
   node - topology node id
   fMute - mute flag
 */
-void MSVADHW::SetMixerMute(IN  ULONG node, IN  BOOL fMute)
+void MSVADHW::setMixerMute(IN  ULONG node, IN  BOOL fMute)
 {
     if (node < MAX_TOPOLOGY_NODES)
     {
@@ -190,7 +190,7 @@ Routine Description:
 Arguments:
   ulNode - topology node id
 */
-void MSVADHW::SetMixerMux(IN  ULONG node)
+void MSVADHW::setMixerMux(IN  ULONG node)
 {
     mux_ = node;
 }
@@ -206,7 +206,7 @@ Arguments:
   volume  - volume level
 
 */
-void MSVADHW::SetMixerVolume(IN  ULONG node, IN  LONG channel, IN  LONG volume)
+void MSVADHW::setMixerVolume(IN  ULONG node, IN  LONG channel, IN  LONG volume)
 {
     UNREFERENCED_PARAMETER(channel);
 

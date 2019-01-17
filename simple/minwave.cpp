@@ -234,7 +234,7 @@ MiniportWaveCyclic::NewStream
     //
     if (NT_SUCCESS(ntStatus))
     {
-        ntStatus = ValidateFormat(DataFormat);
+        ntStatus = validateFormat(DataFormat);
     }
 
     // Instantiate a stream. Stream must be in
@@ -346,7 +346,7 @@ MiniportWaveCyclic::NonDelegatingQueryInterface
 Routine Description:
   Handles KSPROPERTY_GENERAL_COMPONENTID
 */
-NTSTATUS MiniportWaveCyclic::PropertyHandlerComponentId(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportWaveCyclic::propertyHandlerComponentId(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
 
@@ -395,7 +395,7 @@ NTSTATUS MiniportWaveCyclic::PropertyHandlerComponentId(IN PPCPROPERTY_REQUEST P
 Routine Description:
   Handles KSPROPERTY_GENERAL_COMPONENTID
 */
-NTSTATUS MiniportWaveCyclic::PropertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportWaveCyclic::propertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
 
@@ -477,7 +477,7 @@ NTSTATUS MiniportWaveCyclic::PropertyHandlerProposedFormat(IN PPCPROPERTY_REQUES
 Routine Description:
   Redirects general property request to miniport object
 */
-NTSTATUS PropertyHandler_WaveFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS propertyHandler_WaveFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
 {
     PAGED_CODE();
 
@@ -487,11 +487,11 @@ NTSTATUS PropertyHandler_WaveFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
     switch (PropertyRequest->PropertyItem->Id)
     {
         case KSPROPERTY_GENERAL_COMPONENTID:
-            ntStatus = pWave->PropertyHandlerComponentId(PropertyRequest);
+            ntStatus = pWave->propertyHandlerComponentId(PropertyRequest);
             break;
 
         case KSPROPERTY_PIN_PROPOSEDATAFORMAT:
-            ntStatus = pWave->PropertyHandlerProposedFormat(PropertyRequest);
+            ntStatus = pWave->propertyHandlerProposedFormat(PropertyRequest);
             break;
         
         default:

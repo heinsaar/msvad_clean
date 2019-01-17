@@ -37,38 +37,38 @@ DECLARE_INTERFACE_(IAdapterCommon, IUnknown)
         IN  PDEVICE_OBJECT      DeviceObject 
     ) PURE;
 
-    STDMETHOD_(PDEVICE_OBJECT,  GetDeviceObject)
+    STDMETHOD_(PDEVICE_OBJECT,  getDeviceObject)
     (
         THIS
     ) PURE;
 
-    STDMETHOD_(VOID,            SetWaveServiceGroup) 
+    STDMETHOD_(VOID,            setWaveServiceGroup) 
     ( 
         THIS_
         IN PSERVICEGROUP        ServiceGroup 
     ) PURE;
 
-    STDMETHOD_(NTSTATUS,        InstantiateDevices)
+    STDMETHOD_(NTSTATUS,        instantiateDevices)
     (
         THIS
     ) PURE;
 
-    STDMETHOD_(NTSTATUS,        UninstantiateDevices)
+    STDMETHOD_(NTSTATUS,        uninstantiateDevices)
     (
         THIS
     ) PURE;
 
-    STDMETHOD_(NTSTATUS,        Plugin)
+    STDMETHOD_(NTSTATUS,        plugin)
     (
         THIS
     ) PURE;
 
-    STDMETHOD_(NTSTATUS,        Unplug)
+    STDMETHOD_(NTSTATUS,        unplug)
     (
         THIS
     ) PURE;
 
-    STDMETHOD_(PUNKNOWN *,      WavePortDriverDest) 
+    STDMETHOD_(PUNKNOWN *,      wavePortDriverDest) 
     ( 
         THIS 
     ) PURE;
@@ -106,38 +106,38 @@ DECLARE_INTERFACE_(IAdapterCommon, IUnknown)
         IN  UINT                uiDevSpecific
     );
 
-    STDMETHOD_(BOOL,            MixerMuteRead)
+    STDMETHOD_(BOOL,            mixerMuteRead)
     (
         THIS_
         IN  ULONG               Index
     ) PURE;
 
-    STDMETHOD_(VOID,            MixerMuteWrite)
+    STDMETHOD_(VOID,            mixerMuteWrite)
     (
         THIS_
         IN  ULONG               Index,
         IN  BOOL                Value
     );
 
-    STDMETHOD_(ULONG,           MixerMuxRead)
+    STDMETHOD_(ULONG,           mixerMuxRead)
     (
         THIS
     );
 
-    STDMETHOD_(VOID,            MixerMuxWrite)
+    STDMETHOD_(VOID,            mixerMuxWrite)
     (
         THIS_
         IN  ULONG               Index
     );
 
-    STDMETHOD_(LONG,            MixerVolumeRead) 
+    STDMETHOD_(LONG,            mixerVolumeRead) 
     ( 
         THIS_
         IN  ULONG               Index,
         IN  LONG                Channel
     ) PURE;
 
-    STDMETHOD_(VOID,            MixerVolumeWrite) 
+    STDMETHOD_(VOID,            mixerVolumeWrite) 
     ( 
         THIS_
         IN  ULONG               Index,
@@ -145,28 +145,28 @@ DECLARE_INTERFACE_(IAdapterCommon, IUnknown)
         IN  LONG                Value 
     ) PURE;
 
-    STDMETHOD_(VOID,            MixerReset) 
+    STDMETHOD_(VOID,            mixerReset) 
     ( 
         THIS 
     ) PURE;
 
-    STDMETHOD_(BOOL,            IsInstantiated) 
+    STDMETHOD_(BOOL,            isInstantiated) 
     ( 
         THIS 
     ) PURE;
 
-    STDMETHOD_(BOOL,            IsPluggedIn) 
+    STDMETHOD_(BOOL,            isPluggedIn) 
     ( 
         THIS 
     ) PURE;
 
-    STDMETHOD_(NTSTATUS,        SetInstantiateWorkItem)
+    STDMETHOD_(NTSTATUS,        setInstantiateWorkItem)
     (
         THIS_
         _In_ __drv_aliasesMem   PIO_WORKITEM    WorkItem
     ) PURE;
 
-    STDMETHOD_(NTSTATUS,        FreeInstantiateWorkItem)
+    STDMETHOD_(NTSTATUS,        freeInstantiateWorkItem)
     (
         THIS_
     ) PURE;
@@ -177,7 +177,7 @@ typedef IAdapterCommon *PADAPTERCOMMON;
 // Function Prototypes
 //=============================================================================
 NTSTATUS
-NewAdapterCommon
+newAdapterCommon
 ( 
     OUT PUNKNOWN *              Unknown,
     IN  REFCLSID,
