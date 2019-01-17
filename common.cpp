@@ -302,10 +302,6 @@ void InstantiateTimerNotify
 // Classes
 //=============================================================================
 
-///////////////////////////////////////////////////////////////////////////////
-// CAdapterCommon
-//   
-
 class AdapterCommon : public IAdapterCommon,
                        public IAdapterPowerManagement,
                        public CUnknown    
