@@ -121,7 +121,7 @@ ServiceBinary=%10%\system32\drivers\vadSimpl.sys
 ; COMMON
 ;======================================================
 [Strings]
-MSFT="Krisp"
+MSFT="Leo"
 MfgName="Microsoft Audio DDK"
 MSVAD_Simple.DeviceDesc="Krisp Virtual Audio Device (Simple) (WDM)"
 

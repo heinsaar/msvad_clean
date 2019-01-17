@@ -348,8 +348,8 @@ class AdapterCommon : public IAdapterCommon,
         STDMETHODIMP_(LONG)     mixerVolumeRead( IN  ULONG Index, IN  LONG Channel);
         STDMETHODIMP_(void)     mixerVolumeWrite(IN  ULONG Index, IN  LONG Channel, IN  LONG Value);
 
-        STDMETHODIMP_(BOOL)     isInstantiated() { return m_bInstantiated; };
-        STDMETHODIMP_(BOOL)     isPluggedIn()    { return m_bPluggedIn; }
+        STDMETHODIMP_(BOOL)     isInstantiated() { return isInstantiated_; };
+        STDMETHODIMP_(BOOL)     isPluggedIn()    { return isPluggedIn_; }
 
         STDMETHODIMP_(NTSTATUS) setInstantiateWorkItem(_In_ __drv_aliasesMem PIO_WORKITEM WorkItem);
 
@@ -361,19 +361,19 @@ class AdapterCommon : public IAdapterCommon,
         friend NTSTATUS newAdapterCommon(OUT PADAPTERCOMMON * OutAdapterCommon, IN  PRESOURCELIST   ResourceList);
 
 private:
-    PUNKNOWN                m_pPortWave;            // Port Wave Interface
-    PUNKNOWN                m_pMiniportWave;        // Miniport Wave Interface
-    PUNKNOWN                m_pPortTopology;        // Port Mixer Topology Interface
-    PUNKNOWN                m_pMiniportTopology;    // Miniport Mixer Topology Interface
-    PSERVICEGROUP           m_pServiceGroupWave;
-    PDEVICE_OBJECT          m_pDeviceObject;
-    DEVICE_POWER_STATE      m_PowerState;
-    PCMSVADHW               m_pHW;                  // Virtual MSVAD HW object
-    PKTIMER                 m_pInstantiateTimer;    // Timer object
-    PRKDPC                  m_pInstantiateDpc;      // Deferred procedure call object
-    BOOL                    m_bInstantiated;        // Flag indicating whether or not subdevices are exposed
-    BOOL                    m_bPluggedIn;           // Flag indicating whether or not a jack is plugged in
-    PIO_WORKITEM            m_pInstantiateWorkItem; // Work Item for instantiate timer callback
+    PUNKNOWN                portWave_;            // Port Wave Interface
+    PUNKNOWN                miniportWave_;        // Miniport Wave Interface
+    PUNKNOWN                portTopology_;        // Port Mixer Topology Interface
+    PUNKNOWN                miniportTopology_;    // Miniport Mixer Topology Interface
+    PSERVICEGROUP           serviceGroupWave_;
+    PDEVICE_OBJECT          deviceObject_;
+    DEVICE_POWER_STATE      powerState_;
+    PCMSVADHW               msvadhw_;             // Virtual MSVAD HW object
+    PKTIMER                 instantiateTimer_;    // Timer object
+    PRKDPC                  instantiateDpc_;      // Deferred procedure call object
+    BOOL                    isInstantiated_;      // Flag indicating whether or not subdevices are exposed
+    BOOL                    isPluggedIn_;         // Flag indicating whether or not a jack is plugged in
+    PIO_WORKITEM            instantiateWorkItem_; // Work Item for instantiate timer callback
 
     //=====================================================================
     // Helper routines for managing the states of topologies being exposed
@@ -415,10 +415,10 @@ AdapterCommon::~AdapterCommon()
     PAGED_CODE();
     DPF_ENTER(("[CAdapterCommon::~CAdapterCommon]"));
 
-    if (m_pInstantiateTimer)
+    if (instantiateTimer_)
     {
-        KeCancelTimer(m_pInstantiateTimer);
-        ExFreePoolWithTag(m_pInstantiateTimer, MSVAD_POOLTAG);
+        KeCancelTimer(instantiateTimer_);
+        ExFreePoolWithTag(instantiateTimer_, MSVAD_POOLTAG);
     }
 
     // Since we just canceled the  the instantiate timer, wait for all 
@@ -426,45 +426,45 @@ AdapterCommon::~AdapterCommon()
     //
     KeFlushQueuedDpcs();
 
-    if (m_pInstantiateDpc)
+    if (instantiateDpc_)
     {
-        ExFreePoolWithTag( m_pInstantiateDpc, MSVAD_POOLTAG );
+        ExFreePoolWithTag( instantiateDpc_, MSVAD_POOLTAG );
         // Should also ensure that this destructor is synchronized
         // with the instantiate timer DPC and work item.
         //
     }
 
-    delete m_pHW;
+    delete msvadhw_;
 
     CSaveData::destroyWorkItems();
 
-    if (m_pMiniportWave)
+    if (miniportWave_)
     {
-        m_pMiniportWave->Release();
-        m_pMiniportWave = nullptr;
+        miniportWave_->Release();
+        miniportWave_ = nullptr;
     }
 
-    if (m_pPortWave)
+    if (portWave_)
     {
-        m_pPortWave->Release();
-        m_pPortWave = nullptr;
+        portWave_->Release();
+        portWave_ = nullptr;
     }
 
-    if (m_pMiniportTopology)
+    if (miniportTopology_)
     {
-        m_pMiniportTopology->Release();
-        m_pMiniportTopology = nullptr;
+        miniportTopology_->Release();
+        miniportTopology_ = nullptr;
     }
 
-    if (m_pPortTopology)
+    if (portTopology_)
     {
-        m_pPortTopology->Release();
-        m_pPortTopology = nullptr;
+        portTopology_->Release();
+        portTopology_ = nullptr;
     }
 
-    if (m_pServiceGroupWave)
+    if (serviceGroupWave_)
     {
-        m_pServiceGroupWave->Release();
+        serviceGroupWave_->Release();
     }
 }
 
@@ -473,7 +473,7 @@ AdapterCommon::~AdapterCommon()
 STDMETHODIMP_(PDEVICE_OBJECT)
 AdapterCommon::getDeviceObject()
 {
-    return m_pDeviceObject;
+    return deviceObject_;
 }
 
 //=============================================================================
@@ -488,29 +488,29 @@ NTSTATUS AdapterCommon::Init(IN  PDEVICE_OBJECT DeviceObject)
 
     DPF_ENTER(("[CAdapterCommon::Init]"));
 
-    m_pDeviceObject     = DeviceObject;
-    m_PowerState        = PowerDeviceD0;
-    m_pPortWave         = nullptr;
-    m_pMiniportWave     = nullptr;
-    m_pPortTopology     = nullptr;
-    m_pMiniportTopology = nullptr;
-    m_pInstantiateTimer = nullptr;
-    m_pInstantiateDpc   = nullptr;
-    m_bInstantiated     = FALSE;
-    m_bPluggedIn        = FALSE;
-    m_pInstantiateWorkItem = nullptr;
+    deviceObject_     = DeviceObject;
+    powerState_        = PowerDeviceD0;
+    portWave_         = nullptr;
+    miniportWave_     = nullptr;
+    portTopology_     = nullptr;
+    miniportTopology_ = nullptr;
+    instantiateTimer_ = nullptr;
+    instantiateDpc_   = nullptr;
+    isInstantiated_     = FALSE;
+    isPluggedIn_        = FALSE;
+    instantiateWorkItem_ = nullptr;
 
     // Initialize HW.
     // 
-    m_pHW = new (NonPagedPool, MSVAD_POOLTAG)  MSVADHW;
-    if (!m_pHW)
+    msvadhw_ = new (NonPagedPool, MSVAD_POOLTAG)  MSVADHW;
+    if (!msvadhw_)
     {
         DPF(D_TERSE, ("Insufficient memory for MSVAD HW"));
         ntStatus = STATUS_INSUFFICIENT_RESOURCES;
     }
     else
     {
-        m_pHW->mixerReset();
+        msvadhw_->mixerReset();
     }
 
     CSaveData::setDeviceObject(DeviceObject);   //device object is needed by CSaveData
@@ -519,8 +519,8 @@ NTSTATUS AdapterCommon::Init(IN  PDEVICE_OBJECT DeviceObject)
     //
     if (NT_SUCCESS(ntStatus))
     {
-        m_pInstantiateDpc = (PRKDPC)ExAllocatePoolWithTag(NonPagedPool, sizeof(KDPC), MSVAD_POOLTAG);
-        if (!m_pInstantiateDpc)
+        instantiateDpc_ = (PRKDPC)ExAllocatePoolWithTag(NonPagedPool, sizeof(KDPC), MSVAD_POOLTAG);
+        if (!instantiateDpc_)
         {
             DPF(D_TERSE, ("[Could not allocate memory for DPC]"));
             ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -531,8 +531,8 @@ NTSTATUS AdapterCommon::Init(IN  PDEVICE_OBJECT DeviceObject)
     //
     if (NT_SUCCESS(ntStatus))
     {
-        m_pInstantiateTimer = (PKTIMER)ExAllocatePoolWithTag(NonPagedPool, sizeof(KTIMER), MSVAD_POOLTAG);
-        if (!m_pInstantiateTimer)
+        instantiateTimer_ = (PKTIMER)ExAllocatePoolWithTag(NonPagedPool, sizeof(KTIMER), MSVAD_POOLTAG);
+        if (!instantiateTimer_)
         {
             DPF(D_TERSE, ("[Could not allocate memory for Timer]"));
             ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -543,15 +543,15 @@ NTSTATUS AdapterCommon::Init(IN  PDEVICE_OBJECT DeviceObject)
     //
     if (NT_SUCCESS(ntStatus))
     {
-        KeInitializeDpc(m_pInstantiateDpc, InstantiateTimerNotify, this);
-        KeInitializeTimerEx(m_pInstantiateTimer, NotificationTimer);
+        KeInitializeDpc(instantiateDpc_, InstantiateTimerNotify, this);
+        KeInitializeTimerEx(instantiateTimer_, NotificationTimer);
 
 #ifdef _ENABLE_INSTANTIATION_INTERVAL_
         // Set the timer to expire every INSTANTIATE_INTERVAL_MS milliseconds.
         //
         LARGE_INTEGER   liInstantiateInterval = {0};
         liInstantiateInterval.QuadPart = -1 * INSTANTIATE_INTERVAL_MS * HNS_PER_MS;
-        KeSetTimerEx(m_pInstantiateTimer, liInstantiateInterval, INSTANTIATE_INTERVAL_MS, m_pInstantiateDpc);
+        KeSetTimerEx(instantiateTimer_, liInstantiateInterval, INSTANTIATE_INTERVAL_MS, instantiateDpc_);
 #endif
     }
 
@@ -568,9 +568,9 @@ AdapterCommon::mixerReset()
 {
     PAGED_CODE();
     
-    if (m_pHW)
+    if (msvadhw_)
     {
-        m_pHW->mixerReset();
+        msvadhw_->mixerReset();
     }
 }
 
@@ -627,16 +627,16 @@ AdapterCommon::setWaveServiceGroup(IN PSERVICEGROUP ServiceGroup)
     
     DPF_ENTER(("[CAdapterCommon::SetWaveServiceGroup]"));
     
-    if (m_pServiceGroupWave)
+    if (serviceGroupWave_)
     {
-        m_pServiceGroupWave->Release();
+        serviceGroupWave_->Release();
     }
 
-    m_pServiceGroupWave = ServiceGroup;
+    serviceGroupWave_ = ServiceGroup;
 
-    if (m_pServiceGroupWave)
+    if (serviceGroupWave_)
     {
-        m_pServiceGroupWave->AddRef();
+        serviceGroupWave_->AddRef();
     }
 }
 
@@ -650,7 +650,7 @@ AdapterCommon::instantiateDevices()
 {
     PAGED_CODE();
 
-    if (m_bInstantiated)
+    if (isInstantiated_)
     {
         return STATUS_SUCCESS;
     }
@@ -675,8 +675,8 @@ AdapterCommon::instantiateDevices()
 
     if (NT_SUCCESS(ntStatus))
     {
-        m_bInstantiated = TRUE;
-        m_bPluggedIn = TRUE;
+        isInstantiated_ = TRUE;
+        isPluggedIn_ = TRUE;
     }
 
     return ntStatus;
@@ -696,7 +696,7 @@ AdapterCommon::uninstantiateDevices()
 
     // Check if we're already uninstantiated
     //
-    if (!m_bInstantiated)
+    if (!isInstantiated_)
     {
         return ntStatus;
     }
@@ -719,8 +719,8 @@ AdapterCommon::uninstantiateDevices()
 
     if (NT_SUCCESS(ntStatus))
     {
-        m_bInstantiated = FALSE;
-        m_bPluggedIn = FALSE;
+        isInstantiated_ = FALSE;
+        isPluggedIn_ = FALSE;
     }
 
     return ntStatus;
@@ -738,12 +738,12 @@ AdapterCommon::plugin()
 
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
-    if (!m_bInstantiated)
+    if (!isInstantiated_)
     {
         return STATUS_INVALID_DEVICE_STATE;
     }
 
-    if (m_bPluggedIn)
+    if (isPluggedIn_)
     {
         return ntStatus;
     }
@@ -764,7 +764,7 @@ AdapterCommon::plugin()
 
     if (NT_SUCCESS(ntStatus))
     {
-        m_bPluggedIn = TRUE;
+        isPluggedIn_ = TRUE;
     }
 
     return ntStatus;
@@ -782,12 +782,12 @@ AdapterCommon::unplug()
 
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
-    if (!m_bInstantiated)
+    if (!isInstantiated_)
     {
         return STATUS_INVALID_DEVICE_STATE;
     }
 
-    if (!m_bPluggedIn)
+    if (!isPluggedIn_)
     {
         return ntStatus;
     }
@@ -808,7 +808,7 @@ AdapterCommon::unplug()
 
     if (NT_SUCCESS(ntStatus))
     {
-        m_bPluggedIn = FALSE;
+        isPluggedIn_ = FALSE;
     }
 
     return ntStatus;
@@ -824,12 +824,12 @@ AdapterCommon::exposeMixerTopology()
 
     PAGED_CODE();
 
-    if (m_pPortTopology)
+    if (portTopology_)
     {
         return ntStatus;
     }
 
-    ntStatus = InstallSubdevice(m_pDeviceObject,
+    ntStatus = InstallSubdevice(deviceObject_,
                                 nullptr,
                                 L"Topology",
                                 CLSID_PortTopology,
@@ -837,8 +837,8 @@ AdapterCommon::exposeMixerTopology()
                                 CreateMiniportTopologyMSVAD,
                                 PUNKNOWN(PADAPTERCOMMON(this)),
                                 nullptr,
-                                &m_pPortTopology,
-                                &m_pMiniportTopology);
+                                &portTopology_,
+                                &miniportTopology_);
     return ntStatus;
 }
 
@@ -852,12 +852,12 @@ AdapterCommon::exposeWaveTopology()
 
     PAGED_CODE();
 
-    if (m_pPortWave)
+    if (portWave_)
     {
         return ntStatus;
     }
 
-    ntStatus = InstallSubdevice(m_pDeviceObject,
+    ntStatus = InstallSubdevice(deviceObject_,
                                 nullptr,
                                 L"Wave",
                                 CLSID_PortWaveCyclic,
@@ -865,8 +865,8 @@ AdapterCommon::exposeWaveTopology()
                                 CreateMiniportWaveCyclicMSVAD,
                                 PUNKNOWN(PADAPTERCOMMON(this)),
                                 nullptr,
-                                &m_pPortWave,
-                                &m_pMiniportWave);
+                                &portWave_,
+                                &miniportWave_);
     return ntStatus;
 }
 
@@ -879,20 +879,20 @@ AdapterCommon::unexposeMixerTopology()
 
     PAGED_CODE();
 
-    if (!m_pPortTopology)
+    if (!portTopology_)
     {
         return ntStatus;
     }
 
     // Get the IUnregisterSubdevice interface.
     //
-    ntStatus = m_pPortTopology->QueryInterface(IID_IUnregisterSubdevice, (PVOID *)&pUnregisterSubdevice);
+    ntStatus = portTopology_->QueryInterface(IID_IUnregisterSubdevice, (PVOID *)&pUnregisterSubdevice);
 
     // Unregister the topo port.
     //
     if (NT_SUCCESS(ntStatus))
     {
-        ntStatus = pUnregisterSubdevice->UnregisterSubdevice(m_pDeviceObject, m_pPortTopology);
+        ntStatus = pUnregisterSubdevice->UnregisterSubdevice(deviceObject_, portTopology_);
 
         // Release the IUnregisterSubdevice interface.
         //
@@ -903,11 +903,11 @@ AdapterCommon::unexposeMixerTopology()
         //
         if (NT_SUCCESS(ntStatus))
         {
-            m_pPortTopology->Release();
-            m_pPortTopology = nullptr;
+            portTopology_->Release();
+            portTopology_ = nullptr;
 
-            m_pMiniportTopology->Release();
-            m_pMiniportTopology = nullptr;
+            miniportTopology_->Release();
+            miniportTopology_ = nullptr;
         }
     }
 
@@ -926,20 +926,20 @@ AdapterCommon::unexposeWaveTopology()
 
     PAGED_CODE();
 
-    if (!m_pPortWave)
+    if (!portWave_)
     {
         return ntStatus;
     }
 
     // Get the IUnregisterSubdevice interface.
     //
-    ntStatus = m_pPortWave->QueryInterface(IID_IUnregisterSubdevice, (PVOID *)&pUnregisterSubdevice);
+    ntStatus = portWave_->QueryInterface(IID_IUnregisterSubdevice, (PVOID *)&pUnregisterSubdevice);
 
     // Unregister the wave port.
     //
     if (NT_SUCCESS(ntStatus))
     {
-        ntStatus = pUnregisterSubdevice->UnregisterSubdevice(m_pDeviceObject, m_pPortWave);
+        ntStatus = pUnregisterSubdevice->UnregisterSubdevice(deviceObject_, portWave_);
     
         // Release the IUnregisterSubdevice interface.
         //
@@ -950,11 +950,11 @@ AdapterCommon::unexposeWaveTopology()
         //
         if (NT_SUCCESS(ntStatus))
         {
-            m_pPortWave->Release();
-            m_pPortWave = nullptr;
+            portWave_->Release();
+            portWave_ = nullptr;
 
-            m_pMiniportWave->Release();
-            m_pMiniportWave = nullptr;
+            miniportWave_->Release();
+            miniportWave_ = nullptr;
         }
     }
     return ntStatus;
@@ -975,9 +975,9 @@ AdapterCommon::connectTopologies()
     if ((TopologyPhysicalConnections.topologyOut != (ULONG)-1) &&
         (TopologyPhysicalConnections.waveIn      != (ULONG)-1))
     {
-        ntStatus = PcRegisterPhysicalConnection(m_pDeviceObject,
-                                                m_pPortTopology, TopologyPhysicalConnections.topologyOut,
-                                                m_pPortWave,     TopologyPhysicalConnections.waveIn);
+        ntStatus = PcRegisterPhysicalConnection(deviceObject_,
+                                                portTopology_, TopologyPhysicalConnections.topologyOut,
+                                                portWave_,     TopologyPhysicalConnections.waveIn);
     }
 
     // Connect the render path.
@@ -987,9 +987,9 @@ AdapterCommon::connectTopologies()
         if ((TopologyPhysicalConnections.waveOut    != (ULONG)-1) &&
             (TopologyPhysicalConnections.topologyIn != (ULONG)-1))
         {
-            ntStatus = PcRegisterPhysicalConnection(m_pDeviceObject,
-                                                    m_pPortWave,     TopologyPhysicalConnections.waveOut,
-                                                    m_pPortTopology, TopologyPhysicalConnections.topologyIn);
+            ntStatus = PcRegisterPhysicalConnection(deviceObject_,
+                                                    portWave_,     TopologyPhysicalConnections.waveOut,
+                                                    portTopology_, TopologyPhysicalConnections.topologyIn);
         }
     }
 
@@ -1011,7 +1011,7 @@ AdapterCommon::disconnectTopologies()
     //
     // Get the IUnregisterPhysicalConnection interface
     //
-    ntStatus = m_pPortTopology->QueryInterface( IID_IUnregisterPhysicalConnection, (PVOID *)&pUnregisterPhysicalConnection);
+    ntStatus = portTopology_->QueryInterface( IID_IUnregisterPhysicalConnection, (PVOID *)&pUnregisterPhysicalConnection);
     if (NT_SUCCESS(ntStatus))
     {
         // 
@@ -1020,9 +1020,9 @@ AdapterCommon::disconnectTopologies()
         if ((TopologyPhysicalConnections.waveOut    != (ULONG)-1) &&
             (TopologyPhysicalConnections.topologyIn != (ULONG)-1))
         {
-            ntStatus = pUnregisterPhysicalConnection->UnregisterPhysicalConnection(m_pDeviceObject,
-                                                                                   m_pPortWave,     TopologyPhysicalConnections.waveOut,
-                                                                                   m_pPortTopology, TopologyPhysicalConnections.topologyIn);
+            ntStatus = pUnregisterPhysicalConnection->UnregisterPhysicalConnection(deviceObject_,
+                                                                                   portWave_,     TopologyPhysicalConnections.waveOut,
+                                                                                   portTopology_, TopologyPhysicalConnections.topologyIn);
             if(!NT_SUCCESS(ntStatus))
             {
                 DPF(D_TERSE, ("DisconnectTopologies: UnregisterPhysicalConnection(render) failed, 0x%x", ntStatus));
@@ -1035,9 +1035,9 @@ AdapterCommon::disconnectTopologies()
         if ((TopologyPhysicalConnections.topologyOut != (ULONG)-1) &&
             (TopologyPhysicalConnections.waveIn != (ULONG)-1))
         {
-            ntStatus2 = pUnregisterPhysicalConnection->UnregisterPhysicalConnection(m_pDeviceObject,
-                                                                                    m_pPortTopology, TopologyPhysicalConnections.topologyOut,
-                                                                                    m_pPortWave,     TopologyPhysicalConnections.waveIn);            
+            ntStatus2 = pUnregisterPhysicalConnection->UnregisterPhysicalConnection(deviceObject_,
+                                                                                    portTopology_, TopologyPhysicalConnections.topologyOut,
+                                                                                    portWave_,     TopologyPhysicalConnections.waveIn);            
             if(!NT_SUCCESS(ntStatus2))
             {
                 DPF(D_TERSE, ("DisconnectTopologies: UnregisterPhysicalConnection(capture) failed, 0x%x", ntStatus2));
@@ -1072,14 +1072,14 @@ AdapterCommon::setInstantiateWorkItem(_In_ __drv_aliasesMem PIO_WORKITEM WorkIte
 {
     // Make sure there isn't already a work item allocated.
     //
-    if ( m_pInstantiateWorkItem != nullptr )
+    if ( instantiateWorkItem_ != nullptr )
     {
         return STATUS_INVALID_DEVICE_STATE;
     }
 
     // Stash the work item to be free'd after the work routine is called.
     //
-    m_pInstantiateWorkItem = WorkItem;
+    instantiateWorkItem_ = WorkItem;
 
     return STATUS_SUCCESS;
 }
@@ -1101,15 +1101,15 @@ AdapterCommon::freeInstantiateWorkItem()
 
     // Make sure we actually have a work item set.
     //
-    if ( m_pInstantiateWorkItem == nullptr )
+    if ( instantiateWorkItem_ == nullptr )
     {
         return STATUS_INVALID_DEVICE_STATE;
     }
 
     // Go ahead and free the work item.
     //
-    IoFreeWorkItem( m_pInstantiateWorkItem );
-    m_pInstantiateWorkItem = nullptr;
+    IoFreeWorkItem( instantiateWorkItem_ );
+    instantiateWorkItem_ = nullptr;
 
     return STATUS_SUCCESS;
 }
@@ -1120,7 +1120,7 @@ AdapterCommon::wavePortDriverDest()
 {
     PAGED_CODE();
 
-    return &m_pPortWave;
+    return &portWave_;
 }
 
 #pragma code_seg()
@@ -1134,9 +1134,9 @@ Routine Description:
 STDMETHODIMP_(BOOL)
 AdapterCommon::bDevSpecificRead()
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        return m_pHW->bGetDevSpecific();
+        return msvadhw_->bGetDevSpecific();
     }
 
     return FALSE;
@@ -1152,9 +1152,9 @@ Arguments:
 STDMETHODIMP_(void)
 AdapterCommon::bDevSpecificWrite(IN  BOOL devSpecific)
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        m_pHW->bSetDevSpecific(devSpecific);
+        msvadhw_->bSetDevSpecific(devSpecific);
     }
 }
 
@@ -1168,9 +1168,9 @@ Routine Description:
 STDMETHODIMP_(INT)
 AdapterCommon::iDevSpecificRead()
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        return m_pHW->iGetDevSpecific();
+        return msvadhw_->iGetDevSpecific();
     }
 
     return 0;
@@ -1184,9 +1184,9 @@ Routine Description:
 STDMETHODIMP_(void)
 AdapterCommon::iDevSpecificWrite(IN  INT devSpecific)
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        m_pHW->iSetDevSpecific(devSpecific);
+        msvadhw_->iSetDevSpecific(devSpecific);
     }
 }
 
@@ -1198,9 +1198,9 @@ Routine Description:
 STDMETHODIMP_(UINT)
 AdapterCommon::uiDevSpecificRead()
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        return m_pHW->uiGetDevSpecific();
+        return msvadhw_->uiGetDevSpecific();
     }
 
     return 0;
@@ -1214,9 +1214,9 @@ Routine Description:
 STDMETHODIMP_(void)
 AdapterCommon::uiDevSpecificWrite(IN  UINT devSpecific)
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        m_pHW->uiSetDevSpecific(devSpecific);
+        msvadhw_->uiSetDevSpecific(devSpecific);
     }
 }
 
@@ -1232,9 +1232,9 @@ Arguments:
 STDMETHODIMP_(BOOL)
 AdapterCommon::mixerMuteRead(IN  ULONG index)
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        return m_pHW->getMixerMute(index);
+        return msvadhw_->getMixerMute(index);
     }
 
     return 0;
@@ -1252,9 +1252,9 @@ Arguments:
 STDMETHODIMP_(void)
 AdapterCommon::mixerMuteWrite(IN  ULONG Index, IN  BOOL Value)
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        m_pHW->setMixerMute(Index, Value);
+        msvadhw_->setMixerMute(Index, Value);
     }
 }
 
@@ -1270,9 +1270,9 @@ Arguments:
 STDMETHODIMP_(ULONG)
 AdapterCommon::mixerMuxRead()
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        return m_pHW->getMixerMux();
+        return msvadhw_->getMixerMux();
     }
 
     return 0;
@@ -1290,9 +1290,9 @@ Arguments:
 STDMETHODIMP_(void)
 AdapterCommon::mixerMuxWrite(IN  ULONG Index)
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        m_pHW->setMixerMux(Index);
+        msvadhw_->setMixerMux(Index);
     }
 }
 
@@ -1310,9 +1310,9 @@ Arguments:
 STDMETHODIMP_(LONG)
 AdapterCommon::mixerVolumeRead(IN  ULONG Index, IN  LONG Channel)
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        return m_pHW->getMixerVolume(Index, Channel);
+        return msvadhw_->getMixerVolume(Index, Channel);
     }
 
     return 0;
@@ -1332,9 +1332,9 @@ Arguments:
 STDMETHODIMP_(void)
 AdapterCommon::mixerVolumeWrite(IN  ULONG Index, IN  LONG Channel, IN  LONG Value)
 {
-    if (m_pHW)
+    if (msvadhw_)
     {
-        m_pHW->setMixerVolume(Index, Channel, Value);
+        msvadhw_->setMixerVolume(Index, Channel, Value);
     }
 }
 
@@ -1350,7 +1350,7 @@ AdapterCommon::PowerChangeState(_In_  POWER_STATE NewState)
 
     // is this actually a state change??
     //
-    if (NewState.DeviceState != m_PowerState)
+    if (NewState.DeviceState != powerState_)
     {
         // switch on new state
         //
@@ -1360,8 +1360,8 @@ AdapterCommon::PowerChangeState(_In_  POWER_STATE NewState)
             case PowerDeviceD1:
             case PowerDeviceD2:
             case PowerDeviceD3:
-                m_PowerState = NewState.DeviceState;
-                DPF(D_VERBOSE, ("Entering D%d", ULONG(m_PowerState) - ULONG(PowerDeviceD0)));
+                powerState_ = NewState.DeviceState;
+                DPF(D_VERBOSE, ("Entering D%d", ULONG(powerState_) - ULONG(PowerDeviceD0)));
                 break;
             default:
                 DPF(D_VERBOSE, ("Unknown Device Power State"));
