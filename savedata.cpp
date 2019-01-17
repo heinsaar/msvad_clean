@@ -449,10 +449,7 @@ NTSTATUS CSaveData::initialize()
 }
 
 //=============================================================================
-NTSTATUS CSaveData::initializeWorkItems
-(
-    IN  PDEVICE_OBJECT DeviceObject
-)
+NTSTATUS CSaveData::initializeWorkItems(IN  PDEVICE_OBJECT DeviceObject)
 {
     PAGED_CODE();
     ASSERT(DeviceObject);
@@ -490,11 +487,7 @@ NTSTATUS CSaveData::initializeWorkItems
 
 IO_WORKITEM_ROUTINE saveFrameWorkerCallback;
 
-VOID
-saveFrameWorkerCallback
-(
-    PDEVICE_OBJECT pDeviceObject, IN  PVOID  Context
-)
+VOID saveFrameWorkerCallback(PDEVICE_OBJECT pDeviceObject, IN  PVOID  Context)
 {
     UNREFERENCED_PARAMETER(pDeviceObject);
     PAGED_CODE();
