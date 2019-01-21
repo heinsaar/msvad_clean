@@ -123,7 +123,7 @@ ServiceBinary=%10%\system32\drivers\vadSimpl.sys
 [Strings]
 MSFT="Leo"
 MfgName="Microsoft Audio DDK"
-MSVAD_Simple.DeviceDesc="Krisp Virtual Audio Device (Simple) (WDM)"
+MSVAD_Simple.DeviceDesc="Leo MSVAD"
 
 MSVAD.Wave.szPname="MSVAD Wave"
 MSVAD.Topo.szPname="MSVAD Topology"
