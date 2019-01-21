@@ -38,25 +38,25 @@ Arguments:
 */
 _Use_decl_annotations_
 STDMETHODIMP_(NTSTATUS)
-MiniportWaveCyclicStreamMSVAD::AllocateBuffer(ULONG BufferSize, PPHYSICAL_ADDRESS PhysicalAddressConstraint OPTIONAL)
+MiniportWaveCyclicStreamMSVAD::AllocateBuffer(ULONG bufferSize, PPHYSICAL_ADDRESS physicalAddressConstraint OPTIONAL)
 {
-    UNREFERENCED_PARAMETER(PhysicalAddressConstraint);
+    UNREFERENCED_PARAMETER(physicalAddressConstraint);
     PAGED_CODE();
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::AllocateBuffer]"));
 
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
     // Adjust this cap as needed...
-    ASSERT (BufferSize <= DMA_BUFFER_SIZE);
+    ASSERT (bufferSize <= DMA_BUFFER_SIZE);
 
-    dmaBuffer_ = (PVOID)ExAllocatePoolWithTag(NonPagedPool, BufferSize, MSVAD_POOLTAG);
+    dmaBuffer_ = (PVOID)ExAllocatePoolWithTag(NonPagedPool, bufferSize, MSVAD_POOLTAG);
     if (!dmaBuffer_)
     {
         ntStatus = STATUS_INSUFFICIENT_RESOURCES;
     }
     else
     {
-        dmaBufferSize_ = BufferSize;
+        dmaBufferSize_ = bufferSize;
     }
 
     return ntStatus;
@@ -107,11 +107,11 @@ Arguments:
 */
 _Use_decl_annotations_
 STDMETHODIMP_(void)
-MiniportWaveCyclicStreamMSVAD::CopyFrom(PVOID Destination, PVOID Source, ULONG ByteCount)
+MiniportWaveCyclicStreamMSVAD::CopyFrom(PVOID destination, PVOID source, ULONG byteCount)
 {
-    UNREFERENCED_PARAMETER(Destination);
-    UNREFERENCED_PARAMETER(Source);
-    UNREFERENCED_PARAMETER(ByteCount);
+    UNREFERENCED_PARAMETER(destination);
+    UNREFERENCED_PARAMETER(source);
+    UNREFERENCED_PARAMETER(byteCount);
 }
 
 //=============================================================================
@@ -129,11 +129,11 @@ Arguments:
 */
 _Use_decl_annotations_
 STDMETHODIMP_(void)
-MiniportWaveCyclicStreamMSVAD::CopyTo(PVOID Destination, PVOID Source, ULONG ByteCount)
+MiniportWaveCyclicStreamMSVAD::CopyTo(PVOID destination, PVOID source, ULONG byteCount)
 {
-    UNREFERENCED_PARAMETER(Destination);
+    UNREFERENCED_PARAMETER(destination);
 
-    saveData_.writeData((PBYTE) Source, ByteCount);
+    saveData_.writeData((PBYTE) source, byteCount);
 }
 
 //=============================================================================
@@ -225,13 +225,13 @@ Arguments:
   BufferSize - Current size in bytes.
 */
 STDMETHODIMP_(void)
-MiniportWaveCyclicStreamMSVAD::SetBufferSize(_In_ ULONG BufferSize)
+MiniportWaveCyclicStreamMSVAD::SetBufferSize(_In_ ULONG bufferSize)
 {
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::SetBufferSize]"));
 
-    if ( BufferSize <= dmaBufferSize_ )
+    if ( bufferSize <= dmaBufferSize_ )
     {
-        dmaBufferSize_ = BufferSize;
+        dmaBufferSize_ = bufferSize;
     }
     else
     {
@@ -269,4 +269,3 @@ MiniportWaveCyclicStreamMSVAD::TransferCount()
 
     return dmaBufferSize_;
 }
-

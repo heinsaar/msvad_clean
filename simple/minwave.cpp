@@ -18,18 +18,18 @@
 
 NTSTATUS CreateMiniportWaveCyclicMSVAD
 ( 
-    OUT PUNKNOWN *              Unknown,
+    OUT PUNKNOWN* unknown,
     IN  REFCLSID,
-    IN  PUNKNOWN                UnknownOuter OPTIONAL,
+    IN  PUNKNOWN  unknownOuter OPTIONAL,
     _When_((PoolType & NonPagedPoolMustSucceed) != 0,
        __drv_reportError("Must succeed pool allocations are forbidden. "
 			 "Allocation failures cause a system crash"))
-    IN  POOL_TYPE               PoolType 
+    IN  POOL_TYPE PoolType 
 )
 {
     PAGED_CODE();
-    ASSERT(Unknown);
-    STD_CREATE_BODY(MiniportWaveCyclic, Unknown, UnknownOuter, PoolType);
+    ASSERT(unknown);
+    STD_CREATE_BODY(MiniportWaveCyclic, unknown, unknownOuter, PoolType);
 }
 
 //=============================================================================
@@ -71,21 +71,21 @@ Arguments:
 STDMETHODIMP_(NTSTATUS)
 MiniportWaveCyclic::DataRangeIntersection
 (
-    _In_        ULONG                       PinId,
-    _In_        PKSDATARANGE                ClientDataRange,
-    _In_        PKSDATARANGE                MyDataRange,
-    _In_        ULONG                       OutputBufferLength,
-    _Out_writes_bytes_to_opt_(OutputBufferLength, *ResultantFormatLength)
-    PVOID                       ResultantFormat,
-    _Out_       PULONG                      ResultantFormatLength
+    _In_        ULONG        pinId,
+    _In_        PKSDATARANGE clientDataRange,
+    _In_        PKSDATARANGE myDataRange,
+    _In_        ULONG        outputBufferLength,
+    _Out_writes_bytes_to_opt_(outputBufferLength, *resultantFormatLength)
+    PVOID                    resultantFormat,
+    _Out_       PULONG       resultantFormatLength
 )
 {
-    UNREFERENCED_PARAMETER(PinId);
-    UNREFERENCED_PARAMETER(ClientDataRange);
-    UNREFERENCED_PARAMETER(MyDataRange);
-    UNREFERENCED_PARAMETER(OutputBufferLength);
-    UNREFERENCED_PARAMETER(ResultantFormat);
-    UNREFERENCED_PARAMETER(ResultantFormatLength);
+    UNREFERENCED_PARAMETER(pinId);
+    UNREFERENCED_PARAMETER(clientDataRange);
+    UNREFERENCED_PARAMETER(myDataRange);
+    UNREFERENCED_PARAMETER(outputBufferLength);
+    UNREFERENCED_PARAMETER(resultantFormat);
+    UNREFERENCED_PARAMETER(resultantFormatLength);
 
     PAGED_CODE();
 
@@ -108,13 +108,13 @@ Arguments:
   OutFilterDescriptor - Pointer to the filter description. 
 */
 STDMETHODIMP_(NTSTATUS)
-MiniportWaveCyclic::GetDescription(_Out_ PPCFILTER_DESCRIPTOR * OutFilterDescriptor)
+MiniportWaveCyclic::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* outFilterDescriptor)
 {
     PAGED_CODE();
 
-    ASSERT(OutFilterDescriptor);
+    ASSERT(outFilterDescriptor);
 
-    return MiniportWaveCyclicMSVAD::GetDescription(OutFilterDescriptor);
+    return MiniportWaveCyclicMSVAD::GetDescription(outFilterDescriptor);
 }
 
 //=============================================================================
@@ -138,15 +138,15 @@ Arguments:
 STDMETHODIMP_(NTSTATUS)
 MiniportWaveCyclic::Init
 (
-    _In_  PUNKNOWN                UnknownAdapter_,
-    _In_  PRESOURCELIST           ResourceList_,
-    _In_  PPORTWAVECYCLIC         Port_
+    _In_  PUNKNOWN        unknownAdapter,
+    _In_  PRESOURCELIST   resourceList,
+    _In_  PPORTWAVECYCLIC port
 )
 {
     PAGED_CODE();
 
-    ASSERT(UnknownAdapter_);
-    ASSERT(Port_);
+    ASSERT(unknownAdapter);
+    ASSERT(port);
 
     DPF_ENTER(("[CMiniportWaveCyclic::Init]"));
 
@@ -162,7 +162,7 @@ MiniportWaveCyclic::Init
     minSampleRatePcm_      = MIN_SAMPLE_RATE;
     maxSampleRatePcm_      = MAX_SAMPLE_RATE;
 
-    NTSTATUS ntStatus = MiniportWaveCyclicMSVAD::Init(UnknownAdapter_, ResourceList_, Port_);
+    NTSTATUS ntStatus = MiniportWaveCyclicMSVAD::Init(unknownAdapter, resourceList, port);
     if (NT_SUCCESS(ntStatus))
     {
         // Set filter descriptor.
@@ -188,24 +188,24 @@ _Use_decl_annotations_
 STDMETHODIMP_(NTSTATUS)
 MiniportWaveCyclic::NewStream
 (
-    PMINIPORTWAVECYCLICSTREAM * OutStream,
-    PUNKNOWN                OuterUnknown,
-    POOL_TYPE               PoolType,
-    ULONG                   Pin,
-    BOOLEAN                 Capture,
-    PKSDATAFORMAT           DataFormat,
-    PDMACHANNEL *           OutDmaChannel,
-    PSERVICEGROUP *         OutServiceGroup
+    PMINIPORTWAVECYCLICSTREAM* outStream,
+    PUNKNOWN                   outerUnknown,
+    POOL_TYPE                  poolType,
+    ULONG                      pin,
+    BOOLEAN                    capture,
+    PKSDATAFORMAT              dataFormat,
+    PDMACHANNEL *              outDmaChannel,
+    PSERVICEGROUP *            outServiceGroup
 )
 {
-    UNREFERENCED_PARAMETER(PoolType);
+    UNREFERENCED_PARAMETER(poolType);
 
     PAGED_CODE();
 
-    ASSERT(OutStream);
-    ASSERT(DataFormat);
-    ASSERT(OutDmaChannel);
-    ASSERT(OutServiceGroup);
+    ASSERT(outStream);
+    ASSERT(dataFormat);
+    ASSERT(outDmaChannel);
+    ASSERT(outServiceGroup);
 
     DPF_ENTER(("[CMiniportWaveCyclic::NewStream]"));
 
@@ -213,7 +213,7 @@ MiniportWaveCyclic::NewStream
     PCMiniportWaveCyclicStream  stream = nullptr;
 
     // Check if we have enough streams.
-    if (Capture)
+    if (capture)
     {
         if (isCaptureAllocated_)
         {
@@ -234,7 +234,7 @@ MiniportWaveCyclic::NewStream
     //
     if (NT_SUCCESS(ntStatus))
     {
-        ntStatus = validateFormat(DataFormat);
+        ntStatus = validateFormat(dataFormat);
     }
 
     // Instantiate a stream. Stream must be in
@@ -243,13 +243,13 @@ MiniportWaveCyclic::NewStream
     if (NT_SUCCESS(ntStatus))
     {
         stream = new (NonPagedPool, MSVAD_POOLTAG) 
-            MiniportWaveCyclicStream(OuterUnknown);
+            MiniportWaveCyclicStream(outerUnknown);
 
         if (stream)
         {
             stream->AddRef();
 
-            ntStatus = stream->Init(this, Pin, Capture, DataFormat);
+            ntStatus = stream->Init(this, pin, capture, dataFormat);
         }
         else
         {
@@ -259,7 +259,7 @@ MiniportWaveCyclic::NewStream
 
     if (NT_SUCCESS(ntStatus))
     {
-        if (Capture)
+        if (capture)
         {
             isCaptureAllocated_ = TRUE;
         }
@@ -268,14 +268,14 @@ MiniportWaveCyclic::NewStream
             isRenderAllocated_ = TRUE;
         }
 
-         *OutStream = PMINIPORTWAVECYCLICSTREAM(stream);
-        (*OutStream)->AddRef();
+         *outStream = PMINIPORTWAVECYCLICSTREAM(stream);
+        (*outStream)->AddRef();
         
-         *OutDmaChannel = PDMACHANNEL(stream);
-        (*OutDmaChannel)->AddRef();
+         *outDmaChannel = PDMACHANNEL(stream);
+        (*outDmaChannel)->AddRef();
 
-         *OutServiceGroup = serviceGroup_;
-        (*OutServiceGroup)->AddRef();
+         *outServiceGroup = serviceGroup_;
+        (*outServiceGroup)->AddRef();
 
         // The stream, the DMA channel, and the service group have
         // references now for the caller.  The caller expects these
@@ -305,36 +305,36 @@ Arguments:
 STDMETHODIMP_(NTSTATUS)
 MiniportWaveCyclic::NonDelegatingQueryInterface
 (
-    _In_         REFIID  Interface,
-    _COM_Outptr_ PVOID * Object
+    _In_         REFIID Interface,
+    _COM_Outptr_ PVOID* object
 )
 {
     PAGED_CODE();
 
-    ASSERT(Object);
+    ASSERT(object);
 
     if (IsEqualGUIDAligned(Interface, IID_IUnknown))
     {
-        *Object = PVOID(PUNKNOWN(PMINIPORTWAVECYCLIC(this)));
+        *object = PVOID(PUNKNOWN(PMINIPORTWAVECYCLIC(this)));
     }
     else if (IsEqualGUIDAligned(Interface, IID_IMiniport))
     {
-        *Object = PVOID(PMINIPORT(this));
+        *object = PVOID(PMINIPORT(this));
     }
     else if (IsEqualGUIDAligned(Interface, IID_IMiniportWaveCyclic))
     {
-        *Object = PVOID(PMINIPORTWAVECYCLIC(this));
+        *object = PVOID(PMINIPORTWAVECYCLIC(this));
     }
     else
     {
-        *Object = nullptr;
+        *object = nullptr;
     }
 
-    if (*Object)
+    if (*object)
     {
         // We reference the interface for the caller.
 
-        PUNKNOWN(*Object)->AddRef();
+        PUNKNOWN(*object)->AddRef();
         return STATUS_SUCCESS;
     }
 
@@ -346,7 +346,7 @@ MiniportWaveCyclic::NonDelegatingQueryInterface
 Routine Description:
   Handles KSPROPERTY_GENERAL_COMPONENTID
 */
-NTSTATUS MiniportWaveCyclic::propertyHandlerComponentId(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportWaveCyclic::propertyHandlerComponentId(IN PPCPROPERTY_REQUEST propertyRequest)
 {
     PAGED_CODE();
 
@@ -354,18 +354,18 @@ NTSTATUS MiniportWaveCyclic::propertyHandlerComponentId(IN PPCPROPERTY_REQUEST P
 
     NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
 
-    if (PropertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
+    if (propertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
     {
-        ntStatus = PropertyHandler_BasicSupport(PropertyRequest, KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_GET, VT_ILLEGAL);
+        ntStatus = PropertyHandler_BasicSupport(propertyRequest, KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_GET, VT_ILLEGAL);
     }
     else
     {
-        ntStatus = ValidatePropertyParams(PropertyRequest, sizeof(KSCOMPONENTID), 0);
+        ntStatus = ValidatePropertyParams(propertyRequest, sizeof(KSCOMPONENTID), 0);
         if (NT_SUCCESS(ntStatus))
         {
-            if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
+            if (propertyRequest->Verb & KSPROPERTY_TYPE_GET)
             {
-                PKSCOMPONENTID pComponentId = (PKSCOMPONENTID)PropertyRequest->Value;
+                PKSCOMPONENTID pComponentId = (PKSCOMPONENTID)propertyRequest->Value;
 
                 INIT_MMREG_MID(&pComponentId->Manufacturer, MM_MICROSOFT);
                 pComponentId->Product   = PID_MSVAD;
@@ -374,7 +374,7 @@ NTSTATUS MiniportWaveCyclic::propertyHandlerComponentId(IN PPCPROPERTY_REQUEST P
                 pComponentId->Version   = MSVAD_VERSION;
                 pComponentId->Revision  = MSVAD_REVISION;
 
-                PropertyRequest->ValueSize = sizeof(KSCOMPONENTID);
+                propertyRequest->ValueSize = sizeof(KSCOMPONENTID);
                 ntStatus = STATUS_SUCCESS;
             }
         }
@@ -395,7 +395,7 @@ NTSTATUS MiniportWaveCyclic::propertyHandlerComponentId(IN PPCPROPERTY_REQUEST P
 Routine Description:
   Handles KSPROPERTY_GENERAL_COMPONENTID
 */
-NTSTATUS MiniportWaveCyclic::propertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportWaveCyclic::propertyHandlerProposedFormat(IN PPCPROPERTY_REQUEST propertyRequest)
 {
     PAGED_CODE();
 
@@ -403,58 +403,58 @@ NTSTATUS MiniportWaveCyclic::propertyHandlerProposedFormat(IN PPCPROPERTY_REQUES
 
     NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
 
-    if (PropertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
+    if (propertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
     {
-        ntStatus = PropertyHandler_BasicSupport(PropertyRequest, KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_SET, VT_ILLEGAL);
+        ntStatus = PropertyHandler_BasicSupport(propertyRequest, KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_SET, VT_ILLEGAL);
     }
     else
     {
         ULONG cbMinSize = sizeof(KSDATAFORMAT_WAVEFORMATEX);
 
-        if (PropertyRequest->ValueSize == 0)
+        if (propertyRequest->ValueSize == 0)
         {
-            PropertyRequest->ValueSize = cbMinSize;
+            propertyRequest->ValueSize = cbMinSize;
             ntStatus = STATUS_BUFFER_OVERFLOW;
         }
-        else if (PropertyRequest->ValueSize < cbMinSize)
+        else if (propertyRequest->ValueSize < cbMinSize)
         {
             ntStatus = STATUS_BUFFER_TOO_SMALL;
         }
         else
         {
-            if (PropertyRequest->Verb & KSPROPERTY_TYPE_SET)
+            if (propertyRequest->Verb & KSPROPERTY_TYPE_SET)
             {
-                KSDATAFORMAT_WAVEFORMATEX* pKsFormat = (KSDATAFORMAT_WAVEFORMATEX*)PropertyRequest->Value;
+                KSDATAFORMAT_WAVEFORMATEX* pKsFormat = (KSDATAFORMAT_WAVEFORMATEX*)propertyRequest->Value;
 
                 ntStatus = STATUS_NO_MATCH;
 
-                if ((pKsFormat->DataFormat.MajorFormat == KSDATAFORMAT_TYPE_AUDIO) &&
+                if ((pKsFormat->DataFormat.MajorFormat == KSDATAFORMAT_TYPE_AUDIO)  &&
                     (pKsFormat->DataFormat.SubFormat   == KSDATAFORMAT_SUBTYPE_PCM) &&
                     (pKsFormat->DataFormat.Specifier   == KSDATAFORMAT_SPECIFIER_WAVEFORMATEX))
                 {
-                    WAVEFORMATEX* pWfx = (WAVEFORMATEX*)&pKsFormat->WaveFormatEx;
+                    WAVEFORMATEX* wfx = (WAVEFORMATEX*)&pKsFormat->WaveFormatEx;
 
                     // make sure the WAVEFORMATEX part of the format makes sense
-                    if ((pWfx->wBitsPerSample == 16) &&
-                        ((pWfx->nSamplesPerSec == 44100) || (pWfx->nSamplesPerSec == 48000)) &&
-                        (pWfx->nBlockAlign == (pWfx->nChannels * 2)) &&
-                        (pWfx->nAvgBytesPerSec == (pWfx->nSamplesPerSec * pWfx->nBlockAlign)))
+                    if ( (wfx->wBitsPerSample  == 16)                                       &&
+                        ((wfx->nSamplesPerSec  == 44100) || (wfx->nSamplesPerSec == 48000)) &&
+                         (wfx->nBlockAlign     == (wfx->nChannels * 2))                     &&
+                         (wfx->nAvgBytesPerSec == (wfx->nSamplesPerSec * wfx->nBlockAlign)))
                     {
-                        if ((pWfx->wFormatTag == WAVE_FORMAT_PCM) && (pWfx->cbSize == 0))
+                        if ((wfx->wFormatTag == WAVE_FORMAT_PCM) && (wfx->cbSize == 0))
                         {
-                            if (pWfx->nChannels == 2)
+                            if (wfx->nChannels == 2)
                             {
                                 ntStatus = STATUS_SUCCESS;
                             }
                         }
                         else 
-                        if ((pWfx->wFormatTag == WAVE_FORMAT_EXTENSIBLE) && (pWfx->cbSize == CB_EXTENSIBLE))
+                        if ((wfx->wFormatTag == WAVE_FORMAT_EXTENSIBLE) && (wfx->cbSize == CB_EXTENSIBLE))
                         {
-                            WAVEFORMATEXTENSIBLE* pWfxT = (WAVEFORMATEXTENSIBLE*)pWfx;
+                            WAVEFORMATEXTENSIBLE* pWfxT = (WAVEFORMATEXTENSIBLE*)wfx;
 
-                            if (((pWfx->nChannels == 2) && (pWfxT->dwChannelMask == KSAUDIO_SPEAKER_STEREO)) ||
-                                ((pWfx->nChannels == 6) && (pWfxT->dwChannelMask == KSAUDIO_SPEAKER_5POINT1_SURROUND)) ||
-                                ((pWfx->nChannels == 8) && (pWfxT->dwChannelMask == KSAUDIO_SPEAKER_7POINT1_SURROUND)))
+                            if (((wfx->nChannels == 2) && (pWfxT->dwChannelMask == KSAUDIO_SPEAKER_STEREO)) ||
+                                ((wfx->nChannels == 6) && (pWfxT->dwChannelMask == KSAUDIO_SPEAKER_5POINT1_SURROUND)) ||
+                                ((wfx->nChannels == 8) && (pWfxT->dwChannelMask == KSAUDIO_SPEAKER_7POINT1_SURROUND)))
                             {
                                 ntStatus = STATUS_SUCCESS;
                             }
@@ -477,21 +477,21 @@ NTSTATUS MiniportWaveCyclic::propertyHandlerProposedFormat(IN PPCPROPERTY_REQUES
 Routine Description:
   Redirects general property request to miniport object
 */
-NTSTATUS propertyHandler_WaveFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS propertyHandler_WaveFilter(IN PPCPROPERTY_REQUEST propertyRequest)
 {
     PAGED_CODE();
 
     NTSTATUS          ntStatus = STATUS_INVALID_DEVICE_REQUEST;
-    PCMiniportWaveCyclic pWave = (PCMiniportWaveCyclic) PropertyRequest->MajorTarget;
+    PCMiniportWaveCyclic pWave = (PCMiniportWaveCyclic) propertyRequest->MajorTarget;
 
-    switch (PropertyRequest->PropertyItem->Id)
+    switch (propertyRequest->PropertyItem->Id)
     {
         case KSPROPERTY_GENERAL_COMPONENTID:
-            ntStatus = pWave->propertyHandlerComponentId(PropertyRequest);
+            ntStatus = pWave->propertyHandlerComponentId(propertyRequest);
             break;
 
         case KSPROPERTY_PIN_PROPOSEDATAFORMAT:
-            ntStatus = pWave->propertyHandlerProposedFormat(PropertyRequest);
+            ntStatus = pWave->propertyHandlerProposedFormat(propertyRequest);
             break;
         
         default:
@@ -532,17 +532,17 @@ Routine Description:
 */
 NTSTATUS MiniportWaveCyclicStream::Init
 ( 
-    IN PCMiniportWaveCyclic         Miniport_,
-    IN ULONG                        Pin_,
-    IN BOOLEAN                      Capture_,
-    IN PKSDATAFORMAT                DataFormat_
+    IN PCMiniportWaveCyclic miniport,
+    IN ULONG                pin,
+    IN BOOLEAN              capture,
+    IN PKSDATAFORMAT        dataFormat
 )
 {
     PAGED_CODE();
 
-    miniportLocal_ = Miniport_;
+    miniportLocal_ = miniport;
 
-    return MiniportWaveCyclicStreamMSVAD::Init(Miniport_, Pin_, Capture_, DataFormat_);
+    return MiniportWaveCyclicStreamMSVAD::Init(miniport, pin, capture, dataFormat);
 }
 
 //=============================================================================
@@ -558,33 +558,33 @@ STDMETHODIMP_(NTSTATUS)
 MiniportWaveCyclicStream::NonDelegatingQueryInterface
 (
     _In_         REFIID  Interface,
-    _COM_Outptr_ PVOID * Object
+    _COM_Outptr_ PVOID * object
 )
 {
     PAGED_CODE();
 
-    ASSERT(Object);
+    ASSERT(object);
 
     if (IsEqualGUIDAligned(Interface, IID_IUnknown))
     {
-        *Object = PVOID(PUNKNOWN(PMINIPORTWAVECYCLICSTREAM(this)));
+        *object = PVOID(PUNKNOWN(PMINIPORTWAVECYCLICSTREAM(this)));
     }
     else if (IsEqualGUIDAligned(Interface, IID_IMiniportWaveCyclicStream))
     {
-        *Object = PVOID(PMINIPORTWAVECYCLICSTREAM(this));
+        *object = PVOID(PMINIPORTWAVECYCLICSTREAM(this));
     }
     else if (IsEqualGUIDAligned(Interface, IID_IDmaChannel))
     {
-        *Object = PVOID(PDMACHANNEL(this));
+        *object = PVOID(PDMACHANNEL(this));
     }
     else
     {
-        *Object = nullptr;
+        *object = nullptr;
     }
 
-    if (*Object)
+    if (*object)
     {
-        PUNKNOWN(*Object)->AddRef();
+        PUNKNOWN(*object)->AddRef();
         return STATUS_SUCCESS;
     }
 

@@ -309,15 +309,15 @@ NTSTATUS CSaveData::fileWriteHeader()
 
     return ntStatus;
 }
-NTSTATUS CSaveData::setDeviceObject(IN  PDEVICE_OBJECT DeviceObject)
+NTSTATUS CSaveData::setDeviceObject(IN  PDEVICE_OBJECT deviceObject)
 {
     PAGED_CODE();
 
-    ASSERT(DeviceObject);
+    ASSERT(deviceObject);
 
     NTSTATUS ntStatus = STATUS_SUCCESS;
     
-    deviceObject_ = DeviceObject;
+    deviceObject_ = deviceObject;
     return ntStatus;
 }
 
@@ -449,10 +449,10 @@ NTSTATUS CSaveData::initialize()
 }
 
 //=============================================================================
-NTSTATUS CSaveData::initializeWorkItems(IN  PDEVICE_OBJECT DeviceObject)
+NTSTATUS CSaveData::initializeWorkItems(IN  PDEVICE_OBJECT deviceObject)
 {
     PAGED_CODE();
-    ASSERT(DeviceObject);
+    ASSERT(deviceObject);
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
     DPF_ENTER(("[CSaveData::InitializeWorkItems]"));
@@ -467,7 +467,7 @@ NTSTATUS CSaveData::initializeWorkItems(IN  PDEVICE_OBJECT DeviceObject)
     {
         for (int i = 0; i < MAX_WORKER_ITEM_COUNT; i++)
         {
-            workItems_[i].WorkItem = IoAllocateWorkItem(DeviceObject);
+            workItems_[i].WorkItem = IoAllocateWorkItem(deviceObject);
             if (workItems_[i].WorkItem == nullptr)
             {
               return STATUS_INSUFFICIENT_RESOURCES;
@@ -487,13 +487,13 @@ NTSTATUS CSaveData::initializeWorkItems(IN  PDEVICE_OBJECT DeviceObject)
 
 IO_WORKITEM_ROUTINE saveFrameWorkerCallback;
 
-VOID saveFrameWorkerCallback(PDEVICE_OBJECT pDeviceObject, IN  PVOID  Context)
+VOID saveFrameWorkerCallback(PDEVICE_OBJECT deviceObject, IN  PVOID  context)
 {
-    UNREFERENCED_PARAMETER(pDeviceObject);
+    UNREFERENCED_PARAMETER(deviceObject);
     PAGED_CODE();
-    ASSERT(Context);
+    ASSERT(context);
 
-    PSAVEWORKER_PARAM pParam = (PSAVEWORKER_PARAM) Context;
+    PSAVEWORKER_PARAM pParam = (PSAVEWORKER_PARAM) context;
 
     if (!pParam)
     {
@@ -510,18 +510,18 @@ VOID saveFrameWorkerCallback(PDEVICE_OBJECT pDeviceObject, IN  PVOID  Context)
 
     if (pParam->WorkItem)
     {
-        PCSaveData pSaveData = pParam->pSaveData;
+        PCSaveData saveData = pParam->pSaveData;
 
-        if (STATUS_SUCCESS == KeWaitForSingleObject(&pSaveData->fileSync_, Executive, KernelMode, FALSE, nullptr))
+        if (STATUS_SUCCESS == KeWaitForSingleObject(&saveData->fileSync_, Executive, KernelMode, FALSE, nullptr))
         {
-            if (NT_SUCCESS(pSaveData->fileOpen(FALSE)))
+            if (NT_SUCCESS(saveData->fileOpen(FALSE)))
             { 
-                pSaveData->fileWrite(pParam->pData, pParam->ulDataSize);
-                pSaveData->fileClose();
+                saveData->fileWrite(pParam->pData, pParam->ulDataSize);
+                saveData->fileClose();
             }
-            InterlockedExchange( (LONG *)&(pSaveData->frameUsed_[pParam->ulFrameNo]), FALSE );
+            InterlockedExchange( (LONG *)&(saveData->frameUsed_[pParam->ulFrameNo]), FALSE );
 
-            KeReleaseMutex( &pSaveData->fileSync_, FALSE );
+            KeReleaseMutex( &saveData->fileSync_, FALSE );
         }
     }
 
@@ -529,25 +529,25 @@ VOID saveFrameWorkerCallback(PDEVICE_OBJECT pDeviceObject, IN  PVOID  Context)
 }
 
 //=============================================================================
-NTSTATUS CSaveData::setDataFormat(IN PKSDATAFORMAT pDataFormat)
+NTSTATUS CSaveData::setDataFormat(IN PKSDATAFORMAT dataFormat)
 {
     PAGED_CODE();
     NTSTATUS ntStatus = STATUS_SUCCESS; 
     DPF_ENTER(("[CSaveData::SetDataFormat]"));
-    ASSERT(pDataFormat);
+    ASSERT(dataFormat);
 
-    PWAVEFORMATEX pwfx = nullptr;
+    PWAVEFORMATEX wfx = nullptr;
 
-    if (IsEqualGUIDAligned(pDataFormat->Specifier, KSDATAFORMAT_SPECIFIER_DSOUND))
+    if (IsEqualGUIDAligned(dataFormat->Specifier, KSDATAFORMAT_SPECIFIER_DSOUND))
     {
-        pwfx = &(((PKSDATAFORMAT_DSOUND) pDataFormat)->BufferDesc.WaveFormatEx);
+        wfx = &(((PKSDATAFORMAT_DSOUND) dataFormat)->BufferDesc.WaveFormatEx);
     }
-    else if (IsEqualGUIDAligned(pDataFormat->Specifier, KSDATAFORMAT_SPECIFIER_WAVEFORMATEX))
+    else if (IsEqualGUIDAligned(dataFormat->Specifier, KSDATAFORMAT_SPECIFIER_WAVEFORMATEX))
     {
-        pwfx = &((PKSDATAFORMAT_WAVEFORMATEX) pDataFormat)->WaveFormatEx;
+        wfx = &((PKSDATAFORMAT_WAVEFORMATEX) dataFormat)->WaveFormatEx;
     }
 
-    if (pwfx)
+    if (wfx)
     {
         // Free the previously allocated waveformat
         if (waveFormat_)
@@ -555,13 +555,13 @@ NTSTATUS CSaveData::setDataFormat(IN PKSDATAFORMAT pDataFormat)
             ExFreePoolWithTag(waveFormat_, MSVAD_POOLTAG);
         }
 
-        const SIZE_T numberOfBytes = (pwfx->wFormatTag == WAVE_FORMAT_PCM) ? sizeof(PCMWAVEFORMAT) : sizeof(WAVEFORMATEX) + pwfx->cbSize;
+        const SIZE_T numberOfBytes = (wfx->wFormatTag == WAVE_FORMAT_PCM) ? sizeof(PCMWAVEFORMAT) : sizeof(WAVEFORMATEX) + wfx->cbSize;
         waveFormat_ = (PWAVEFORMATEX)ExAllocatePoolWithTag(NonPagedPool, numberOfBytes, MSVAD_POOLTAG);
 
         if(waveFormat_)
         {
-            const size_t length = (pwfx->wFormatTag == WAVE_FORMAT_PCM) ? sizeof(PCMWAVEFORMAT) : sizeof(WAVEFORMATEX) + pwfx->cbSize;
-            RtlCopyMemory(waveFormat_, pwfx, length);
+            const size_t length = (wfx->wFormatTag == WAVE_FORMAT_PCM) ? sizeof(PCMWAVEFORMAT) : sizeof(WAVEFORMATEX) + wfx->cbSize;
+            RtlCopyMemory(waveFormat_, wfx, length);
         }
         else
         {
@@ -575,12 +575,12 @@ NTSTATUS CSaveData::setDataFormat(IN PKSDATAFORMAT pDataFormat)
 void
 CSaveData::readData
 (
-    _Inout_updates_bytes_all_(ulByteCount)  PBYTE   pBuffer,
-    _In_                                    ULONG   ulByteCount
+    _Inout_updates_bytes_all_(byteCount) PBYTE buffer,
+    _In_                                 ULONG byteCount
 )
 {
-    UNREFERENCED_PARAMETER(pBuffer);
-    UNREFERENCED_PARAMETER(ulByteCount);
+    UNREFERENCED_PARAMETER(buffer);
+    UNREFERENCED_PARAMETER(byteCount);
 
     PAGED_CODE();
 
@@ -626,11 +626,11 @@ void CSaveData::waitAllWorkItems()
 void
 CSaveData::writeData
 (
-    _In_reads_bytes_(byteCount)   PBYTE   pBuffer,
-    _In_                          ULONG   byteCount
+    _In_reads_bytes_(byteCount) PBYTE buffer,
+    _In_                        ULONG byteCount
 )
 {
-    ASSERT(pBuffer);
+    ASSERT(buffer);
 
     BOOL fSaveFrame = FALSE;
     ULONG ulSaveFramePtr = 0;
@@ -662,7 +662,7 @@ CSaveData::writeData
             writeBytes = bufferSize_ - bufferPtr_;
         }
 
-        RtlCopyMemory(dataBuffer_ + bufferPtr_, pBuffer, writeBytes); 
+        RtlCopyMemory(dataBuffer_ + bufferPtr_, buffer, writeBytes); 
         bufferPtr_ += writeBytes;
 
         // Check to see if we need to save this frame
@@ -695,7 +695,7 @@ CSaveData::writeData
                 RtlCopyMemory
                 (
                     dataBuffer_ + bufferPtr_,
-                    pBuffer + writeBytes,
+                    buffer + writeBytes,
                     byteCount - writeBytes
                 );
                 bufferPtr_ += byteCount - writeBytes;

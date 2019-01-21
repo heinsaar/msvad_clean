@@ -90,23 +90,23 @@ Arguments:
 */
 NTSTATUS MiniportTopology::DataRangeIntersection
 (
-    _In_        ULONG        PinId,
-    _In_        PKSDATARANGE ClientDataRange,
-    _In_        PKSDATARANGE MyDataRange,
-    _In_        ULONG        OutputBufferLength,
-    _Out_writes_bytes_to_opt_(OutputBufferLength, *ResultantFormatLength)
-    PVOID                    ResultantFormat,
-    _Out_       PULONG       ResultantFormatLength
+    _In_        ULONG        pinId,
+    _In_        PKSDATARANGE clientDataRange,
+    _In_        PKSDATARANGE myDataRange,
+    _In_        ULONG        outputBufferLength,
+    _Out_writes_bytes_to_opt_(outputBufferLength, *resultantFormatLength)
+    PVOID                    resultantFormat,
+    _Out_       PULONG       resultantFormatLength
 )
 {
     PAGED_CODE();
 
-    return MiniportTopologyMSVAD::DataRangeIntersection(PinId,
-                                                        ClientDataRange,
-                                                        MyDataRange,
-                                                        OutputBufferLength,
-                                                        ResultantFormat,
-                                                        ResultantFormatLength);
+    return MiniportTopologyMSVAD::DataRangeIntersection(pinId,
+                                                        clientDataRange,
+                                                        myDataRange,
+                                                        outputBufferLength,
+                                                        resultantFormat,
+                                                        resultantFormatLength);
 }
 
 //=============================================================================
@@ -149,21 +149,21 @@ Arguments:
 STDMETHODIMP
 MiniportTopology::Init
 (
-    _In_ PUNKNOWN                 UnknownAdapter,
-    _In_ PRESOURCELIST            ResourceList,
-    _In_ PPORTTOPOLOGY            Port_
+    _In_ PUNKNOWN      unknownAdapter,
+    _In_ PRESOURCELIST resourceList,
+    _In_ PPORTTOPOLOGY port
 )
 {
-    UNREFERENCED_PARAMETER(ResourceList);
+    UNREFERENCED_PARAMETER(resourceList);
 
     PAGED_CODE();
 
-    ASSERT(UnknownAdapter);
-    ASSERT(Port_);
+    ASSERT(unknownAdapter);
+    ASSERT(port);
 
     DPF_ENTER(("[CMiniportTopology::Init]"));
 
-    NTSTATUS ntStatus = MiniportTopologyMSVAD::Init(UnknownAdapter, Port_);
+    NTSTATUS ntStatus = MiniportTopologyMSVAD::Init(unknownAdapter, port);
 
     if (NT_SUCCESS(ntStatus))
     {
@@ -189,33 +189,33 @@ STDMETHODIMP
 MiniportTopology::NonDelegatingQueryInterface
 (
     _In_         REFIID Interface,
-    _COM_Outptr_ PVOID* Object
+    _COM_Outptr_ PVOID* object
 )
 {
     PAGED_CODE();
-    ASSERT(Object);
+    ASSERT(object);
 
     if (IsEqualGUIDAligned(Interface, IID_IUnknown))
     {
-        *Object = PVOID(PUNKNOWN(this));
+        *object = PVOID(PUNKNOWN(this));
     }
     else if (IsEqualGUIDAligned(Interface, IID_IMiniport))
     {
-        *Object = PVOID(PMINIPORT(this));
+        *object = PVOID(PMINIPORT(this));
     }
     else if (IsEqualGUIDAligned(Interface, IID_IMiniportTopology))
     {
-        *Object = PVOID(PMINIPORTTOPOLOGY(this));
+        *object = PVOID(PMINIPORTTOPOLOGY(this));
     }
     else
     {
-        *Object = nullptr;
+        *object = nullptr;
     }
 
-    if (*Object)
+    if (*object)
     {
         // We reference the interface for the caller.
-        PUNKNOWN(*Object)->AddRef();
+        PUNKNOWN(*object)->AddRef();
         return(STATUS_SUCCESS);
     }
 
@@ -227,43 +227,43 @@ MiniportTopology::NonDelegatingQueryInterface
 Routine Description:
   Handles ( KSPROPSETID_Jack, KSPROPERTY_JACK_DESCRIPTION )
 */
-NTSTATUS MiniportTopology::propertyHandlerJackDescription(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportTopology::propertyHandlerJackDescription(IN PPCPROPERTY_REQUEST propertyRequest)
 {
     PAGED_CODE();
-    ASSERT(PropertyRequest);
+    ASSERT(propertyRequest);
     DPF_ENTER(("[PropertyHandlerJackDescription]"));
 
     NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
     ULONG    nPinId = (ULONG)-1;
 
-    if (PropertyRequest->InstanceSize >= sizeof(ULONG))
+    if (propertyRequest->InstanceSize >= sizeof(ULONG))
     {
-        nPinId = *(PULONG(PropertyRequest->Instance));
+        nPinId = *(PULONG(propertyRequest->Instance));
 
         if ((nPinId < ARRAYSIZE(JackDescriptions)) && (JackDescriptions[nPinId] != nullptr))
         {
-            if (PropertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
+            if (propertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
             {
-                ntStatus = PropertyHandler_BasicSupport(PropertyRequest, KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_GET, VT_ILLEGAL);
+                ntStatus = PropertyHandler_BasicSupport(propertyRequest, KSPROPERTY_TYPE_BASICSUPPORT | KSPROPERTY_TYPE_GET, VT_ILLEGAL);
             }
             else
             {
                 ULONG cbNeeded = sizeof(KSMULTIPLE_ITEM) + sizeof(KSJACK_DESCRIPTION);
 
-                if (PropertyRequest->ValueSize == 0)
+                if (propertyRequest->ValueSize == 0)
                 {
-                    PropertyRequest->ValueSize = cbNeeded;
+                    propertyRequest->ValueSize = cbNeeded;
                     ntStatus = STATUS_BUFFER_OVERFLOW;
                 }
-                else if (PropertyRequest->ValueSize < cbNeeded)
+                else if (propertyRequest->ValueSize < cbNeeded)
                 {
                     ntStatus = STATUS_BUFFER_TOO_SMALL;
                 }
                 else
                 {
-                    if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
+                    if (propertyRequest->Verb & KSPROPERTY_TYPE_GET)
                     {
-                        PKSMULTIPLE_ITEM pMI = (PKSMULTIPLE_ITEM)PropertyRequest->Value;
+                        PKSMULTIPLE_ITEM      pMI = (PKSMULTIPLE_ITEM)propertyRequest->Value;
                         PKSJACK_DESCRIPTION pDesc = (PKSJACK_DESCRIPTION)(pMI+1);
 
                         pMI->Size = cbNeeded;
@@ -285,22 +285,22 @@ NTSTATUS MiniportTopology::propertyHandlerJackDescription(IN PPCPROPERTY_REQUEST
 Routine Description:
   Redirects property request to miniport object
 */
-NTSTATUS propertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS propertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST propertyRequest)
 {
     PAGED_CODE();
-    ASSERT(PropertyRequest);
+    ASSERT(propertyRequest);
     DPF_ENTER(("[PropertyHandler_TopoFilter]"));
 
     // PropertryRequest structure is filled by portcls. 
     // MajorTarget is a pointer to miniport object for miniports.
     //
     NTSTATUS            ntStatus = STATUS_INVALID_DEVICE_REQUEST;
-    PCMiniportTopology  pMiniport = (PCMiniportTopology)PropertyRequest->MajorTarget;
+    PCMiniportTopology  miniport = (PCMiniportTopology)propertyRequest->MajorTarget;
 
-    if (IsEqualGUIDAligned(*PropertyRequest->PropertyItem->Set, KSPROPSETID_Jack) &&
-                           (PropertyRequest->PropertyItem->Id == KSPROPERTY_JACK_DESCRIPTION))
+    if (IsEqualGUIDAligned(*propertyRequest->PropertyItem->Set, KSPROPSETID_Jack) &&
+                           (propertyRequest->PropertyItem->Id == KSPROPERTY_JACK_DESCRIPTION))
     {
-        ntStatus = pMiniport->propertyHandlerJackDescription(PropertyRequest);
+        ntStatus = miniport->propertyHandlerJackDescription(propertyRequest);
     }
 
     return ntStatus;
@@ -311,16 +311,16 @@ NTSTATUS propertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest)
 Routine Description:
   Redirects property request to miniport object
 */
-NTSTATUS propertyHandler_Topology(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS propertyHandler_Topology(IN PPCPROPERTY_REQUEST propertyRequest)
 {
     PAGED_CODE();
-    ASSERT(PropertyRequest);
+    ASSERT(propertyRequest);
     DPF_ENTER(("[PropertyHandler_Topology]"));
 
     // PropertryRequest structure is filled by portcls. 
     // MajorTarget is a pointer to miniport object for miniports.
     //
-    return ((PCMiniportTopology)(PropertyRequest->MajorTarget))->propertyHandlerGeneric(PropertyRequest);
+    return ((PCMiniportTopology)(propertyRequest->MajorTarget))->propertyHandlerGeneric(propertyRequest);
 }
 
 #pragma code_seg()

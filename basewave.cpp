@@ -74,25 +74,18 @@ Arguments:
   OutFilterDescriptor - Pointer to the filter description
 */
 STDMETHODIMP
-MiniportWaveCyclicMSVAD::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* OutFilterDescriptor)
+MiniportWaveCyclicMSVAD::GetDescription(_Out_ PPCFILTER_DESCRIPTOR* outFilterDescriptor)
 {
     PAGED_CODE();
-    ASSERT(OutFilterDescriptor);
+    ASSERT(outFilterDescriptor);
     DPF_ENTER(("[CMiniportWaveCyclicMSVAD::GetDescription]"));
 
-    *OutFilterDescriptor = filterDescriptor_;
+    *outFilterDescriptor = filterDescriptor_;
 
     return STATUS_SUCCESS;
 }
 
 //=============================================================================
-STDMETHODIMP
-MiniportWaveCyclicMSVAD::Init
-(
-    _In_    PUNKNOWN                UnknownAdapter_,
-    _In_    PRESOURCELIST           ResourceList_,
-    _In_    PPORTWAVECYCLIC         Port_
-)
 /*
 
 Routine Description:
@@ -103,25 +96,32 @@ Arguments:
   Port_           - pointer to the port
 
 */
+STDMETHODIMP
+MiniportWaveCyclicMSVAD::Init
+(
+    _In_ PUNKNOWN        unknownAdapter,
+    _In_ PRESOURCELIST   resourceList,
+    _In_ PPORTWAVECYCLIC port
+)
 {
-    UNREFERENCED_PARAMETER(ResourceList_);
+    UNREFERENCED_PARAMETER(resourceList);
 
     PAGED_CODE();
-    ASSERT(UnknownAdapter_);
-    ASSERT(Port_);
+    ASSERT(unknownAdapter);
+    ASSERT(port);
 
     DPF_ENTER(("[CMiniportWaveCyclicMSVAD::Init]"));
 
     // AddRef() is required because we are keeping this pointer.
     //
-    port_ = Port_;
+    port_ = port;
     port_->AddRef();
 
     // We want the IAdapterCommon interface on the adapter common object,
     // which is given to us as a IUnknown.  The QueryInterface call gives us
     // an AddRefed pointer to the interface we want.
     //
-    NTSTATUS ntStatus = UnknownAdapter_->QueryInterface(IID_IAdapterCommon, (PVOID *)&adapterCommon_);
+    NTSTATUS ntStatus = unknownAdapter->QueryInterface(IID_IAdapterCommon, (PVOID *)&adapterCommon_);
 
     if (NT_SUCCESS(ntStatus))
     {
@@ -170,27 +170,27 @@ Routine Description:
 Arguments:
   PropertyRequest - property request structure
 */
-NTSTATUS MiniportWaveCyclicMSVAD::propertyHandlerCpuResources(IN PPCPROPERTY_REQUEST PropertyRequest)
+NTSTATUS MiniportWaveCyclicMSVAD::propertyHandlerCpuResources(IN PPCPROPERTY_REQUEST propertyRequest)
 {
     PAGED_CODE();
-    ASSERT(PropertyRequest);
+    ASSERT(propertyRequest);
     DPF_ENTER(("[CMiniportWaveCyclicMSVAD::PropertyHandlerCpuResources]"));
 
     NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
 
-    if (PropertyRequest->Verb & KSPROPERTY_TYPE_GET)
+    if (propertyRequest->Verb & KSPROPERTY_TYPE_GET)
     {
-        ntStatus = ValidatePropertyParams(PropertyRequest, sizeof(LONG), 0);
+        ntStatus = ValidatePropertyParams(propertyRequest, sizeof(LONG), 0);
         if (NT_SUCCESS(ntStatus))
         {
-            *(PLONG(PropertyRequest->Value)) = KSAUDIO_CPU_RESOURCES_NOT_HOST_CPU;
-            PropertyRequest->ValueSize = sizeof(LONG);
+            *(PLONG(propertyRequest->Value)) = KSAUDIO_CPU_RESOURCES_NOT_HOST_CPU;
+            propertyRequest->ValueSize = sizeof(LONG);
             ntStatus = STATUS_SUCCESS;
         }
     }
-    else if (PropertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
+    else if (propertyRequest->Verb & KSPROPERTY_TYPE_BASICSUPPORT)
     {
-        ntStatus = PropertyHandler_BasicSupport(PropertyRequest, KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_BASICSUPPORT, VT_I4);
+        ntStatus = PropertyHandler_BasicSupport(propertyRequest, KSPROPERTY_TYPE_GET | KSPROPERTY_TYPE_BASICSUPPORT, VT_I4);
     }
 
     return ntStatus;
@@ -208,19 +208,19 @@ Arguments:
   PropertyRequest - property request structure
 
 */
-NTSTATUS MiniportWaveCyclicMSVAD::propertyHandlerGeneric(IN  PPCPROPERTY_REQUEST     PropertyRequest)
+NTSTATUS MiniportWaveCyclicMSVAD::propertyHandlerGeneric(IN  PPCPROPERTY_REQUEST propertyRequest)
 {
     PAGED_CODE();
 
-    ASSERT(PropertyRequest);
-    ASSERT(PropertyRequest->PropertyItem);
+    ASSERT(propertyRequest);
+    ASSERT(propertyRequest->PropertyItem);
 
     NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
 
-    switch (PropertyRequest->PropertyItem->Id)
+    switch (propertyRequest->PropertyItem->Id)
     {
         case KSPROPERTY_AUDIO_CPU_RESOURCES:
-            ntStatus = propertyHandlerCpuResources(PropertyRequest);
+            ntStatus = propertyHandlerCpuResources(propertyRequest);
             break;
 
         default:
@@ -244,21 +244,21 @@ Arguments:
   pDataFormat - The dataformat for validation.
 
 */
-NTSTATUS MiniportWaveCyclicMSVAD::validateFormat(IN  PKSDATAFORMAT pDataFormat)
+NTSTATUS MiniportWaveCyclicMSVAD::validateFormat(IN  PKSDATAFORMAT dataFormat)
 {
     PAGED_CODE();
 
-    ASSERT(pDataFormat);
+    ASSERT(dataFormat);
 
     DPF_ENTER(("[CMiniportWaveCyclicMSVAD::ValidateFormat]"));
 
     NTSTATUS      ntStatus = STATUS_INVALID_PARAMETER;
-    PWAVEFORMATEX pwfx = GetWaveFormatEx(pDataFormat);
+    PWAVEFORMATEX pwfx = GetWaveFormatEx(dataFormat);
     if (pwfx)
     {
-        if (IS_VALID_WAVEFORMATEX_GUID(&pDataFormat->SubFormat))
+        if (IS_VALID_WAVEFORMATEX_GUID(&dataFormat->SubFormat))
         {
-            const USHORT wfxID = EXTRACT_WAVEFORMATEX_ID(&pDataFormat->SubFormat);
+            const USHORT wfxID = EXTRACT_WAVEFORMATEX_ID(&dataFormat->SubFormat);
 
             switch (wfxID)
             {
@@ -299,20 +299,20 @@ Arguments:
 
   pWfx - wave format structure.
 */
-NTSTATUS MiniportWaveCyclicMSVAD::validatePcm(IN  PWAVEFORMATEX  pWfx)
+NTSTATUS MiniportWaveCyclicMSVAD::validatePcm(IN  PWAVEFORMATEX wfx)
 {
     PAGED_CODE();
 
     DPF_ENTER(("CMiniportWaveCyclicMSVAD::ValidatePcm"));
 
-    if ( pWfx                                              &&
-        (pWfx->cbSize == 0)                                &&
-        (pWfx->nChannels >= minChannels_)                  &&
-        (pWfx->nChannels <= maxChannelsPcm_)               &&
-        (pWfx->nSamplesPerSec >= minSampleRatePcm_)        &&
-        (pWfx->nSamplesPerSec <= maxSampleRatePcm_)        &&
-        (pWfx->wBitsPerSample >= minBitsPerSamplePcm_)     &&
-        (pWfx->wBitsPerSample <= maxBitsPerSamplePcm_))
+    if ( wfx                                          &&
+        (wfx->cbSize == 0)                            &&
+        (wfx->nChannels >= minChannels_)              &&
+        (wfx->nChannels <= maxChannelsPcm_)           &&
+        (wfx->nSamplesPerSec >= minSampleRatePcm_)    &&
+        (wfx->nSamplesPerSec <= maxSampleRatePcm_)    &&
+        (wfx->wBitsPerSample >= minBitsPerSamplePcm_) &&
+        (wfx->wBitsPerSample <= maxBitsPerSamplePcm_))
     {
         return STATUS_SUCCESS;
     }
@@ -392,22 +392,22 @@ Arguments:
 #pragma warning (disable : 26165)
 NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
 (
-    IN  PCMiniportWaveCyclicMSVAD Miniport_,
-    IN  ULONG                     Pin_,
-    IN  BOOLEAN                   Capture_,
-    IN  PKSDATAFORMAT             DataFormat_
+    IN  PCMiniportWaveCyclicMSVAD miniport,
+    IN  ULONG                     pin,
+    IN  BOOLEAN                   capture,
+    IN  PKSDATAFORMAT             dataFormat
 )
 {
     PAGED_CODE();
 
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::Init]"));
 
-    ASSERT(Miniport_);
-    ASSERT(DataFormat_);
+    ASSERT(miniport);
+    ASSERT(dataFormat);
 
     NTSTATUS      ntStatus = STATUS_SUCCESS;
-    PWAVEFORMATEX pWfx = GetWaveFormatEx(DataFormat_);
-    if (!pWfx)
+    PWAVEFORMATEX wfx = GetWaveFormatEx(dataFormat);
+    if (!wfx)
     {
         DPF(D_TERSE, ("Invalid DataFormat param in NewStream"));
         ntStatus = STATUS_INVALID_PARAMETER;
@@ -415,27 +415,27 @@ NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
 
     if (NT_SUCCESS(ntStatus))
     {
-        miniport_ = Miniport_;
+        miniport_ = miniport;
 
-        pinId_                           = Pin_;
-        isCapture_                        = Capture_;
-        blockAlign_                    = pWfx->nBlockAlign;
-        is16BitSample                    = (pWfx->wBitsPerSample == 16);
-        ksState_                         = KSSTATE_STOP;
-        dmaPosition_                   = 0;
+        pinId_                        = pin;
+        isCapture_                    = capture;
+        blockAlign_                   = wfx->nBlockAlign;
+        is16BitSample                 = (wfx->wBitsPerSample == 16);
+        ksState_                      = KSSTATE_STOP;
+        dmaPosition_                  = 0;
         elapsedTimeCarryForward_      = 0;
-        byteDisplacementCarryForward_  = 0;
-        dmaActive_                      = FALSE;
-        dpc_                            = nullptr;
-        timer_                          = nullptr;
-        dmaBuffer_                     = nullptr;
+        byteDisplacementCarryForward_ = 0;
+        dmaActive_                    = FALSE;
+        dpc_                          = nullptr;
+        timer_                        = nullptr;
+        dmaBuffer_                    = nullptr;
 
         // If this is not the capture stream, create the output file.
         //
         if (!isCapture_)
         {
             DPF(D_TERSE, ("SaveData %p", &saveData_));
-            ntStatus = saveData_.setDataFormat(DataFormat_);
+            ntStatus = saveData_.setDataFormat(dataFormat);
             if (NT_SUCCESS(ntStatus))
             {
                 ntStatus = saveData_.initialize();
@@ -455,7 +455,7 @@ NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
         ntStatus = KeWaitForSingleObject(&miniport_->sampleRateSync_, Executive, KernelMode, FALSE, nullptr);
         if (STATUS_SUCCESS == ntStatus)
         {
-            miniport_->samplingFrequency_ = pWfx->nSamplesPerSec;
+            miniport_->samplingFrequency_ = wfx->nSamplesPerSec;
             KeReleaseMutex(&miniport_->sampleRateSync_, FALSE);
         }
         else
@@ -466,7 +466,7 @@ NTSTATUS MiniportWaveCyclicStreamMSVAD::Init
 
     if (NT_SUCCESS(ntStatus))
     {
-        ntStatus = SetFormat(DataFormat_);
+        ntStatus = SetFormat(dataFormat);
     }
 
     if (NT_SUCCESS(ntStatus))
@@ -517,7 +517,7 @@ Arguments:
 */
 
 STDMETHODIMP
-MiniportWaveCyclicStreamMSVAD::GetPosition(_Out_ PULONG Position)
+MiniportWaveCyclicStreamMSVAD::GetPosition(_Out_ PULONG position)
 {
     if (dmaActive_)
     {
@@ -553,7 +553,7 @@ MiniportWaveCyclicStreamMSVAD::GetPosition(_Out_ PULONG Position)
 
         // Return the new DMA position
         //
-        *Position = dmaPosition_;
+        *position = dmaPosition_;
 
         // Update the DMA time stamp for the next call to GetPosition()
         //
@@ -563,7 +563,7 @@ MiniportWaveCyclicStreamMSVAD::GetPosition(_Out_ PULONG Position)
     {
         // DMA is inactive so just return the current DMA position.
         //
-        *Position = dmaPosition_;
+        *position = dmaPosition_;
     }
 
     return STATUS_SUCCESS;
@@ -583,11 +583,11 @@ Arguments:
                      On return it contains the converted value
 */
 STDMETHODIMP
-MiniportWaveCyclicStreamMSVAD::NormalizePhysicalPosition(_Inout_ PLONGLONG PhysicalPosition)
+MiniportWaveCyclicStreamMSVAD::NormalizePhysicalPosition(_Inout_ PLONGLONG physicalPosition)
 {
-    ASSERT(PhysicalPosition);
+    ASSERT(physicalPosition);
 
-    *PhysicalPosition = (_100NS_UNITS_PER_SECOND / blockAlign_ * *PhysicalPosition) / miniport_->samplingFrequency_;
+    *physicalPosition = (_100NS_UNITS_PER_SECOND / blockAlign_ * *physicalPosition) / miniport_->samplingFrequency_;
 
     return STATUS_SUCCESS;
 }
@@ -607,10 +607,10 @@ Arguments:
            of the stream.
 */
 STDMETHODIMP_(NTSTATUS)
-MiniportWaveCyclicStreamMSVAD::SetFormat(_In_  PKSDATAFORMAT Format)
+MiniportWaveCyclicStreamMSVAD::SetFormat(_In_  PKSDATAFORMAT format)
 {
     PAGED_CODE();
-    ASSERT(Format);
+    ASSERT(format);
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::SetFormat]"));
 
     NTSTATUS ntStatus = STATUS_INVALID_DEVICE_REQUEST;
@@ -619,23 +619,23 @@ MiniportWaveCyclicStreamMSVAD::SetFormat(_In_  PKSDATAFORMAT Format)
     {
         // MSVAD does not validate the format.
         //
-        const PWAVEFORMATEX pWfx = GetWaveFormatEx(Format);
-        if (pWfx)
+        const PWAVEFORMATEX wfx = GetWaveFormatEx(format);
+        if (wfx)
         {
             ntStatus = KeWaitForSingleObject(&miniport_->sampleRateSync_, Executive, KernelMode, FALSE, nullptr);
             if (STATUS_SUCCESS == ntStatus)
             {
                 if (!isCapture_)
                 {
-                    ntStatus = saveData_.setDataFormat(Format);
+                    ntStatus = saveData_.setDataFormat(format);
                 }
 
-                blockAlign_                   =  pWfx->nBlockAlign;
-                is16BitSample                   = (pWfx->wBitsPerSample == 16);
-                miniport_->samplingFrequency_ =  pWfx->nSamplesPerSec;
-                dmaMovementRate_              =  pWfx->nAvgBytesPerSec;
+                blockAlign_                   =  wfx->nBlockAlign;
+                is16BitSample                 = (wfx->wBitsPerSample == 16);
+                miniport_->samplingFrequency_ =  wfx->nSamplesPerSec;
+                dmaMovementRate_              =  wfx->nAvgBytesPerSec;
 
-                DPF(D_TERSE, ("New Format: %d", pWfx->nSamplesPerSec));
+                DPF(D_TERSE, ("New Format: %d", wfx->nSamplesPerSec));
             }
 
             KeReleaseMutex(&miniport_->sampleRateSync_, FALSE);
@@ -662,14 +662,14 @@ Arguments:
                 to Interval milliseconds is returned
 */
 STDMETHODIMP_(ULONG)
-MiniportWaveCyclicStreamMSVAD::SetNotificationFreq(_In_  ULONG  Interval, _Out_ PULONG FramingSize)
+MiniportWaveCyclicStreamMSVAD::SetNotificationFreq(_In_  ULONG  interval, _Out_ PULONG framingSize)
 {
     PAGED_CODE();
-    ASSERT(FramingSize);
+    ASSERT(framingSize);
     DPF_ENTER(("[CMiniportWaveCyclicStreamMSVAD::SetNotificationFreq]"));
 
-    miniport_->notificationInterval_ = Interval;
-    *FramingSize = blockAlign_ * miniport_->samplingFrequency_ * Interval / 1000;
+    miniport_->notificationInterval_ = interval;
+    *framingSize = blockAlign_ * miniport_->samplingFrequency_ * interval / 1000;
 
     return miniport_->notificationInterval_;
 }
@@ -686,7 +686,7 @@ Arguments:
   NewState - KSSTATE indicating the new state for the stream.
 */
 STDMETHODIMP
-MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
+MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE newState)
 {
     PAGED_CODE();
 
@@ -697,14 +697,14 @@ MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
     // The acquire state is not distinguishable from the stop state for our
     // purposes.
     //
-    if (NewState == KSSTATE_ACQUIRE)
+    if (newState == KSSTATE_ACQUIRE)
     {
-        NewState = KSSTATE_STOP;
+        newState = KSSTATE_STOP;
     }
 
-    if (ksState_ != NewState)
+    if (ksState_ != newState)
     {
-        switch (NewState)
+        switch (newState)
         {
             case KSSTATE_PAUSE:
             {
@@ -717,15 +717,15 @@ MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
             {
                 DPF(D_TERSE, ("KSSTATE_RUN"));
 
-                 LARGE_INTEGER   delay;
+                 LARGE_INTEGER delay;
 
                 // Set the timer for DPC.
                 //
                 dmaTimeStamp_             = KeQueryInterruptTime();
                 elapsedTimeCarryForward_  = 0;
-                dmaActive_                  = TRUE;
-                delay.HighPart                = 0;
-                delay.LowPart                 = miniport_->notificationInterval_;
+                dmaActive_                = TRUE;
+                delay.HighPart            = 0;
+                delay.LowPart             = miniport_->notificationInterval_;
 
                 KeSetTimerEx(timer_, delay, miniport_->notificationInterval_, dpc_);
             }
@@ -735,10 +735,10 @@ MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
 
             DPF(D_TERSE, ("KSSTATE_STOP"));
 
-            dmaActive_                      = FALSE;
-            dmaPosition_                   = 0;
+            dmaActive_                    = FALSE;
+            dmaPosition_                  = 0;
             elapsedTimeCarryForward_      = 0;
-            byteDisplacementCarryForward_  = 0;
+            byteDisplacementCarryForward_ = 0;
 
             KeCancelTimer( timer_ );
 
@@ -752,7 +752,7 @@ MiniportWaveCyclicStreamMSVAD::SetState(_In_  KSSTATE NewState)
             break;
         }
 
-        ksState_ = NewState;
+        ksState_ = newState;
     }
 
     return ntStatus;
@@ -776,9 +776,9 @@ Arguments:
 */
 _Use_decl_annotations_
 STDMETHODIMP_(void)
-MiniportWaveCyclicStreamMSVAD::Silence(PVOID Buffer, ULONG ByteCount)
+MiniportWaveCyclicStreamMSVAD::Silence(PVOID buffer, ULONG byteCount)
 {
-    RtlFillMemory(Buffer, ByteCount, is16BitSample ? 0 : 0x80);
+    RtlFillMemory(buffer, byteCount, is16BitSample ? 0 : 0x80);
 }
 
 //=============================================================================
@@ -801,22 +801,20 @@ Arguments:
 */
 void timerNotify
 (
-    IN  PKDPC Dpc,
-    IN  PVOID DeferredContext,
+    IN  PKDPC dpc,
+    IN  PVOID deferredContext,
     IN  PVOID SA1,
     IN  PVOID SA2
 )
 {
-    UNREFERENCED_PARAMETER(Dpc);
+    UNREFERENCED_PARAMETER(dpc);
     UNREFERENCED_PARAMETER(SA1);
     UNREFERENCED_PARAMETER(SA2);
 
-    PCMiniportWaveCyclicMSVAD pMiniport = (PCMiniportWaveCyclicMSVAD) DeferredContext;
+    PCMiniportWaveCyclicMSVAD miniport = (PCMiniportWaveCyclicMSVAD) deferredContext;
 
-    if (pMiniport && pMiniport->port_)
+    if (miniport && miniport->port_)
     {
-        pMiniport->port_->Notify(pMiniport->serviceGroup_);
+        miniport->port_->Notify(miniport->serviceGroup_);
     }
 }
-
-

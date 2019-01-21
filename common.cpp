@@ -99,43 +99,43 @@ Arguments:
 #pragma code_seg("PAGE")
 NTSTATUS InstallSubdevice
 (
-    _In_        PDEVICE_OBJECT          DeviceObject,
-    _In_opt_    PIRP                    Irp,
-    _In_        PWSTR                   Name,
-    _In_        REFGUID                 PortClassId,
-    _In_        REFGUID                 MiniportClassId,
-    _In_opt_    PMSVADMINIPORTCREATE    MiniportCreate,
-    _In_opt_    PUNKNOWN                UnknownAdapter,
-    _In_opt_    PRESOURCELIST           ResourceList,
-    _Out_opt_   PUNKNOWN *              OutPortUnknown,
-    _Out_opt_   PUNKNOWN *              OutMiniportUnknown
+    _In_        PDEVICE_OBJECT          deviceObject,
+    _In_opt_    PIRP                    irp,
+    _In_        PWSTR                   name,
+    _In_        REFGUID                 portClassId,
+    _In_        REFGUID                 miniportClassId,
+    _In_opt_    PMSVADMINIPORTCREATE    miniportCreate,
+    _In_opt_    PUNKNOWN                unknownAdapter,
+    _In_opt_    PRESOURCELIST           resourceList,
+    _Out_opt_   PUNKNOWN *              outPortUnknown,
+    _Out_opt_   PUNKNOWN *              outMiniportUnknown
 )
 {
     PAGED_CODE();
 
-    ASSERT(DeviceObject);
-    ASSERT(Name);
+    ASSERT(deviceObject);
+    ASSERT(name);
 
     PPORT    port     = nullptr;
     PUNKNOWN miniport = nullptr;
      
-    DPF_ENTER(("[InstallSubDevice %S]", Name));
+    DPF_ENTER(("[InstallSubDevice %S]", name));
 
     // Create the port driver object
     //
-    NTSTATUS ntStatus = PcNewPort(&port, PortClassId);
+    NTSTATUS ntStatus = PcNewPort(&port, portClassId);
 
     // Create the miniport object
     //
     if (NT_SUCCESS(ntStatus))
     {
-        if (MiniportCreate)
+        if (miniportCreate)
         {
-            ntStatus = MiniportCreate(&miniport, MiniportClassId, nullptr, NonPagedPool);
+            ntStatus = miniportCreate(&miniport, miniportClassId, nullptr, NonPagedPool);
         }
         else
         {
-            ntStatus = PcNewMiniport((PMINIPORT *)&miniport, MiniportClassId);
+            ntStatus = PcNewMiniport((PMINIPORT *)&miniport, miniportClassId);
         }
     }
 
@@ -149,14 +149,14 @@ NTSTATUS InstallSubdevice
         // still succeed.
         //
 #pragma warning(disable:6387)
-        ntStatus = port->Init(DeviceObject, Irp, miniport, UnknownAdapter, ResourceList);
+        ntStatus = port->Init(deviceObject, irp, miniport, unknownAdapter, resourceList);
 #pragma warning(pop)
 
         if (NT_SUCCESS(ntStatus))
         {
             // Register the subdevice (port/miniport combination).
             //
-            ntStatus = PcRegisterSubdevice(DeviceObject, Name, port);
+            ntStatus = PcRegisterSubdevice(deviceObject, name, port);
         }
     }
 
@@ -164,26 +164,22 @@ NTSTATUS InstallSubdevice
     //
     if (NT_SUCCESS(ntStatus))
     {
-        if (OutPortUnknown)
+        if (outPortUnknown)
         {
-            ntStatus = port->QueryInterface(IID_IUnknown, (PVOID *)OutPortUnknown);
+            ntStatus = port->QueryInterface(IID_IUnknown, (PVOID *)outPortUnknown);
         }
 
-        if (OutMiniportUnknown)
+        if (outMiniportUnknown)
         {
-            ntStatus = miniport->QueryInterface(IID_IUnknown, (PVOID *)OutMiniportUnknown);
+            ntStatus = miniport->QueryInterface(IID_IUnknown, (PVOID *)outMiniportUnknown);
         }
     }
 
     if (port)
-    {
         port->Release();
-    }
 
     if (miniport)
-    {
         miniport->Release();
-    }
 
     return ntStatus;
 }
@@ -193,43 +189,43 @@ NTSTATUS InstallSubdevice
 IO_WORKITEM_ROUTINE InstantiateTimerWorkRoutine;
 void InstantiateTimerWorkRoutine
 (
-    _In_ DEVICE_OBJECT *_DeviceObject, 
-    _In_opt_ PVOID _Context
+    _In_ DEVICE_OBJECT* deviceObject, 
+    _In_opt_ PVOID context
 )
 {
 	PAGED_CODE();
-    UNREFERENCED_PARAMETER(_DeviceObject);
+    UNREFERENCED_PARAMETER(deviceObject);
 
-    PADAPTERCOMMON  pCommon = (PADAPTERCOMMON) _Context;
+    PADAPTERCOMMON  common = (PADAPTERCOMMON) context;
 
-    if (!pCommon)
+    if (!common)
     {
         // This is completely unexpected, assert here.
         //
-        ASSERT(pCommon);
+        ASSERT(common);
         return;
     }
 
     // Loop through various states of instantiated and
     // plugged in.
     //
-    if (pCommon->isInstantiated() && pCommon->isPluggedIn())
+    if (common->isInstantiated() && common->isPluggedIn())
     {
-        pCommon->uninstantiateDevices();
+        common->uninstantiateDevices();
     }
-    else if (pCommon->isInstantiated() && !pCommon->isPluggedIn())
+    else if (common->isInstantiated() && !common->isPluggedIn())
     {
-        pCommon->plugin();
+        common->plugin();
     }
-    else if (!pCommon->isInstantiated())
+    else if (!common->isInstantiated())
     {
-        pCommon->instantiateDevices();
-        pCommon->unplug();
+        common->instantiateDevices();
+        common->unplug();
     }
 
     // Free the work item that was allocated in the DPC.
     //
-	pCommon->freeInstantiateWorkItem();
+	common->freeInstantiateWorkItem();
 }
 
 //=============================================================================
@@ -254,45 +250,45 @@ Arguments:
 KDEFERRED_ROUTINE InstantiateTimerNotify;
 void InstantiateTimerNotify
 (
-    IN  PKDPC Dpc,
-    IN  PVOID DeferredContext,
+    IN  PKDPC dpc,
+    IN  PVOID deferredContext,
     IN  PVOID SA1,
     IN  PVOID SA2
 )
 {
-    UNREFERENCED_PARAMETER(Dpc);
+    UNREFERENCED_PARAMETER(dpc);
     UNREFERENCED_PARAMETER(SA1);
     UNREFERENCED_PARAMETER(SA2);
 
-    PIO_WORKITEM   pWorkItem = nullptr;
-    PADAPTERCOMMON pCommon = (PADAPTERCOMMON) DeferredContext;
+    PIO_WORKITEM   workItem = nullptr;
+    PADAPTERCOMMON common = (PADAPTERCOMMON) deferredContext;
 
-    if (!pCommon)
+    if (!common)
     {
         // This is completely unexpected, assert here.
         //
-        ASSERT(pCommon);
+        ASSERT(common);
         return;
     }
 
     // Queue a work item to run at PASSIVE_LEVEL so we can call
     // PortCls in order to register or unregister subdevices.
     //
-    pWorkItem = IoAllocateWorkItem(pCommon->getDeviceObject());
-    if (nullptr != pWorkItem)
+    workItem = IoAllocateWorkItem(common->getDeviceObject());
+    if (nullptr != workItem)
     {
         // Store the work item in the adapter common object and queue it.
         //
-        if (NT_SUCCESS(pCommon->setInstantiateWorkItem(pWorkItem)))
+        if (NT_SUCCESS(common->setInstantiateWorkItem(workItem)))
         {
-            IoQueueWorkItem(pWorkItem, InstantiateTimerWorkRoutine, DelayedWorkQueue, DeferredContext);
+            IoQueueWorkItem(workItem, InstantiateTimerWorkRoutine, DelayedWorkQueue, deferredContext);
         }
         else
         {
             // If we failed to stash the work item in the common adapter object,
             // free it now or else we'll leak it.
             //
-            IoFreeWorkItem(pWorkItem);
+            IoFreeWorkItem(workItem);
         }
     }
 }
@@ -303,8 +299,8 @@ void InstantiateTimerNotify
 //=============================================================================
 
 class AdapterCommon : public IAdapterCommon,
-                       public IAdapterPowerManagement,
-                       public CUnknown    
+                      public IAdapterPowerManagement,
+                      public CUnknown    
 {
     public:
         //=====================================================================
@@ -319,7 +315,7 @@ class AdapterCommon : public IAdapterCommon,
 
         //=====================================================================
         // IAdapterCommon methods                                               
-        STDMETHODIMP_(NTSTATUS) Init(IN  PDEVICE_OBJECT  DeviceObject);
+        STDMETHODIMP_(NTSTATUS) Init(IN  PDEVICE_OBJECT  deviceObject);
 
         STDMETHODIMP_(PDEVICE_OBJECT) getDeviceObject(void);
         STDMETHODIMP_(NTSTATUS)       instantiateDevices(void);
@@ -328,7 +324,7 @@ class AdapterCommon : public IAdapterCommon,
         STDMETHODIMP_(NTSTATUS)       unplug(void);
         STDMETHODIMP_(PUNKNOWN *)     wavePortDriverDest(void);
 
-        STDMETHODIMP_(void)     setWaveServiceGroup(IN  PSERVICEGROUP ServiceGroup);
+        STDMETHODIMP_(void)     setWaveServiceGroup(IN  PSERVICEGROUP serviceGroup);
 
         STDMETHODIMP_(BOOL)     bDevSpecificRead();
         STDMETHODIMP_(void)     bDevSpecificWrite(IN  BOOL bDevSpecific);
@@ -337,43 +333,43 @@ class AdapterCommon : public IAdapterCommon,
         STDMETHODIMP_(UINT)     uiDevSpecificRead();
         STDMETHODIMP_(void)     uiDevSpecificWrite(IN  UINT uiDevSpecific);
 
-        STDMETHODIMP_(BOOL)     mixerMuteRead( IN  ULONG Index);
-        STDMETHODIMP_(void)     mixerMuteWrite(IN  ULONG Index, IN  BOOL Value);
+        STDMETHODIMP_(BOOL)     mixerMuteRead( IN  ULONG index);
+        STDMETHODIMP_(void)     mixerMuteWrite(IN  ULONG index, IN  BOOL value);
 
         STDMETHODIMP_(ULONG)    mixerMuxRead(void);
         STDMETHODIMP_(void)     mixerMuxWrite(IN  ULONG Index);
 
         STDMETHODIMP_(void)     mixerReset(void);
 
-        STDMETHODIMP_(LONG)     mixerVolumeRead( IN  ULONG Index, IN  LONG Channel);
-        STDMETHODIMP_(void)     mixerVolumeWrite(IN  ULONG Index, IN  LONG Channel, IN  LONG Value);
+        STDMETHODIMP_(LONG)     mixerVolumeRead( IN  ULONG index, IN  LONG channel);
+        STDMETHODIMP_(void)     mixerVolumeWrite(IN  ULONG index, IN  LONG channel, IN  LONG value);
 
         STDMETHODIMP_(BOOL)     isInstantiated() { return isInstantiated_; };
         STDMETHODIMP_(BOOL)     isPluggedIn()    { return isPluggedIn_; }
 
-        STDMETHODIMP_(NTSTATUS) setInstantiateWorkItem(_In_ __drv_aliasesMem PIO_WORKITEM WorkItem);
+        STDMETHODIMP_(NTSTATUS) setInstantiateWorkItem(_In_ __drv_aliasesMem PIO_WORKITEM workItem);
 
         STDMETHODIMP_(NTSTATUS) freeInstantiateWorkItem();
 
         //=====================================================================
         // friends
 
-        friend NTSTATUS newAdapterCommon(OUT PADAPTERCOMMON * OutAdapterCommon, IN  PRESOURCELIST   ResourceList);
+        friend NTSTATUS newAdapterCommon(OUT PADAPTERCOMMON * outAdapterCommon, IN  PRESOURCELIST resourceList);
 
 private:
-    PUNKNOWN                portWave_;            // Port Wave Interface
-    PUNKNOWN                miniportWave_;        // Miniport Wave Interface
-    PUNKNOWN                portTopology_;        // Port Mixer Topology Interface
-    PUNKNOWN                miniportTopology_;    // Miniport Mixer Topology Interface
-    PSERVICEGROUP           serviceGroupWave_;
-    PDEVICE_OBJECT          deviceObject_;
-    DEVICE_POWER_STATE      powerState_;
-    PCMSVADHW               msvadhw_;             // Virtual MSVAD HW object
-    PKTIMER                 instantiateTimer_;    // Timer object
-    PRKDPC                  instantiateDpc_;      // Deferred procedure call object
-    BOOL                    isInstantiated_;      // Flag indicating whether or not subdevices are exposed
-    BOOL                    isPluggedIn_;         // Flag indicating whether or not a jack is plugged in
-    PIO_WORKITEM            instantiateWorkItem_; // Work Item for instantiate timer callback
+    PUNKNOWN           portWave_;            // Port Wave Interface
+    PUNKNOWN           miniportWave_;        // Miniport Wave Interface
+    PUNKNOWN           portTopology_;        // Port Mixer Topology Interface
+    PUNKNOWN           miniportTopology_;    // Miniport Mixer Topology Interface
+    PSERVICEGROUP      serviceGroupWave_;
+    PDEVICE_OBJECT     deviceObject_;
+    DEVICE_POWER_STATE powerState_;
+    PCMSVADHW          msvadhw_;             // Virtual MSVAD HW object
+    PKTIMER            instantiateTimer_;    // Timer object
+    PRKDPC             instantiateDpc_;      // Deferred procedure call object
+    BOOL               isInstantiated_;      // Flag indicating whether or not subdevices are exposed
+    BOOL               isPluggedIn_;         // Flag indicating whether or not a jack is plugged in
+    PIO_WORKITEM       instantiateWorkItem_; // Work Item for instantiate timer callback
 
     //=====================================================================
     // Helper routines for managing the states of topologies being exposed
@@ -393,20 +389,20 @@ private:
 #pragma code_seg("PAGE")
 NTSTATUS newAdapterCommon
 ( 
-    OUT PUNKNOWN* Unknown,
+    OUT PUNKNOWN* unknown,
     IN  REFCLSID,
-    IN  PUNKNOWN UnknownOuter OPTIONAL,
-    _When_((PoolType & NonPagedPoolMustSucceed) != 0,
+    IN  PUNKNOWN unknownOuter OPTIONAL,
+    _When_((poolType & NonPagedPoolMustSucceed) != 0,
        __drv_reportError("Must succeed pool allocations are forbidden. "
 			 "Allocation failures cause a system crash"))
-    IN  POOL_TYPE               PoolType 
+    IN  POOL_TYPE poolType 
 )
 {
     PAGED_CODE();
 
-    ASSERT(Unknown);
+    ASSERT(unknown);
 
-    STD_CREATE_BODY_(AdapterCommon, Unknown, UnknownOuter, PoolType, PADAPTERCOMMON);
+    STD_CREATE_BODY_(AdapterCommon, unknown, unknownOuter, poolType, PADAPTERCOMMON);
 }
 
 //=============================================================================
@@ -478,26 +474,26 @@ AdapterCommon::getDeviceObject()
 
 //=============================================================================
 #pragma code_seg("PAGE")
-NTSTATUS AdapterCommon::Init(IN  PDEVICE_OBJECT DeviceObject)
+NTSTATUS AdapterCommon::Init(IN  PDEVICE_OBJECT deviceObject)
 {
     PAGED_CODE();
 
-    ASSERT(DeviceObject);
+    ASSERT(deviceObject);
 
     NTSTATUS ntStatus = STATUS_SUCCESS;
 
     DPF_ENTER(("[CAdapterCommon::Init]"));
 
-    deviceObject_     = DeviceObject;
-    powerState_        = PowerDeviceD0;
-    portWave_         = nullptr;
-    miniportWave_     = nullptr;
-    portTopology_     = nullptr;
-    miniportTopology_ = nullptr;
-    instantiateTimer_ = nullptr;
-    instantiateDpc_   = nullptr;
-    isInstantiated_     = FALSE;
-    isPluggedIn_        = FALSE;
+    deviceObject_        = deviceObject;
+    powerState_          = PowerDeviceD0;
+    portWave_            = nullptr;
+    miniportWave_        = nullptr;
+    portTopology_        = nullptr;
+    miniportTopology_    = nullptr;
+    instantiateTimer_    = nullptr;
+    instantiateDpc_      = nullptr;
+    isInstantiated_      = FALSE;
+    isPluggedIn_         = FALSE;
     instantiateWorkItem_ = nullptr;
 
     // Initialize HW.
@@ -513,7 +509,7 @@ NTSTATUS AdapterCommon::Init(IN  PDEVICE_OBJECT DeviceObject)
         msvadhw_->mixerReset();
     }
 
-    CSaveData::setDeviceObject(DeviceObject);   //device object is needed by CSaveData
+    CSaveData::setDeviceObject(deviceObject);   //device object is needed by CSaveData
 
     // Allocate DPC for instantiation timer.
     //
@@ -586,33 +582,33 @@ STDMETHODIMP
 AdapterCommon::NonDelegatingQueryInterface
 (
     _In_         REFIID Interface,
-    _COM_Outptr_ PVOID* Object
+    _COM_Outptr_ PVOID* object
 )
 {
     PAGED_CODE();
 
-    ASSERT(Object);
+    ASSERT(object);
 
     if (IsEqualGUIDAligned(Interface, IID_IUnknown))
     {
-        *Object = PVOID(PUNKNOWN(PADAPTERCOMMON(this)));
+        *object = PVOID(PUNKNOWN(PADAPTERCOMMON(this)));
     }
     else if (IsEqualGUIDAligned(Interface, IID_IAdapterCommon))
     {
-        *Object = PVOID(PADAPTERCOMMON(this));
+        *object = PVOID(PADAPTERCOMMON(this));
     }
     else if (IsEqualGUIDAligned(Interface, IID_IAdapterPowerManagement))
     {
-        *Object = PVOID(PADAPTERPOWERMANAGEMENT(this));
+        *object = PVOID(PADAPTERPOWERMANAGEMENT(this));
     }
     else
     {
-        *Object = nullptr;
+        *object = nullptr;
     }
 
-    if (*Object)
+    if (*object)
     {
-        PUNKNOWN(*Object)->AddRef();
+        PUNKNOWN(*object)->AddRef();
         return STATUS_SUCCESS;
     }
 
@@ -621,7 +617,7 @@ AdapterCommon::NonDelegatingQueryInterface
 
 //=============================================================================
 STDMETHODIMP_(void)
-AdapterCommon::setWaveServiceGroup(IN PSERVICEGROUP ServiceGroup)
+AdapterCommon::setWaveServiceGroup(IN PSERVICEGROUP serviceGroup)
 {
     PAGED_CODE();
     
@@ -632,7 +628,7 @@ AdapterCommon::setWaveServiceGroup(IN PSERVICEGROUP ServiceGroup)
         serviceGroupWave_->Release();
     }
 
-    serviceGroupWave_ = ServiceGroup;
+    serviceGroupWave_ = serviceGroup;
 
     if (serviceGroupWave_)
     {
@@ -875,7 +871,7 @@ STDMETHODIMP_(NTSTATUS)
 AdapterCommon::unexposeMixerTopology()
 {
     NTSTATUS ntStatus = STATUS_SUCCESS;
-    PUNREGISTERSUBDEVICE pUnregisterSubdevice = nullptr;
+    PUNREGISTERSUBDEVICE unregisterSubdevice = nullptr;
 
     PAGED_CODE();
 
@@ -886,17 +882,17 @@ AdapterCommon::unexposeMixerTopology()
 
     // Get the IUnregisterSubdevice interface.
     //
-    ntStatus = portTopology_->QueryInterface(IID_IUnregisterSubdevice, (PVOID *)&pUnregisterSubdevice);
+    ntStatus = portTopology_->QueryInterface(IID_IUnregisterSubdevice, (PVOID *)&unregisterSubdevice);
 
     // Unregister the topo port.
     //
     if (NT_SUCCESS(ntStatus))
     {
-        ntStatus = pUnregisterSubdevice->UnregisterSubdevice(deviceObject_, portTopology_);
+        ntStatus = unregisterSubdevice->UnregisterSubdevice(deviceObject_, portTopology_);
 
         // Release the IUnregisterSubdevice interface.
         //
-        pUnregisterSubdevice->Release();
+        unregisterSubdevice->Release();
 
         // At this point, we're done with the mixer topology and 
         // the miniport.
@@ -922,7 +918,7 @@ STDMETHODIMP_(NTSTATUS)
 AdapterCommon::unexposeWaveTopology()
 {
     NTSTATUS ntStatus = STATUS_SUCCESS;
-    PUNREGISTERSUBDEVICE pUnregisterSubdevice = nullptr;
+    PUNREGISTERSUBDEVICE unregisterSubdevice = nullptr;
 
     PAGED_CODE();
 
@@ -933,17 +929,17 @@ AdapterCommon::unexposeWaveTopology()
 
     // Get the IUnregisterSubdevice interface.
     //
-    ntStatus = portWave_->QueryInterface(IID_IUnregisterSubdevice, (PVOID *)&pUnregisterSubdevice);
+    ntStatus = portWave_->QueryInterface(IID_IUnregisterSubdevice, (PVOID *)&unregisterSubdevice);
 
     // Unregister the wave port.
     //
     if (NT_SUCCESS(ntStatus))
     {
-        ntStatus = pUnregisterSubdevice->UnregisterSubdevice(deviceObject_, portWave_);
+        ntStatus = unregisterSubdevice->UnregisterSubdevice(deviceObject_, portWave_);
     
         // Release the IUnregisterSubdevice interface.
         //
-        pUnregisterSubdevice->Release();
+        unregisterSubdevice->Release();
 
         // At this point, we're done with the mixer topology and 
         // the miniport.
@@ -1004,14 +1000,14 @@ AdapterCommon::disconnectTopologies()
 {
     NTSTATUS                        ntStatus    = STATUS_SUCCESS;
     NTSTATUS                        ntStatus2   = STATUS_SUCCESS;
-    PUNREGISTERPHYSICALCONNECTION   pUnregisterPhysicalConnection = nullptr;
+    PUNREGISTERPHYSICALCONNECTION   unregisterPhysicalConnection = nullptr;
 
     PAGED_CODE();
 
     //
     // Get the IUnregisterPhysicalConnection interface
     //
-    ntStatus = portTopology_->QueryInterface( IID_IUnregisterPhysicalConnection, (PVOID *)&pUnregisterPhysicalConnection);
+    ntStatus = portTopology_->QueryInterface( IID_IUnregisterPhysicalConnection, (PVOID *)&unregisterPhysicalConnection);
     if (NT_SUCCESS(ntStatus))
     {
         // 
@@ -1020,7 +1016,7 @@ AdapterCommon::disconnectTopologies()
         if ((TopologyPhysicalConnections.waveOut    != (ULONG)-1) &&
             (TopologyPhysicalConnections.topologyIn != (ULONG)-1))
         {
-            ntStatus = pUnregisterPhysicalConnection->UnregisterPhysicalConnection(deviceObject_,
+            ntStatus = unregisterPhysicalConnection->UnregisterPhysicalConnection(deviceObject_,
                                                                                    portWave_,     TopologyPhysicalConnections.waveOut,
                                                                                    portTopology_, TopologyPhysicalConnections.topologyIn);
             if(!NT_SUCCESS(ntStatus))
@@ -1035,7 +1031,7 @@ AdapterCommon::disconnectTopologies()
         if ((TopologyPhysicalConnections.topologyOut != (ULONG)-1) &&
             (TopologyPhysicalConnections.waveIn != (ULONG)-1))
         {
-            ntStatus2 = pUnregisterPhysicalConnection->UnregisterPhysicalConnection(deviceObject_,
+            ntStatus2 = unregisterPhysicalConnection->UnregisterPhysicalConnection(deviceObject_,
                                                                                     portTopology_, TopologyPhysicalConnections.topologyOut,
                                                                                     portWave_,     TopologyPhysicalConnections.waveIn);            
             if(!NT_SUCCESS(ntStatus2))
@@ -1049,7 +1045,7 @@ AdapterCommon::disconnectTopologies()
         }
     }
 
-    SAFE_RELEASE(pUnregisterPhysicalConnection);
+    SAFE_RELEASE(unregisterPhysicalConnection);
     
     return ntStatus;
 }
@@ -1068,18 +1064,18 @@ Arguments:
 */
 #pragma code_seg()
 STDMETHODIMP_(NTSTATUS)
-AdapterCommon::setInstantiateWorkItem(_In_ __drv_aliasesMem PIO_WORKITEM WorkItem)
+AdapterCommon::setInstantiateWorkItem(_In_ __drv_aliasesMem PIO_WORKITEM workItem)
 {
     // Make sure there isn't already a work item allocated.
     //
-    if ( instantiateWorkItem_ != nullptr )
+    if (instantiateWorkItem_)
     {
         return STATUS_INVALID_DEVICE_STATE;
     }
 
     // Stash the work item to be free'd after the work routine is called.
     //
-    instantiateWorkItem_ = WorkItem;
+    instantiateWorkItem_ = workItem;
 
     return STATUS_SUCCESS;
 }
@@ -1150,11 +1146,11 @@ Arguments:
   bDevSpecific - Value to store
 */
 STDMETHODIMP_(void)
-AdapterCommon::bDevSpecificWrite(IN  BOOL devSpecific)
+AdapterCommon::bDevSpecificWrite(IN  BOOL bDevSpecific)
 {
     if (msvadhw_)
     {
-        msvadhw_->bSetDevSpecific(devSpecific);
+        msvadhw_->bSetDevSpecific(bDevSpecific);
     }
 }
 
@@ -1182,11 +1178,11 @@ Routine Description:
   Store the new value in the Device Specific location.
 */
 STDMETHODIMP_(void)
-AdapterCommon::iDevSpecificWrite(IN  INT devSpecific)
+AdapterCommon::iDevSpecificWrite(IN  INT iDevSpecific)
 {
     if (msvadhw_)
     {
-        msvadhw_->iSetDevSpecific(devSpecific);
+        msvadhw_->iSetDevSpecific(iDevSpecific);
     }
 }
 
@@ -1212,11 +1208,11 @@ Routine Description:
   Store the new value in the Device Specific location.
 */
 STDMETHODIMP_(void)
-AdapterCommon::uiDevSpecificWrite(IN  UINT devSpecific)
+AdapterCommon::uiDevSpecificWrite(IN  UINT uiDevSpecific)
 {
     if (msvadhw_)
     {
-        msvadhw_->uiSetDevSpecific(devSpecific);
+        msvadhw_->uiSetDevSpecific(uiDevSpecific);
     }
 }
 
@@ -1250,11 +1246,11 @@ Arguments:
   Value - new mute settings
 */
 STDMETHODIMP_(void)
-AdapterCommon::mixerMuteWrite(IN  ULONG Index, IN  BOOL Value)
+AdapterCommon::mixerMuteWrite(IN  ULONG index, IN  BOOL value)
 {
     if (msvadhw_)
     {
-        msvadhw_->setMixerMute(Index, Value);
+        msvadhw_->setMixerMute(index, value);
     }
 }
 
@@ -1288,11 +1284,11 @@ Arguments:
   Value - new mute settings
 */
 STDMETHODIMP_(void)
-AdapterCommon::mixerMuxWrite(IN  ULONG Index)
+AdapterCommon::mixerMuxWrite(IN  ULONG index)
 {
     if (msvadhw_)
     {
-        msvadhw_->setMixerMux(Index);
+        msvadhw_->setMixerMux(index);
     }
 }
 
@@ -1308,11 +1304,11 @@ Arguments:
     Byte - mixer volume settings for this line
 */
 STDMETHODIMP_(LONG)
-AdapterCommon::mixerVolumeRead(IN  ULONG Index, IN  LONG Channel)
+AdapterCommon::mixerVolumeRead(IN  ULONG index, IN  LONG channel)
 {
     if (msvadhw_)
     {
-        return msvadhw_->getMixerVolume(Index, Channel);
+        return msvadhw_->getMixerVolume(index, channel);
     }
 
     return 0;
@@ -1330,11 +1326,11 @@ Arguments:
   Value   - new volume level
 */
 STDMETHODIMP_(void)
-AdapterCommon::mixerVolumeWrite(IN  ULONG Index, IN  LONG Channel, IN  LONG Value)
+AdapterCommon::mixerVolumeWrite(IN  ULONG index, IN  LONG channel, IN  LONG value)
 {
     if (msvadhw_)
     {
-        msvadhw_->setMixerVolume(Index, Channel, Value);
+        msvadhw_->setMixerVolume(index, channel, value);
     }
 }
 
@@ -1344,23 +1340,23 @@ Arguments:
   NewState - The requested, new power state for the device.
 */
 STDMETHODIMP_(void)
-AdapterCommon::PowerChangeState(_In_  POWER_STATE NewState)
+AdapterCommon::PowerChangeState(_In_  POWER_STATE newState)
 {
     DPF_ENTER(("[CAdapterCommon::PowerChangeState]"));
 
     // is this actually a state change??
     //
-    if (NewState.DeviceState != powerState_)
+    if (newState.DeviceState != powerState_)
     {
         // switch on new state
         //
-        switch (NewState.DeviceState)
+        switch (newState.DeviceState)
         {
             case PowerDeviceD0:
             case PowerDeviceD1:
             case PowerDeviceD2:
             case PowerDeviceD3:
-                powerState_ = NewState.DeviceState;
+                powerState_ = newState.DeviceState;
                 DPF(D_VERBOSE, ("Entering D%d", ULONG(powerState_) - ULONG(PowerDeviceD0)));
                 break;
             default:
@@ -1383,9 +1379,9 @@ Arguments:
 */
 _Use_decl_annotations_
 STDMETHODIMP_(NTSTATUS)
-AdapterCommon::QueryDeviceCapabilities(PDEVICE_CAPABILITIES PowerDeviceCaps)
+AdapterCommon::QueryDeviceCapabilities(PDEVICE_CAPABILITIES powerDeviceCaps)
 {
-    UNREFERENCED_PARAMETER(PowerDeviceCaps);
+    UNREFERENCED_PARAMETER(powerDeviceCaps);
 
     DPF_ENTER(("[CAdapterCommon::QueryDeviceCapabilities]"));
 
@@ -1401,9 +1397,9 @@ Arguments:
   NewStateQuery - The requested, new power state for the device
 */
 STDMETHODIMP_(NTSTATUS)
-AdapterCommon::QueryPowerChangeState(_In_  POWER_STATE NewStateQuery)
+AdapterCommon::QueryPowerChangeState(_In_  POWER_STATE newStateQuery)
 {
-    UNREFERENCED_PARAMETER(NewStateQuery);
+    UNREFERENCED_PARAMETER(newStateQuery);
 
     DPF_ENTER(("[CAdapterCommon::QueryPowerChangeState]"));
 

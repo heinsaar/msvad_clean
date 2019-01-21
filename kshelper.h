@@ -8,7 +8,7 @@ Abstract:
 #include <portcls.h>
 #include <ksdebug.h>
 
-PWAVEFORMATEX GetWaveFormatEx(IN PKSDATAFORMAT pDataFormat);
+PWAVEFORMATEX GetWaveFormatEx(IN PKSDATAFORMAT dataFormat);
 
 NTSTATUS PropertyHandler_BasicSupport
 (
