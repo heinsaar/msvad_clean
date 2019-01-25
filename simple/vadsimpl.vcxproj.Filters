@@ -47,7 +47,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="*.h;*.hpp;*.hxx;*.hm;*.inl;*.xsd">
+    <ClInclude Include="minwave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simple.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="toptable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wavtable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="*.h;*.hpp;*.hxx;*.hm;*.inl;*.xsd">
@@ -141,6 +150,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mintopo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="minwave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simple.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="toptable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wavtable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
