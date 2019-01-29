@@ -51,6 +51,6 @@ protected:
     INT   iDevSpecific_;
     UINT  uiDevSpecific_;
 };
-typedef MSVADHW *PCMSVADHW;
+using PCMSVADHW = MSVADHW*;
 
 #endif

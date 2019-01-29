@@ -11,8 +11,8 @@ Abstract:
 //=============================================================================
 // Referenced Forward
 //=============================================================================
-class MiniportWaveCyclicStream;
-typedef MiniportWaveCyclicStream* PCMiniportWaveCyclicStream;
+class   MiniportWaveCyclicStream;
+using PCMiniportWaveCyclicStream = MiniportWaveCyclicStream*;
 
 class MiniportWaveCyclic : public MiniportWaveCyclicMSVAD,
                            public IMiniportWaveCyclic,
@@ -36,7 +36,7 @@ private:
     BOOL isCaptureAllocated_;
     BOOL isRenderAllocated_;
 };
-typedef MiniportWaveCyclic* PCMiniportWaveCyclic;
+using PCMiniportWaveCyclic = MiniportWaveCyclic*;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -61,6 +61,6 @@ public:
 protected:
     PCMiniportWaveCyclic miniportLocal_;  
 };
-typedef MiniportWaveCyclicStream *PCMiniportWaveCyclicStream;
+using PCMiniportWaveCyclicStream = MiniportWaveCyclicStream*;
 
 #endif

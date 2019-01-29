@@ -14,7 +14,7 @@ Abstract:
 KDEFERRED_ROUTINE timerNotify;
 
 class   MiniportWaveCyclicStreamMSVAD;
-typedef MiniportWaveCyclicStreamMSVAD* PCMiniportWaveCyclicStreamMSVAD;
+using PCMiniportWaveCyclicStreamMSVAD = MiniportWaveCyclicStreamMSVAD*;
 
 //=============================================================================
 // Classes
@@ -78,7 +78,7 @@ protected:
     ULONG minSampleRatePcm_;
     ULONG maxSampleRatePcm_;
 };
-typedef MiniportWaveCyclicMSVAD *PCMiniportWaveCyclicMSVAD;
+using PCMiniportWaveCyclicMSVAD = MiniportWaveCyclicMSVAD*;
 
 ///////////////////////////////////////////////////////////////////////////////
 // CMiniportWaveCyclicStreamMSVAD
@@ -128,6 +128,6 @@ public:
     // Friends
     friend class MiniportWaveCyclicMSVAD;
 };
-typedef MiniportWaveCyclicStreamMSVAD *PCMiniportWaveCyclicStreamMSVAD;
+using PCMiniportWaveCyclicStreamMSVAD = MiniportWaveCyclicStreamMSVAD*;
 
 #endif

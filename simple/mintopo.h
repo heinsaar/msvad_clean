@@ -20,7 +20,7 @@ public:
 
     NTSTATUS propertyHandlerJackDescription(IN PPCPROPERTY_REQUEST  PropertyRequest);
 };
-typedef MiniportTopology *PCMiniportTopology;
+using PCMiniportTopology = MiniportTopology*;
 
 extern NTSTATUS propertyHandler_TopoFilter(IN PPCPROPERTY_REQUEST PropertyRequest);
 

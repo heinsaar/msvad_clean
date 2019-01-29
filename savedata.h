@@ -20,9 +20,8 @@ to save data to disk.
 //-----------------------------------------------------------------------------
 //  Forward declaration
 //-----------------------------------------------------------------------------
-class CSaveData;
-typedef CSaveData *PCSaveData;
-
+class  CSaveData;
+using PCSaveData = CSaveData*;
 
 //-----------------------------------------------------------------------------
 //  Structs
@@ -38,11 +37,14 @@ typedef struct _SAVEWORKER_PARAM {
     PCSaveData       pSaveData;
     KEVENT           EventDone;
 } SAVEWORKER_PARAM;
-typedef SAVEWORKER_PARAM *PSAVEWORKER_PARAM;
+
+using PSAVEWORKER_PARAM = SAVEWORKER_PARAM*;
+
 #include <poppack.h>
 
 // wave file header.
 #include <pshpack1.h>
+
 typedef struct _OUTPUT_FILE_HEADER
 {
     DWORD           dwRiff;
@@ -51,14 +53,16 @@ typedef struct _OUTPUT_FILE_HEADER
     DWORD           dwFormat;
     DWORD           dwFormatLength;
 } OUTPUT_FILE_HEADER;
-typedef OUTPUT_FILE_HEADER *POUTPUT_FILE_HEADER;
+
+using POUTPUT_FILE_HEADER = OUTPUT_FILE_HEADER*;
 
 typedef struct _OUTPUT_DATA_HEADER
 {
     DWORD           dwData;
     DWORD           dwDataLength;
 } OUTPUT_DATA_HEADER;
-typedef OUTPUT_DATA_HEADER *POUTPUT_DATA_HEADER;
+
+using POUTPUT_DATA_HEADER = OUTPUT_DATA_HEADER*;
 
 #include <poppack.h>
 
@@ -134,6 +138,6 @@ private:
     friend VOID                 saveFrameWorkerCallback(PDEVICE_OBJECT pDeviceObject, IN  PVOID  Context);
 };
 
-typedef CSaveData *PCSaveData;
+using PCSaveData = CSaveData*;
 
 #endif

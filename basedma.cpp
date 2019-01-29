@@ -102,8 +102,8 @@ Routine Description:
 
 Arguments:
   Destination - Points to the destination buffer.
-  Source - Points to the source buffer.
-  ByteCount - Points to the source buffer.
+  Source      - Points to the source buffer.
+  ByteCount   - Points to the source buffer.
 */
 _Use_decl_annotations_
 STDMETHODIMP_(void)
@@ -124,8 +124,8 @@ Routine Description:
 Arguments:
 
   Destination - Points to the destination buffer.
-  Source - Points to the source buffer
-  ByteCount - Number of bytes to be copied
+  Source	  - Points to the source buffer
+  ByteCount   - Number of bytes to be copied
 */
 _Use_decl_annotations_
 STDMETHODIMP_(void)

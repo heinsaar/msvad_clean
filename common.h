@@ -48,7 +48,7 @@ DECLARE_INTERFACE_(IAdapterCommon, IUnknown)
     STDMETHOD_(NTSTATUS,       setInstantiateWorkItem)  (THIS_ _In_ __drv_aliasesMem PIO_WORKITEM WorkItem ) PURE;
     STDMETHOD_(NTSTATUS,       freeInstantiateWorkItem) (THIS_) PURE;
 };
-typedef IAdapterCommon *PADAPTERCOMMON;
+using PADAPTERCOMMON = IAdapterCommon*;
 
 //=============================================================================
 // Function Prototypes
